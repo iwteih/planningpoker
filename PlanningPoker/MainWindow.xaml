@@ -2,7 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:entity="clr-namespace:PlanningPoker.Entity"
-        Title="MainWindow" Height="750" Width="900" Loaded="Window_Loaded">
+        Title="MainWindow" 
+        WindowStartupLocation="CenterScreen"
+        Height="700" Width="1100" 
+        Loaded="Window_Loaded">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -12,29 +15,28 @@
 
         <!-- mainpulation area -->
         <Grid Grid.Column="0" >
-
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" MinHeight="30"/>
-                    <RowDefinition Height="Auto" MinHeight="30"/>
+                    <RowDefinition Height="Auto" MinHeight="40"/>
                     <RowDefinition Height="*" MinHeight="300" />
                     <RowDefinition Height="Auto" MinHeight="140"/>
                 </Grid.RowDefinitions>
+                <Grid.Background>
+                    <!--https://msdn.microsoft.com/en-us/library/aa212292%28office.11%29.aspx-->
+                    <RadialGradientBrush>
+                        <GradientStop Color="Gold" Offset="0" />
+                        <GradientStop Color="Chocolate" Offset="1" />
+                    </RadialGradientBrush>
+                </Grid.Background>
                 <Grid Grid.Row="0">
-                    <TextBox Text="{Binding ElementName=lbStoryList, Path=SelectedItem.Title}" VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding ElementName=lbStoryList, Path=SelectedItem.Title}" 
+                             TextWrapping="WrapWithOverflow" 
+                             AcceptsReturn="True" 
+                             MaxHeight="100"
+                             VerticalScrollBarVisibility="Auto"
+                             VerticalContentAlignment="Center"/>
                 </Grid>
                 <Grid Grid.Row="1">
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Filp"/>
-                    </StackPanel>
-                </Grid>
-                <Grid Grid.Row="2">
-                    <Grid.Background>
-                        <RadialGradientBrush>
-                            <GradientStop Color="Orange" Offset="0" />
-                            <GradientStop Color="Brown" Offset="1" />
-                        </RadialGradientBrush>
-                    </Grid.Background>
                     <ItemsControl Name="participants" ItemsSource="{Binding Participants}" ItemTemplate="{StaticResource ParticipantsTemplate}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -43,59 +45,76 @@
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
                 </Grid>
-                <Grid Grid.Row="3">
-                    <StackPanel Orientation="Horizontal">
-                        <entity:PlayingCard Face="HA" Width="100" Height="140" >
-                            <entity:PlayingCard.RenderTransform>
-                                <RotateTransform CenterX="50" CenterY="140" Angle="0" />
-                            </entity:PlayingCard.RenderTransform>
-                        </entity:PlayingCard>
-                        <entity:PlayingCard Face="Coffee" Width="100" Height="140" >
-                            <entity:PlayingCard.RenderTransform>
-                                <RotateTransform CenterX="50" CenterY="140" Angle="0" />
-                            </entity:PlayingCard.RenderTransform>
-                        </entity:PlayingCard>
-                        <entity:PlayingCard Face="123" Width="100" Height="140" />
-                        <entity:PlayingCard Face="1" Width="100" Height="140" />
-                    </StackPanel>
+                <Grid Grid.Row="2">
+                    <ListBox Name="lbCardSequence"
+                        IsSynchronizedWithCurrentItem="True" 
+                             ItemContainerStyle="{StaticResource singleCheckListBox}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                             ItemsSource="{Binding CardSquence}"
+                             BorderThickness="0"
+                             Background="Transparent">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel Margin="10, 20, 5, 5" Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        </ListBox>
                 </Grid>
             </Grid>
 
         </Grid>
-
+        <GridSplitter Width="3"/>
         <!--Story list -->
         <Grid Name="rightPanel" Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="60"/>
-                <RowDefinition Height="120"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Background="MediumSeaGreen">
+            <Grid Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="120"/>
+                    <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
-                <DockPanel Grid.Row="0">
-                    <Button Content="Connect" Width="60" VerticalContentAlignment="Center" DockPanel.Dock="Right"/>
-                    <TextBox Name="txtServerIP" VerticalContentAlignment="Center"/>
-                </DockPanel>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="70"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Name="txtUserName" 
+                       Content="{Binding UserName}" 
+                       FontSize="14" 
+                       VerticalContentAlignment="Center" />
+                <ComboBox Grid.Row="0" Grid.Column="1" 
+                              SelectedIndex="0" 
+                              IsEditable="True" 
+                              VerticalContentAlignment="Center">
+                    <ComboBoxItem Content="Dev"/>
+                    <ComboBoxItem Content="QA"/>
+                    <ComboBoxItem Content="PM"/>
+                </ComboBox>
 
-                <DockPanel Grid.Row="1">
-                    <ComboBox SelectedIndex="0" Width="60" DockPanel.Dock="Right" VerticalContentAlignment="Center">
-                        <ComboBoxItem Content="Dev"/>
-                        <ComboBoxItem Content="QA"/>
-                        <ComboBoxItem Content="PM"/>
-                    </ComboBox>
-                    <Label Name="txtUserName" Content="{Binding UserName}" FontSize="14" VerticalContentAlignment="Center" />
-                </DockPanel>
+                <TextBox Grid.Row="1" Grid.Column="0" Name="txtLocalIP" VerticalContentAlignment="Center"/>
+                <Button Grid.Row="1" Grid.Column="1" Name="btnStart" Content="Start" VerticalContentAlignment="Center" Click="btnStart_Click"/>
+
+                <TextBox Grid.Row="2" Grid.Column="0" Name="txtServerIP" VerticalContentAlignment="Center"/>
+                <Button Grid.Row="2" Grid.Column="1" Content="Connect" VerticalContentAlignment="Center"/>
+
+                <CheckBox Grid.Row="3" Grid.Column="0" Content="Auto Flip" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,12.45"/>
+                <Button Grid.Row="3" Grid.Column="1" Content="Flip"/>
+
+                <Label Grid.Row="4" Grid.ColumnSpan="2"  
+                       Background="MediumSeaGreen" 
+                       FontSize="36" FontWeight="ExtraBold" Content="100" 
+                       HorizontalContentAlignment="Center" 
+                       VerticalContentAlignment="Center"/>
+
+                <TextBox Grid.Row="5" Grid.Column="0" Name="txtQuery" VerticalContentAlignment="Center" TextWrapping="WrapWithOverflow" Grid.RowSpan="2"/>
+                <Button Grid.Row="5" Grid.Column="1" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Click="btnQuery_Click" Grid.RowSpan="2"/>
             </Grid>
-            <Label Grid.Row="1"  Background="MediumSeaGreen" FontSize="36" FontWeight="ExtraBold" Content="100" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-            <DockPanel Grid.Row="2" Margin="5, 5, 5, 5">
-                <Button Name="btnQuery" DockPanel.Dock="Right" Content="Query" Margin="5, 0" Click="btnQuery_Click"/>
-                <TextBox Name="txtQuery" TextWrapping="WrapWithOverflow"/>
-            </DockPanel>
-            <ListBox Name="lbStoryList" Grid.Row="3" ItemContainerStyle="{StaticResource listBoxItemMouseOver}">
+            <ListBox Name="lbStoryList" Grid.Row="1" ItemContainerStyle="{StaticResource listBoxItemMouseOver}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>

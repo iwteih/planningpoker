@@ -10,9 +10,11 @@
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <entity:PlayingCard Grid.Row="0" Face="{Binding PlayingCard}" IsEnabled="False" Margin="5, 10, 5, 10" Width="100" Height="140"/>
-                <TextBlock Grid.Row="1" Text="{Binding ParticipantName}" HorizontalAlignment="Center" Margin="5, 10, 5, 10"/>
+                <entity:PlayingCard Grid.Row="0" Face="{Binding PlayingCard}" IsEnabled="False" Margin="10, 10, 5, 0" Width="70" Height="107"/>
+                <TextBlock Grid.Row="1" Text="{Binding ParticipantName}" HorizontalAlignment="Center" />
+                <TextBlock Grid.Row="2" Text="{Binding Role}" HorizontalAlignment="Center" />
             </Grid>
         </DataTemplate>
 
@@ -38,6 +40,18 @@
                     <Setter Property="Background" Value ="Red" />
                 </Trigger>
             </Style.Triggers>
+        </Style>
+
+        <Style x:Key="singleCheckListBox" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <entity:PlayingCard
+                                    IsChecked="{Binding Path=IsSelected, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Face="{TemplateBinding Content}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Application.Resources>
 </Application>

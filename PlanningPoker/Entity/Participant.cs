@@ -47,5 +47,19 @@ namespace PlanningPoker.Entity
                 }
             }
         }
+
+        public string role;
+        public string Role
+        {
+            get { return role; }
+            set
+            {
+                if(role != value)
+                {
+                    role = value;
+                    OnPropertyChanged("Role");
+                }
+            }
+        }
     }
 }

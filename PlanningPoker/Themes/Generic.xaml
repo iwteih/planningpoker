@@ -5,6 +5,7 @@
     xmlns:convert="clr-namespace:PlanningPoker.Converter">
 
     <convert:FaceBackgroundConverter x:Key="faceBackgroundConverter"/>
+    <convert:FaceVisibilityConverter x:Key="faceVisibilityConverter"/>
 
     <LinearGradientBrush x:Key="CardNormalBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="#00FFFFFF" Offset="0" />
@@ -62,10 +63,10 @@
 
                     <Viewbox Stretch="Uniform" Grid.Row="0">
                         <!-- The width & height below allow the card to scale with the proper aspect ratio -->
-                        <Grid Width="100" Height="140" Name="TheGrid">
+                        <Grid Width="60" Height="92" Name="TheGrid">
                             <Grid.RenderTransform>
                                 <TransformGroup>
-                                    <RotateTransform Angle="0" CenterX="50" CenterY="70" />
+                                    <RotateTransform Angle="0" CenterX="30" CenterY="46" />
                                     <TranslateTransform X="0" Y="0"/>
                                     <ScaleTransform ScaleX="1" ScaleY="1" />
                                 </TransformGroup>
@@ -76,16 +77,15 @@
                                 </Rectangle.RenderTransform>
                             </Rectangle>
                             <Grid Name="TheCard" Cursor="Hand">
-
-                                <Viewbox Width="100" Height="140">
+                                <Viewbox Width="60" Height="92">
                                     <Path Fill="#FFFFFF" Data="M1467.5,1852.5c0,110-90,200-200,200h-1067c-110,0-200-90-200-200v-1652 c0-110,90-200,200-200h1067c110,0,200,90,200,200V1852.5z" />
                                 </Viewbox>
-                                <Viewbox Width="100" Height="140">
+                                <Viewbox Width="60" Height="92">
                                     <Path Name="TheHighlight" Fill="{TemplateBinding Face, Converter={StaticResource faceBackgroundConverter}}" Data="M1467.5,1852.5c0,110-90,200-200,200h-1067c-110,0-200-90-200-200v-1652 c0-110,90-200,200-200h1067c110,0,200,90,200,200V1852.5z" />
                                     <!--<Path Name="TheHighlight" Fill="{TemplateBinding Background}" Data="M1467.5,1852.5c0,110-90,200-200,200h-1067c-110,0-200-90-200-200v-1652 c0-110,90-200,200-200h1067c110,0,200,90,200,200V1852.5z" />-->
                                 </Viewbox>
-                                <Rectangle Name="faceRect" Visibility="Hidden"/>
-                                <TextBlock Name="cardValue" Foreground="White" FontWeight="SemiBold" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{TemplateBinding Face}"/>
+                                <TextBlock Name="cardValue" Foreground="White" FontWeight="SemiBold" 
+                                           FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{TemplateBinding Face, Converter={StaticResource faceVisibilityConverter}}" Text="{TemplateBinding Face}"/>
 
                                 <Grid.RenderTransform>
                                     <TranslateTransform X="0" Y="0"/>
@@ -94,18 +94,13 @@
                         </Grid>
                     </Viewbox>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="Face" Value="coffee">
-                            <Setter TargetName="cardValue" Property="Visibility" Value="Hidden"/>
-                            <Setter TargetName="faceRect" Property="Visibility" Value="Visible"/>
-                            <Setter TargetName="faceRect" Property="Fill" Value="{StaticResource HA}"/>
-                        </Trigger>
                         <EventTrigger RoutedEvent="ToggleButton.Checked">
                             <BeginStoryboard>
                                 <Storyboard>
                                     <DoubleAnimation
                     Storyboard.TargetName="TheGrid" 
                     Storyboard.TargetProperty="(Button.RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)"
-                    To="-60" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
+                    To="-20" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -131,7 +126,7 @@
                                     <DoubleAnimation
                     Storyboard.TargetName="TheCard" 
                     Storyboard.TargetProperty="(Grid.RenderTransform).(TranslateTransform.Y)"
-                    To="-20" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
+                    To="-10" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
                                     <!-- Scale -->
                                     <DoubleAnimation
                     Storyboard.TargetName="TheGrid" 

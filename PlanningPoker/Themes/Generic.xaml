@@ -1,0 +1,208 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:entity="clr-namespace:PlanningPoker.Entity"
+    xmlns:convert="clr-namespace:PlanningPoker.Converter">
+
+    <convert:FaceBackgroundConverter x:Key="faceBackgroundConverter"/>
+
+    <LinearGradientBrush x:Key="CardNormalBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#00FFFFFF" Offset="0" />
+        <GradientStop Color="#77FFFFFF" Offset="0.5" />
+        <GradientStop Color="#77AAAAAA" Offset="1" />
+    </LinearGradientBrush>
+
+    <DrawingBrush x:Key="Shadow" Stretch="Uniform">
+        <DrawingBrush.Drawing>
+            <GeometryDrawing Brush="#404040" Geometry="M1467.5,1852.5c0,110-90,200-200,200h-1067c-110,0-200-90-200-200v-1652 c0-110,90-200,200-200h1067c110,0,200,90,200,200V1852.5z" />
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+
+    <RadialGradientBrush x:Key="RadialGradient_white_FF6161">
+        <GradientStop Color="white" Offset="0" />
+        <GradientStop Color="#FF6161" Offset="1" />
+    </RadialGradientBrush>
+
+    <DrawingBrush x:Key="HA" Stretch="Uniform">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Geometry="M1467.5,1852.5c0,110-90,200-200,200h-1067c-110,0-200-90-200-200v-1652 c0-110,90-200,200-200h1067c110,0,200,90,200,200V1852.5z">
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="#000000" />
+                        </GeometryDrawing.Pen>
+                    </GeometryDrawing>
+                    <GeometryDrawing Brush="{StaticResource RadialGradient_white_FF6161}" Geometry="M1080.5,1402.5c0,110-90,200-200,200h-293c-110,0-200-90-200-200v-797 c0-110,90-200,200-200h293c110,0,200,90,200,200V1402.5z" />
+                    <GeometryDrawing Geometry="M1080.5,1402.5c0,110-90,200-200,200h-293 c-110,0-200-90-200-200v-797c0-110,90-200,200-200h293c110,0,200,90,200,200V1402.5z">
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="#636BC1" Thickness="27" />
+                        </GeometryDrawing.Pen>
+                    </GeometryDrawing>
+                    <GeometryDrawing Brush="#FF0000" Geometry="M156.398,76.5h64.75L307.5,337.242c4.664,13.766,8.813,22.25,12.453,25.453 c3.633,3.203,10.313,4.805,20.047,4.805v47H204v-47l8.266-0.242c7.57,0,12.867-1.164,15.898-3.5 c3.023-2.328,4.539-5.188,4.539-8.578c0-2.891-1.305-8.852-3.914-17.867l-8.742-30.813h-87.266l-10.766,34.133 c-2.203,7.266-3.297,12.023-3.297,14.281c0,2.586,0.781,4.93,2.359,7.023s4.141,3.625,7.688,4.594 c2.313,0.648,8.727,0.969,19.234,0.969v47H37v-47c7.125,0,12.328-0.727,15.617-2.18s5.992-3.641,8.117-6.555 c2.125-2.906,4.484-8.328,7.094-16.25L156.398,76.5z M147.914,258.5h57.188l-27.914-92.875L147.914,258.5z" />
+                    <GeometryDrawing Brush="#FF0000" Geometry="M1311.602,1976.5h-64.75l-86.352-260.742c-4.664-13.766-8.813-22.25-12.453-25.453 c-3.633-3.203-10.313-4.805-20.047-4.805v-47h136v47l-8.266,0.242c-7.57,0-12.867,1.164-15.898,3.5 c-3.023,2.328-4.539,5.188-4.539,8.578c0,2.891,1.305,8.852,3.914,17.867l8.742,30.813h87.266l10.766-34.133 c2.203-7.266,3.297-12.023,3.297-14.281c0-2.586-0.781-4.93-2.359-7.023s-4.141-3.625-7.688-4.594 c-2.313-0.648-8.727-0.969-19.234-0.969v-47h111v47c-7.125,0-12.328,0.727-15.617,2.18s-5.992,3.641-8.117,6.555 c-2.125,2.906-4.484,8.328-7.094,16.25L1311.602,1976.5z M1320.086,1794.5h-57.188l27.914,92.875L1320.086,1794.5z" />
+                    <GeometryDrawing Brush="#FF0000" Geometry="M63.709,718.157c-5.067-10.677-13.2-26.4-15.6-37.2c-7.2-27.6-14.4-60-6-88.8 c13.2-45.6,69.6-62.4,111.6-44.4c18,7.2,27.6,26.4,32.4,45.6c1.2,2.4,4.8,2.4,6,0c3.6-25.2,21.6-46.8,45.6-51.6 c48-8.4,88.8,26.4,94.8,72c4.8,38.4-8.4,74.4-27.6,108c-37.2,67.2-75.6,129.6-116.4,193.2 C140.51,854.957,97.31,788.957,63.709,718.157z" />
+                    <GeometryDrawing Brush="#FF0000" Geometry="M1406.117,1334.843c5.066,10.677,13.199,26.4,15.6,37.199 c7.199,27.601,14.4,60,6,88.801c-13.2,45.6-69.6,62.399-111.6,44.4c-18-7.201-27.601-26.4-32.4-45.601 c-1.2-2.399-4.801-2.399-6,0c-3.6,25.2-21.6,46.8-45.6,51.601c-48,8.399-88.801-26.4-94.801-72c-4.8-38.4,8.4-74.4,27.6-108 c37.201-67.201,75.601-129.601,116.4-193.2C1329.316,1198.042,1372.517,1264.042,1406.117,1334.843z" />
+                    <GeometryDrawing Brush="#FFFFFF" Geometry="M486.919,985.813 c-10.134-21.355-26.4-52.8-31.2-74.4c-14.4-55.2-28.8-120-12-177.6c26.4-91.2,139.2-124.8,223.2-88.8 c36,14.4,55.199,52.8,64.801,91.2c2.398,4.8,9.6,4.8,12,0c7.199-50.4,43.199-93.6,91.199-103.2c96-16.8,177.6,52.8,189.6,144 c9.6,76.8-16.799,148.8-55.199,216c-74.4,134.4-151.201,259.2-232.801,386.4C640.519,1259.413,554.119,1127.413,486.919,985.813z">
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="#FF0000" Thickness="27" />
+                        </GeometryDrawing.Pen>
+                    </GeometryDrawing>
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+
+
+    <Style TargetType="{x:Type entity:PlayingCard}">
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="Background" Value="{StaticResource CardNormalBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type entity:PlayingCard}">
+
+                    <Viewbox Stretch="Uniform" Grid.Row="0">
+                        <!-- The width & height below allow the card to scale with the proper aspect ratio -->
+                        <Grid Width="100" Height="140" Name="TheGrid">
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="0" CenterX="50" CenterY="70" />
+                                    <TranslateTransform X="0" Y="0"/>
+                                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                            <Rectangle Name="TheShadow" Opacity="0.1" Fill="{StaticResource Shadow}">
+                                <Rectangle.RenderTransform>
+                                    <TranslateTransform X="-2" Y="2"/>
+                                </Rectangle.RenderTransform>
+                            </Rectangle>
+                            <Grid Name="TheCard" Cursor="Hand">
+
+                                <Viewbox Width="100" Height="140">
+                                    <Path Fill="#FFFFFF" Data="M1467.5,1852.5c0,110-90,200-200,200h-1067c-110,0-200-90-200-200v-1652 c0-110,90-200,200-200h1067c110,0,200,90,200,200V1852.5z" />
+                                </Viewbox>
+                                <Viewbox Width="100" Height="140">
+                                    <Path Name="TheHighlight" Fill="{TemplateBinding Face, Converter={StaticResource faceBackgroundConverter}}" Data="M1467.5,1852.5c0,110-90,200-200,200h-1067c-110,0-200-90-200-200v-1652 c0-110,90-200,200-200h1067c110,0,200,90,200,200V1852.5z" />
+                                    <!--<Path Name="TheHighlight" Fill="{TemplateBinding Background}" Data="M1467.5,1852.5c0,110-90,200-200,200h-1067c-110,0-200-90-200-200v-1652 c0-110,90-200,200-200h1067c110,0,200,90,200,200V1852.5z" />-->
+                                </Viewbox>
+                                <Rectangle Name="faceRect" Visibility="Hidden"/>
+                                <TextBlock Name="cardValue" Foreground="White" FontWeight="SemiBold" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{TemplateBinding Face}"/>
+
+                                <Grid.RenderTransform>
+                                    <TranslateTransform X="0" Y="0"/>
+                                </Grid.RenderTransform>
+                            </Grid>
+                        </Grid>
+                    </Viewbox>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Face" Value="coffee">
+                            <Setter TargetName="cardValue" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="faceRect" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="faceRect" Property="Fill" Value="{StaticResource HA}"/>
+                        </Trigger>
+                        <EventTrigger RoutedEvent="ToggleButton.Checked">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheGrid" 
+                    Storyboard.TargetProperty="(Button.RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)"
+                    To="-60" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="ToggleButton.Unchecked">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheGrid" 
+                    Storyboard.TargetProperty="(Button.RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)"
+                    To="0" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger SourceName="TheCard" RoutedEvent="Mouse.MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <!-- Rotate -->
+                                    <!--<DoubleAnimation
+                    Storyboard.TargetName="TheGrid" 
+                    Storyboard.TargetProperty="(Grid.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)"
+                    To="-10" Duration="0:0:0.25" AutoReverse="false" />-->
+                                    <!-- Move up -->
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheCard" 
+                    Storyboard.TargetProperty="(Grid.RenderTransform).(TranslateTransform.Y)"
+                    To="-20" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
+                                    <!-- Scale -->
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheGrid" 
+                    Storyboard.TargetProperty="(Grid.RenderTransform).(TransformGroup.Children)[2].(ScaleTransform.ScaleX)"
+                    To="1.1" Duration="0:0:0.25" AutoReverse="false" />
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheGrid" 
+                    Storyboard.TargetProperty="(Grid.RenderTransform).(TransformGroup.Children)[2].(ScaleTransform.ScaleY)"
+                    To="1.1" Duration="0:0:0.25" AutoReverse="false" />
+                                    <!-- Change shadow opacity -->
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheShadow" 
+                    Storyboard.TargetProperty="(Rectangle.Opacity)"
+                    To="0.4" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
+                                    <!-- Move shadow -->
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheShadow" 
+                    Storyboard.TargetProperty="(Rectangle.RenderTransform).(TranslateTransform.X)"
+                    To="-8" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheShadow" 
+                    Storyboard.TargetProperty="(Rectangle.RenderTransform).(TranslateTransform.Y)"
+                    To="-12" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger SourceName="TheCard" RoutedEvent="Mouse.MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <!-- "Un-Rotate" -->
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheGrid" 
+                    Storyboard.TargetProperty="(Grid.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)"
+                    To="0" Duration="0:0:0.25" AutoReverse="false" />
+                                    <!-- Move back down -->
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheCard" 
+                    Storyboard.TargetProperty="(Grid.RenderTransform).(TranslateTransform.Y)"
+                    To="0" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
+                                    <!-- Scale -->
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheGrid" 
+                    Storyboard.TargetProperty="(Grid.RenderTransform).(TransformGroup.Children)[2].(ScaleTransform.ScaleX)"
+                    To="1" Duration="0:0:0.25" AutoReverse="false" />
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheGrid" 
+                    Storyboard.TargetProperty="(Grid.RenderTransform).(TransformGroup.Children)[2].(ScaleTransform.ScaleY)"
+                    To="1" Duration="0:0:0.25" AutoReverse="false" />
+                                    <!-- Change shadow opacity -->
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheShadow" 
+                    Storyboard.TargetProperty="(Rectangle.Opacity)"
+                    To="0.1" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
+                                    <!-- Move shadow -->
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheShadow" 
+                    Storyboard.TargetProperty="(Rectangle.RenderTransform).(TranslateTransform.X)"
+                    To="-2" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
+                                    <DoubleAnimation
+                    Storyboard.TargetName="TheShadow" 
+                    Storyboard.TargetProperty="(Rectangle.RenderTransform).(TranslateTransform.Y)"
+                    To="2" DecelerationRatio="1" Duration="0:0:0.25" AutoReverse="false" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+</ResourceDictionary>

@@ -1,0 +1,43 @@
+﻿<Application x:Class="PlanningPoker.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:convert="clr-namespace:PlanningPoker.Converter"
+             xmlns:entity="clr-namespace:PlanningPoker.Entity"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <DataTemplate x:Key="ParticipantsTemplate">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <entity:PlayingCard Grid.Row="0" Face="{Binding PlayingCard}" IsEnabled="False" Margin="5, 10, 5, 10" Width="100" Height="140"/>
+                <TextBlock Grid.Row="1" Text="{Binding ParticipantName}" HorizontalAlignment="Center" Margin="5, 10, 5, 10"/>
+            </Grid>
+        </DataTemplate>
+
+        <Style x:Key="listBoxItemMouseOver" TargetType="ListBoxItem">
+            <Style.Resources>
+                <!--SelectedItem with focus-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#40BF4D"/>
+                <!--SelectedItem without focus-->
+                <!--<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="LightBlue" Opacity=".4"/>-->
+            </Style.Resources>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#DDEFBA" Offset="0"/>
+                                <GradientStop Color="#94CD54" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value ="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Application.Resources>
+</Application>

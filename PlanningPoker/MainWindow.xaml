@@ -1,0 +1,125 @@
+﻿<Window x:Class="PlanningPoker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:entity="clr-namespace:PlanningPoker.Entity"
+        Title="MainWindow" Height="750" Width="900" Loaded="Window_Loaded">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- mainpulation area -->
+        <Grid Grid.Column="0" >
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" MinHeight="30"/>
+                    <RowDefinition Height="Auto" MinHeight="30"/>
+                    <RowDefinition Height="*" MinHeight="300" />
+                    <RowDefinition Height="Auto" MinHeight="140"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <TextBox Text="{Binding ElementName=lbStoryList, Path=SelectedItem.Title}" VerticalContentAlignment="Center"/>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Filp"/>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Grid.Background>
+                        <RadialGradientBrush>
+                            <GradientStop Color="Orange" Offset="0" />
+                            <GradientStop Color="Brown" Offset="1" />
+                        </RadialGradientBrush>
+                    </Grid.Background>
+                    <ItemsControl Name="participants" ItemsSource="{Binding Participants}" ItemTemplate="{StaticResource ParticipantsTemplate}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel ScrollViewer.HorizontalScrollBarVisibility="Hidden"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </Grid>
+                <Grid Grid.Row="3">
+                    <StackPanel Orientation="Horizontal">
+                        <entity:PlayingCard Face="HA" Width="100" Height="140" >
+                            <entity:PlayingCard.RenderTransform>
+                                <RotateTransform CenterX="50" CenterY="140" Angle="0" />
+                            </entity:PlayingCard.RenderTransform>
+                        </entity:PlayingCard>
+                        <entity:PlayingCard Face="Coffee" Width="100" Height="140" >
+                            <entity:PlayingCard.RenderTransform>
+                                <RotateTransform CenterX="50" CenterY="140" Angle="0" />
+                            </entity:PlayingCard.RenderTransform>
+                        </entity:PlayingCard>
+                        <entity:PlayingCard Face="123" Width="100" Height="140" />
+                        <entity:PlayingCard Face="1" Width="100" Height="140" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+        </Grid>
+
+        <!--Story list -->
+        <Grid Name="rightPanel" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="120"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Background="MediumSeaGreen">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0">
+                    <Button Content="Connect" Width="60" VerticalContentAlignment="Center" DockPanel.Dock="Right"/>
+                    <TextBox Name="txtServerIP" VerticalContentAlignment="Center"/>
+                </DockPanel>
+
+                <DockPanel Grid.Row="1">
+                    <ComboBox SelectedIndex="0" Width="60" DockPanel.Dock="Right" VerticalContentAlignment="Center">
+                        <ComboBoxItem Content="Dev"/>
+                        <ComboBoxItem Content="QA"/>
+                        <ComboBoxItem Content="PM"/>
+                    </ComboBox>
+                    <Label Name="txtUserName" Content="{Binding UserName}" FontSize="14" VerticalContentAlignment="Center" />
+                </DockPanel>
+            </Grid>
+            <Label Grid.Row="1"  Background="MediumSeaGreen" FontSize="36" FontWeight="ExtraBold" Content="100" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <DockPanel Grid.Row="2" Margin="5, 5, 5, 5">
+                <Button Name="btnQuery" DockPanel.Dock="Right" Content="Query" Margin="5, 0" Click="btnQuery_Click"/>
+                <TextBox Name="txtQuery" TextWrapping="WrapWithOverflow"/>
+            </DockPanel>
+            <ListBox Name="lbStoryList" Grid.Row="3" ItemContainerStyle="{StaticResource listBoxItemMouseOver}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="{Binding Severity}" Grid.Row="0" Grid.Column="0"
+                                   ToolTip="严重程度"/>
+                            <Label Content="{Binding ID}" Grid.Row="0" Grid.Column="1" 
+                                   ToolTip="ID"/>
+                            <Label Content="{Binding Title}" Grid.Row="0" Grid.Column="2"
+                                   ToolTip="标题"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+        </Grid>
+    </Grid>
+
+
+</Window>

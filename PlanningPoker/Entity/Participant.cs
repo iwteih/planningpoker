@@ -48,7 +48,7 @@ namespace PlanningPoker.Entity
             }
         }
 
-        public string role;
+        private string role;
         public string Role
         {
             get { return role; }

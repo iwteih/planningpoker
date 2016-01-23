@@ -5,7 +5,8 @@
         Title="MainWindow" 
         WindowStartupLocation="CenterScreen"
         Height="700" Width="1100" 
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        Closed="Window_Closed">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -58,7 +59,7 @@
                                 <VirtualizingStackPanel Margin="10, 20, 5, 5" Orientation="Horizontal"/>
                             </ItemsPanelTemplate>
                         </ListBox.ItemsPanel>
-                        </ListBox>
+                    </ListBox>
                 </Grid>
             </Grid>
 
@@ -87,7 +88,9 @@
                        Content="{Binding UserName}" 
                        FontSize="14" 
                        VerticalContentAlignment="Center" />
-                <ComboBox Grid.Row="0" Grid.Column="1" 
+                <ComboBox Grid.Row="0"
+                          Name="cbRole"
+                          Grid.Column="1" 
                               SelectedIndex="0" 
                               IsEditable="True" 
                               VerticalContentAlignment="Center">
@@ -98,13 +101,17 @@
 
                 <TextBox Grid.Row="1" Grid.Column="0" Name="txtLocalIP" VerticalContentAlignment="Center"/>
                 <Button Grid.Row="1" Grid.Column="1" Name="btnStart" Content="Start" VerticalContentAlignment="Center" Click="btnStart_Click"/>
+                <Ellipse Grid.Row="1" Grid.Column="1" Fill="Green" Visibility="{Binding CanStartService}" Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5"/>
 
                 <TextBox Grid.Row="2" Grid.Column="0" Name="txtServerIP" VerticalContentAlignment="Center"/>
-                <Button Grid.Row="2" Grid.Column="1" Content="Connect" VerticalContentAlignment="Center"/>
+                <Button Grid.Row="2" Grid.Column="1" Name="btnConnect" Content="Connect" VerticalContentAlignment="Center" Click="btnConnect_Click"/>
+                <Ellipse Grid.Row="2" Grid.Column="1" Fill="Green" Visibility="{Binding CanConnectServer}" Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5"/>
 
-                <CheckBox Grid.Row="3" Grid.Column="0" Content="Auto Flip" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,12.45"/>
-                <Button Grid.Row="3" Grid.Column="1" Content="Flip"/>
-
+                <DockPanel Grid.Row="3" Grid.ColumnSpan="2">
+                    <Button Grid.Column="2" Name="btnReset" Content="Reset" Width="70" DockPanel.Dock="Right" VerticalContentAlignment="Center" Click="btnReset_Click"/>
+                    <Button Grid.Column="1" Content="Flip" Width="70" DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
+                    <CheckBox Grid.Column="0" Content="Auto Flip" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+                </DockPanel>
                 <Label Grid.Row="4" Grid.ColumnSpan="2"  
                        Background="MediumSeaGreen" 
                        FontSize="36" FontWeight="ExtraBold" Content="100" 

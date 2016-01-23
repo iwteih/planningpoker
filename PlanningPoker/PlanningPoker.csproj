@@ -61,6 +61,7 @@
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -77,12 +78,17 @@
     <Compile Include="ApplicationConfig.cs" />
     <Compile Include="Converter\FaceVisibilityConverter.cs" />
     <Compile Include="Entity\CardStatus.cs" />
-    <Compile Include="Entity\ConfigInfo.cs" />
+    <Compile Include="Entity\GameInfo.cs" />
     <Compile Include="Entity\Story.cs" />
     <Compile Include="Entity\Participant.cs" />
     <Compile Include="Utility\IOUtil.cs" />
     <Compile Include="Utility\IPUtil.cs" />
     <Compile Include="Utility\Utils.cs" />
+    <Compile Include="WCF\Callback.cs" />
+    <Compile Include="WCF\ChannelManager.cs" />
+    <Compile Include="WCF\GamePlay.cs" />
+    <Compile Include="WCF\ICallback.cs" />
+    <Compile Include="WCF\IGamePlay.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

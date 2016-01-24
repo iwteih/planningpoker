@@ -41,9 +41,8 @@ namespace PlanningPoker
             this.lbStoryList.ItemsSource = storyList;
             this.participants.ItemsSource = gameInfo.ParticipantsList;
             this.DataContext = gameInfo;
-            gameInfo.UserName = "Yiming";
 
-            MockData();
+            //MockData();
         }
 
         public GameInfo Config
@@ -77,17 +76,48 @@ namespace PlanningPoker
                 Console.WriteLine(queryString);
                 //TODO: query from jira
             }
-
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadConfig();
+            LoadUserName();
         }
 
         private void LoadConfig()
         {
             gameInfo.LoadAppConfig();
+            cbRole.ItemsSource = Enum.GetNames(typeof(Role));
+        }
+
+        private void LoadUserName()
+        {
+            gameInfo.LoadUserName();
+        }
+
+        private ServiceHost startServer(string serverIP)
+        {
+            Uri baseAddress = new Uri(string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name));
+            host = new ServiceHost(typeof(GamePlay), baseAddress);
+            host.AddServiceEndpoint(typeof(IGamePlay), new NetTcpBinding(), "");
+            ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
+            host.Description.Behaviors.Add(smb);
+            host.Open();
+            return host;
+        }
+
+        private IGamePlay connectServer(string serverIP)
+        {
+            Callback callback = new Callback();
+            string baseAddress = string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name);
+            DuplexChannelFactory<IGamePlay> channel = new DuplexChannelFactory<IGamePlay>(
+                new InstanceContext(callback),
+                new NetTcpBinding(),
+                new EndpointAddress(baseAddress));
+            gamePlay = channel.CreateChannel();
+
+
+            return gamePlay;
         }
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
@@ -110,38 +140,97 @@ namespace PlanningPoker
                 string serverIP = string.Format("{0}:{1}", localIP, gameInfo.Port);
                 txtLocalIP.Text = serverIP;
 
-                Uri baseAddress = new Uri(string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name));
-                host = new ServiceHost(typeof(GamePlay), baseAddress);
-                host.AddServiceEndpoint(typeof(IGamePlay), new NetTcpBinding(), "");
-                ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
-                host.Description.Behaviors.Add(smb);
-                host.Open();
+                this.host = startServer(serverIP);
 
-
-                //host = new ServiceHost(typeof(GamePlay));
-                //host.Open();
+                this.gamePlay = connectServer(serverIP);
+                this.gamePlay.Regist();
+                this.gamePlay.Join(txtUserName.Text.Trim(), cbRole.Text);
 
                 btnStart.Content = "Stop";
                 gameInfo.CanStartService = System.Windows.Visibility.Visible;
             }
         }
 
+        private void btnConnect_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtServerIP.Text) || gamePlay != null)
+            {
+                return;
+            }
+
+            this.gamePlay = connectServer(txtServerIP.Text.Trim());
+
+            this.gameInfo.CanConnectServer = System.Windows.Visibility.Visible;
+            this.gamePlay.Regist();
+            this.gamePlay.Join(txtUserName.Text.Trim(), cbRole.Text);
+        }
+
         private void btnReset_Click(object sender, RoutedEventArgs e)
         {
-            lock (gameInfo)
+            // only server can reset the game
+            if (gamePlay != null && host != null)
             {
-                foreach (Participant p in gameInfo.ParticipantsList)
+                gamePlay.Reset();
+            }
+        }
+
+        private string CalcScore()
+        {
+            int? total = null;
+            int count = 0;
+            foreach (Participant p in gameInfo.ParticipantsList)
+            {
+                if (IsCalculatable(p.Role))
                 {
-                    p.PlayingCard = CardStatus.Pending.ToString();
+                    int v;
+                    bool canParse = int.TryParse(p.UnflipedPlayingCard, out v);
+
+                    if (canParse)
+                    {
+                        total = total == null ? v : total + v;
+                        count++;
+                    }
                 }
             }
+
+            if (gameInfo.CardSquence.Count == 0 || !total.HasValue)
+            {
+                return "-";
+            }
+
+            if (count > 0)
+            {
+                int upper = (int)Math.Ceiling(total.Value * 1.0 / count);
+                String ret = "-";
+
+                foreach (string card in gameInfo.CardSquence)
+                {
+                    int c;
+                    bool canParse = int.TryParse(card, out c);
+
+                    if (canParse && c >= upper)
+                    {
+                        ret = card;
+                        break;
+                    }
+                }
+
+                return ret;
+            }
+
+            return "-";
+        }
+
+        private bool IsCalculatable(string role)
+        {
+            return Enum.GetNames(typeof(Role)).Contains(role);
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            if(gamePlay != null)
+            if (gamePlay != null)
             {
-                gamePlay.Exit(txtUserName.Content.ToString());
+                gamePlay.Exit(txtUserName.Text.Trim());
             }
             if (host != null)
             {
@@ -149,24 +238,30 @@ namespace PlanningPoker
             }
         }
 
-        private void btnConnect_Click(object sender, RoutedEventArgs e)
+        private void lbCardSequence_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(gamePlay != null)
+            if (lbCardSequence.SelectedItem == null)
             {
+                gamePlay.Withdraw(txtUserName.Text.Trim());
                 return;
             }
 
-            string baseAddress = string.Format("net.tcp://{0}/{1}", txtServerIP.Text.Trim(), typeof(GamePlay).Name);
-            DuplexChannelFactory<IGamePlay> channel = new DuplexChannelFactory<IGamePlay>(
-                new InstanceContext(new Callback()), 
-                new NetTcpBinding(), 
-                new EndpointAddress(baseAddress));
-            gamePlay = channel.CreateChannel();
+            string cardValue = lbCardSequence.SelectedItem.ToString();
+            if (gamePlay != null)
+            {
+                gamePlay.Play(txtUserName.Text.Trim(), cardValue);
+            }
+        }
 
-            gameInfo.CanConnectServer = System.Windows.Visibility.Visible;
-
-            gamePlay.Regist();
-            gamePlay.Join(txtUserName.Content.ToString(), cbRole.Text);
+        private void btnFlip_Click(object sender, RoutedEventArgs e)
+        {
+            // only host/server can flip cards
+            if (gamePlay != null && host != null)
+            {
+                gamePlay.Flip();
+                string score = CalcScore();
+                gamePlay.ShowScore(score);
+            }
         }
     }
 }

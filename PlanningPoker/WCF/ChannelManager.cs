@@ -1,4 +1,5 @@
 ﻿using log4net;
+using PlanningPoker.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace PlanningPoker.WCF
             }
         }
 
-        public void BroadcastJoinEvent(string user, string role)
+        public void BroadcastJoinEvent(string user, string role, Participant[] participants)
         {
             if (callbackChannelList.Count > 0)
             {
@@ -49,7 +50,7 @@ namespace PlanningPoker.WCF
                 {
                     try
                     {
-                        channel.BroadcastJoinEvent(user, role);
+                        channel.Join(user, role, participants);
                     }
                     catch
                     {
@@ -60,7 +61,7 @@ namespace PlanningPoker.WCF
             }
         }
 
-        public void BroadcastPlayEvent(string user, string role)
+        public void BroadcastPlayEvent(string user, string pokerValue)
         {
             if (callbackChannelList.Count > 0)
             {
@@ -68,11 +69,11 @@ namespace PlanningPoker.WCF
                 {
                     try
                     {
-                        channel.BroadcastPlayEvent(user, role);
+                        channel.Play(user, pokerValue);
                     }
                     catch
                     {
-                        logger.Error(string.Format("error BroadcastPlayEvent,user={0},role={1}", user, role));
+                        logger.Error(string.Format("error BroadcastPlayEvent,user={0},role={1}", user, pokerValue));
                         callbackChannelList.Remove(channel);
                     }
                 }
@@ -87,7 +88,7 @@ namespace PlanningPoker.WCF
                 {
                     try
                     {
-                        channel.BroadcastExitEvent(user);
+                        channel.Exit(user);
                     }
                     catch
                     {
@@ -98,5 +99,81 @@ namespace PlanningPoker.WCF
             }
         }
 
+
+        public void BroadcastWithdrawEvent(string user)
+        {
+            if (callbackChannelList.Count > 0)
+            {
+                foreach (var channel in callbackChannelList.ToArray())
+                {
+                    try
+                    {
+                        channel.Withdraw(user);
+                    }
+                    catch
+                    {
+                        logger.Error(string.Format("error BroadcastWithdrawEvent,user={0}", user));
+                        callbackChannelList.Remove(channel);
+                    }
+                }
+            }
+        }
+
+        internal void BroadcastFlipEvent()
+        {
+            if (callbackChannelList.Count > 0)
+            {
+                foreach (var channel in callbackChannelList.ToArray())
+                {
+                    try
+                    {
+                        channel.Flip();
+                    }
+                    catch
+                    {
+                        logger.Error("error BroadcastFlipEvent");
+                        callbackChannelList.Remove(channel);
+                    }
+                }
+            }
+        }
+
+        internal void BroadcastRestEvent()
+        {
+            if (callbackChannelList.Count > 0)
+            {
+                foreach (var channel in callbackChannelList.ToArray())
+                {
+                    try
+                    {
+                        channel.Reset();
+                    }
+                    catch(Exception exp)
+                    {
+                        logger.Error("error BroadcastRestEvent", exp);
+                        callbackChannelList.Remove(channel);
+                    }
+                }
+            }
+        }
+
+        internal void BroadcaseShowScoreEvent(string score)
+        {
+            if (callbackChannelList.Count > 0)
+            {
+                foreach (var channel in callbackChannelList.ToArray())
+                {
+                    try
+                    {
+                        channel.ShowScore(score);
+                    }
+                    catch (Exception exp)
+                    {
+                        logger.Error("error BroadcastRestEvent", exp);
+                        callbackChannelList.Remove(channel);
+                    }
+                }
+            }
+        }
     }
 }

@@ -6,29 +6,63 @@ using System.Text;
 
 namespace PlanningPoker.WCF
 {
+    /// <summary>
+    /// Callback methods occur on client side
+    /// </summary>
     public class Callback : ICallback
     {
         GameInfo gameInfo = GameInfo.Instance;
 
-        public void BroadcastJoinEvent(string user, string role)
+        public void Join(string user, string role, Participant[] participants)
         {
             lock (gameInfo)
             {
-                Participant p = gameInfo.ParticipantsList.FirstOrDefault(f => f.ParticipantName == user);
-                if (p == null)
+                List<Participant> toAppend = new List<Participant>();
+                foreach (Participant remoteP in participants)
+                {
+                    bool exist = false;
+                    foreach (Participant localP in gameInfo.ParticipantsList)
+                    {
+                        if (remoteP.ParticipantName == localP.ParticipantName)
+                        {
+                            exist = true;
+                            break;
+                        }
+                    }
+
+                    if (!exist)
+                    {
+                        toAppend.Add(remoteP);
+                    }
+                }
+
+                foreach (Participant toAdd in toAppend)
                 {
                     gameInfo.ParticipantsList.Add(
                         new Participant()
                         {
+                            ParticipantName = toAdd.ParticipantName,
+                            Role = toAdd.Role,
+                            PlayingCard = toAdd.PlayingCard,
+                            UnflipedPlayingCard = toAdd.UnflipedPlayingCard
+                        });
+                }
+
+                Participant p = gameInfo.ParticipantsList.FirstOrDefault(f => f.ParticipantName == user);
+                if (p == null)
+                {
+                    p = new Participant()
+                        {
                             ParticipantName = user,
                             Role = role,
-                            PlayingCard = CardStatus.Pending.ToString()
-                        });
+                        };
+                    p.Reset();
+                    gameInfo.ParticipantsList.Add(p);
                 }
             }
         }
 
-        public void BroadcastPlayEvent(string user, string pokerValue)
+        public void Play(string user, string pokerValue)
         {
             lock (gameInfo)
             {
@@ -36,12 +70,25 @@ namespace PlanningPoker.WCF
 
                 if (p != null)
                 {
-                    p.PlayingCard = pokerValue;
+                    p.Play(pokerValue);
                 }
             }
         }
 
-        public void BroadcastExitEvent(string user)
+        public void Withdraw(string user)
+        {
+            lock (gameInfo)
+            {
+                Participant p = gameInfo.ParticipantsList.Where(f => f.ParticipantName == user).FirstOrDefault();
+
+                if (p != null)
+                {
+                    p.Reset();
+                }
+            }
+        }
+
+        public void Exit(string user)
         {
             lock (gameInfo)
             {
@@ -52,7 +99,35 @@ namespace PlanningPoker.WCF
                     gameInfo.ParticipantsList.Remove(p);
                 }
             }
-            ChannelManager.Instance.BroadcastExitEvent(user);
+            //ChannelManager.Instance.BroadcastExitEvent(user);
+        }
+
+
+        public void Flip()
+        {
+            lock (gameInfo)
+            {
+                foreach (Participant p in gameInfo.ParticipantsList)
+                {
+                    p.Flip();
+                }
+            }
+        }
+
+        public void Reset()
+        {
+            lock (gameInfo)
+            {
+                foreach (Participant p in gameInfo.ParticipantsList)
+                {
+                    p.Reset();
+                }
+            }
+        }
+
+        public void ShowScore(string score)
+        {
+            gameInfo.Score = score;
         }
     }
 }

@@ -26,46 +26,54 @@ namespace PlanningPoker.WCF
 
         public void Join(string user, string role)
         {
-            bool exist = false;
+            //bool exist = false;
 
-            lock (gameInfo)
-            {
-                Participant p = gameInfo.ParticipantsList.FirstOrDefault(f => f.ParticipantName == user);
-                if (p == null)
-                {
-                    gameInfo.ParticipantsList.Add(
-                        new Participant()
-                    {
-                        ParticipantName = user,
-                        Role = role,
-                        PlayingCard = CardStatus.Pending.ToString()
-                    });
-                    exist = false;
-                }
-                else
-                {
-                    exist = true;
-                }
-            }
+            //lock (gameInfo)
+            //{
+            //    Participant p = gameInfo.ParticipantsList.FirstOrDefault(f => f.ParticipantName == user);
+            //    if (p == null)
+            //    {
+            //        gameInfo.ParticipantsList.Add(
+            //            new Participant()
+            //        {
+            //            ParticipantName = user,
+            //            Role = role,
+            //            PlayingCard = CardStatus.Pending.ToString()
+            //        });
+            //        exist = false;
+            //    }
+            //    else
+            //    {
+            //        exist = true;
+            //    }
+            //}
 
-            if (!exist)
-            {
-                ChannelManager.Instance.BroadcastJoinEvent(user, role);
-            }
+            //if (!exist)
+            //{
+                ChannelManager.Instance.BroadcastJoinEvent(user, role, gameInfo.ParticipantsList.ToArray());
+            //}
         }
 
         public void Play(string user, string pokerValue)
         {
-            lock (gameInfo)
-            {
-                Participant p = gameInfo.ParticipantsList.Where(f => f.ParticipantName == user).FirstOrDefault();
+            //lock (gameInfo)
+            //{
+            //    Participant p = gameInfo.ParticipantsList.Where(f => f.ParticipantName == user).FirstOrDefault();
 
-                if (p != null)
-                {
-                    p.PlayingCard = pokerValue;
-                }
-            }
+            //    if (p != null)
+            //    {
+            //        p.UnflipedPlayingCard = pokerValue;
+            //        p.PlayingCard = CardStatus.Ready.ToString();
+            //        //p.PlayingCard = pokerValue;
+            //    }
+            //}
             ChannelManager.Instance.BroadcastPlayEvent(user, pokerValue);
+        }
+
+
+        public void Withdraw(string user)
+        {
+            ChannelManager.Instance.BroadcastWithdrawEvent(user);
         }
 
         public void Exit(string user)
@@ -80,6 +88,21 @@ namespace PlanningPoker.WCF
                 }
             }
             ChannelManager.Instance.BroadcastExitEvent(user);
+        }
+
+        public void Flip()
+        {
+            ChannelManager.Instance.BroadcastFlipEvent();
+        }
+
+        public void Reset()
+        {
+            ChannelManager.Instance.BroadcastRestEvent();
+        }
+
+        public void ShowScore(string score)
+        {
+            ChannelManager.Instance.BroadcaseShowScoreEvent(score);
         }
     }
 }

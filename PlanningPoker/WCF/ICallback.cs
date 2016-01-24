@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlanningPoker.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -9,12 +10,24 @@ namespace PlanningPoker.WCF
     public interface ICallback
     {
         [OperationContract(IsOneWay = true)]
-        void BroadcastJoinEvent(string user, string role);
+        void Join(string user, string role, Participant[] participants);
 
         [OperationContract(IsOneWay = true)]
-        void BroadcastPlayEvent(string user, string pokerValue);
+        void Play(string user, string pokerValue);
 
         [OperationContract(IsOneWay = true)]
-        void BroadcastExitEvent(string user);
+        void Withdraw(string user);
+
+        [OperationContract(IsOneWay = true)]
+        void Exit(string user);
+
+        [OperationContract(IsOneWay = true)]
+        void Flip();
+
+        [OperationContract(IsOneWay = true)]
+        void Reset();
+
+        [OperationContract(IsOneWay = true)]
+        void ShowScore(string score);
     }
 }

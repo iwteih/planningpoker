@@ -14,6 +14,7 @@ namespace PlanningPoker.Entity
     public class GameInfo : DependencyObject
     {
         private static readonly DependencyProperty UserNameProperty;
+        private static readonly DependencyProperty ScoreProperty;
         private static readonly DependencyProperty CanStartServiceProperty;
         private static readonly DependencyProperty CanConnectServerProperty;
 
@@ -24,6 +25,11 @@ namespace PlanningPoker.Entity
         static GameInfo()
         {
             UserNameProperty = DependencyProperty.Register("UserName", typeof(string), typeof(GameInfo));
+            ScoreProperty = DependencyProperty.Register("Score",
+               typeof(string),
+               typeof(GameInfo),
+               new PropertyMetadata("-"));
+
             CanStartServiceProperty = DependencyProperty.Register("CanStartService", 
                 typeof(Visibility), 
                 typeof(GameInfo), 
@@ -32,6 +38,7 @@ namespace PlanningPoker.Entity
                 typeof(Visibility), 
                 typeof(GameInfo), 
                 new PropertyMetadata(Visibility.Hidden));
+
         }
 
         public string Port
@@ -49,7 +56,7 @@ namespace PlanningPoker.Entity
 
         public void LoadAppConfig()
         {
-            string defaultSequence = "0, 1/2, 1, 2, 3, 5, 8, 13, 20, 40, 100, ?, Coffee";
+            string defaultSequence = "0, 1/2, 1, 2, 3, 5, 8, 13, 20, 40, 100, ?, coffee";
             string selectedSequence = ConfigurationManager.AppSettings["DefaultSequence"];
 
             if (selectedSequence != null)
@@ -67,6 +74,14 @@ namespace PlanningPoker.Entity
             }
         }
 
+        /// <summary>
+        /// This method takes a bit time.
+        /// </summary>
+        public void LoadUserName()
+        {
+            UserName = Utils.GetUserName();
+        }
+
         public string UserName
         {
             get
@@ -76,6 +91,18 @@ namespace PlanningPoker.Entity
             set
             {
                 base.SetValue(UserNameProperty, value);
+            }
+        }
+
+        public string Score
+        {
+            get
+            {
+                return (string)base.GetValue(ScoreProperty);
+            }
+            set
+            {
+                base.SetValue(ScoreProperty, value);
             }
         }
 
@@ -113,6 +140,18 @@ namespace PlanningPoker.Entity
         public ObservableCollection<Participant> ParticipantsList
         {
             get { return participantsList; }
+        }
+
+        public Participant CurrentParticipant
+        {
+            get
+            {
+                if (participantsList.Count == 0)
+                {
+                    return null;
+                }
+                return participantsList.FirstOrDefault(f => f.ParticipantName == UserName);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

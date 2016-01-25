@@ -11,7 +11,22 @@ namespace PlanningPoker.WCF
     /// </summary>
     public class Callback : ICallback
     {
-        GameInfo gameInfo = GameInfo.Instance;
+        /// <summary>
+        /// Someone played a card.
+        /// </summary>
+        public event EventHandler PlayEventHandler;
+
+        /// <summary>
+        /// All the cards has been flipped.
+        /// </summary>
+        public event EventHandler FlipEventHandler;
+
+        /// <summary>
+        /// Server sends Reset command.
+        /// </summary>
+        public event EventHandler ResetEventHandler;
+
+        private GameInfo gameInfo = GameInfo.Instance;
 
         public void Join(string user, string role, Participant[] participants)
         {
@@ -64,6 +79,7 @@ namespace PlanningPoker.WCF
 
         public void Play(string user, string pokerValue)
         {
+            bool played = false;
             lock (gameInfo)
             {
                 Participant p = gameInfo.ParticipantsList.Where(f => f.ParticipantName == user).FirstOrDefault();
@@ -71,6 +87,15 @@ namespace PlanningPoker.WCF
                 if (p != null)
                 {
                     p.Play(pokerValue);
+                    played = true;                    
+                }
+            }
+
+            if(played)
+            {
+                if (PlayEventHandler != null)
+                {
+                    PlayEventHandler(null, null);
                 }
             }
         }
@@ -112,6 +137,11 @@ namespace PlanningPoker.WCF
                     p.Flip();
                 }
             }
+
+            if(FlipEventHandler != null)
+            {
+                FlipEventHandler(null, null);
+            }
         }
 
         public void Reset()
@@ -122,6 +152,11 @@ namespace PlanningPoker.WCF
                 {
                     p.Reset();
                 }
+            }
+
+            if(ResetEventHandler != null)
+            {
+                ResetEventHandler(null, null);
             }
         }
 

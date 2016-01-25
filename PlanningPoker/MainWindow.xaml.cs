@@ -138,6 +138,7 @@ namespace PlanningPoker
 
         private ServiceHost startServer(string serverIP)
         {
+            //TODO: try catch
             Uri baseAddress = new Uri(string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name));
             host = new ServiceHost(typeof(GamePlay), baseAddress);
             host.AddServiceEndpoint(typeof(IGamePlay), new NetTcpBinding(), "");
@@ -147,8 +148,9 @@ namespace PlanningPoker
             return host;
         }
 
-        private IGamePlay connectServer(string serverIP)
+        private IGamePlay ConnectServer(string serverIP)
         {
+            //TODO: try catch
             Callback callback = new Callback();
             string baseAddress = string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name);
             DuplexChannelFactory<IGamePlay> channel = new DuplexChannelFactory<IGamePlay>(
@@ -157,56 +159,90 @@ namespace PlanningPoker
                 new EndpointAddress(baseAddress));
             gamePlay = channel.CreateChannel();
 
+            callback.PlayEventHandler += callback_PlayEventHandler;
+            callback.ResetEventHandler += callback_ResetEventHandler;
 
             return gamePlay;
         }
 
-        private void btnStart_Click(object sender, RoutedEventArgs e)
+        void callback_PlayEventHandler(object sender, EventArgs e)
         {
-            if (host != null)
+            if (!gameInfo.AutoFlip)
             {
-                if (host.State != CommunicationState.Closed
-                    && host.State != CommunicationState.Closing)
+                return;
+            }
+
+            lock (gameInfo.ParticipantsList)
+            {
+                bool allCardsFlipped = gameInfo.ParticipantsList.All(
+                    p => p.PlayingCard == CardStatus.Ready.ToString());
+
+                if (allCardsFlipped)
                 {
-                    host.Close();
-                    host = null;
-                    btnStart.Content = "Start";
-                    txtLocalIP.Text = string.Empty;
-                    gameInfo.CanStartService = System.Windows.Visibility.Hidden;
+                    Flip();
                 }
             }
-            else
-            {
-                string localIP = IPUtil.GetLocalIP();
-                string serverIP = string.Format("{0}:{1}", localIP, gameInfo.Port);
-                txtLocalIP.Text = serverIP;
+        }
 
-                this.host = startServer(serverIP);
+        private void Withdraw()
+        {
+            lbCardSequence.SelectedItem = null;
+        }
 
-                this.gamePlay = connectServer(serverIP);
-                this.gamePlay.Regist();
-                this.gamePlay.Join(txtUserName.Text.Trim(), cbRole.Text);
+        void callback_ResetEventHandler(object sender, EventArgs e)
+        {
+            Withdraw();
+        }
 
-                btnStart.Content = "Stop";
-                gameInfo.CanStartService = System.Windows.Visibility.Visible;
-            }
+        void callback_FlipEventHandler(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnStart_Click(object sender, RoutedEventArgs e)
+        {
+            string localIP = IPUtil.GetLocalIP();
+            string serverIP = string.Format("{0}:{1}", localIP, gameInfo.Port);
+            txtLocalIP.Text = serverIP;
+
+
+            this.host = startServer(serverIP);
+
+            //this.gamePlay = connectServer(serverIP);
+            //this.gamePlay.Regist();
+            //this.gamePlay.Join(txtUserName.Text.Trim(), cbRole.Text);
+            //Withdraw();
+            Join(serverIP);
+
+            gameInfo.CanStartService = System.Windows.Visibility.Visible;
         }
 
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
+            // if already connected
             if (string.IsNullOrEmpty(txtServerIP.Text) || gamePlay != null)
             {
                 return;
             }
 
-            this.gamePlay = connectServer(txtServerIP.Text.Trim());
+            //this.gamePlay = connectServer(txtServerIP.Text.Trim());
+            //this.gamePlay.Regist();
+            //this.gamePlay.Join(txtUserName.Text.Trim(), cbRole.Text);
+            //Withdraw();
+            Join(txtServerIP.Text.Trim());
 
             this.gameInfo.CanConnectServer = System.Windows.Visibility.Visible;
+        }
+
+        private void Join(String serverIP)
+        {
+            Withdraw();
+            this.gamePlay = ConnectServer(serverIP);
             this.gamePlay.Regist();
             this.gamePlay.Join(txtUserName.Text.Trim(), cbRole.Text);
         }
 
-        private void btnReset_Click(object sender, RoutedEventArgs e)
+        private void Reset()
         {
             // only server can reset the game
             if (gamePlay != null && host != null)
@@ -215,17 +251,31 @@ namespace PlanningPoker
             }
         }
 
+        private void btnReset_Click(object sender, RoutedEventArgs e)
+        {
+            Reset();
+        }
+
         private string CalcScore()
         {
-            int? total = null;
+            double? total = null;
             int count = 0;
             foreach (Participant p in gameInfo.ParticipantsList)
             {
                 if (IsCalculatable(p.Role))
                 {
-                    int v;
-                    bool canParse = int.TryParse(p.UnflipedPlayingCard, out v);
+                    double v;
+                    bool canParse = false;
 
+                    if (p.UnflipedPlayingCard.Contains("/"))
+                    {
+                        v = Utils.FractionToDouble(p.UnflipedPlayingCard);
+                        canParse = true;
+                    }
+                    else
+                    {
+                        canParse = double.TryParse(p.UnflipedPlayingCard, out v);
+                    }
                     if (canParse)
                     {
                         total = total == null ? v : total + v;
@@ -241,15 +291,25 @@ namespace PlanningPoker
 
             if (count > 0)
             {
-                int upper = (int)Math.Ceiling(total.Value * 1.0 / count);
+                double average = total.Value * 1.0 / count;
                 String ret = "-";
 
                 foreach (string card in gameInfo.CardSquence)
                 {
-                    int c;
-                    bool canParse = int.TryParse(card, out c);
+                    double c;
+                    bool canParse = false;
 
-                    if (canParse && c >= upper)
+                    if (card.Contains("/"))
+                    {
+                        c = Utils.FractionToDouble(card);
+                        canParse = true;
+                    }
+                    else
+                    {
+                        canParse = double.TryParse(card, out c);
+                    }
+
+                    if (canParse && c >= average)
                     {
                         ret = card;
                         break;
@@ -293,7 +353,10 @@ namespace PlanningPoker
         {
             if (lbCardSequence.SelectedItem == null)
             {
-                gamePlay.Withdraw(txtUserName.Text.Trim());
+                if (gamePlay != null)
+                {
+                    gamePlay.Withdraw(txtUserName.Text.Trim());
+                }
                 return;
             }
 
@@ -304,14 +367,27 @@ namespace PlanningPoker
             }
         }
 
-        private void btnFlip_Click(object sender, RoutedEventArgs e)
+        private void Flip()
         {
             // only host/server can flip cards
-            if (gamePlay != null && host != null)
+            if (gamePlay != null && IsServer)
             {
                 gamePlay.Flip();
                 string score = CalcScore();
                 gamePlay.ShowScore(score);
+            }
+        }
+
+        private void btnFlip_Click(object sender, RoutedEventArgs e)
+        {
+            Flip();
+        }
+
+        private bool IsServer
+        {
+            get
+            {
+                return host != null;
             }
         }
     }

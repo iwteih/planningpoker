@@ -98,6 +98,6 @@ namespace PlanningPoker.Entity
             PlayingCard = CardStatus.Pending.ToString();
             UnflipedPlayingCard = "-";
         }
-
     }
+
 }

@@ -87,15 +87,15 @@
                     <ColumnDefinition Width="85"/>
                 </Grid.ColumnDefinitions>
                 <TextBox Grid.Row="0" Grid.Column="0" Name="txtUserName" 
-                       Text="{Binding UserName}" 
-                       FontSize="14" 
-                       VerticalContentAlignment="Center" />
+                         Text="{Binding UserName}" 
+                         FontSize="14" 
+                         VerticalContentAlignment="Center" />
                 <ComboBox Grid.Row="0"
                           Name="cbRole"
                           Grid.Column="1" 
-                              SelectedIndex="0" 
-                              IsEditable="True" 
-                              VerticalContentAlignment="Center">
+                          Text="{Binding Role}"
+                          IsEditable="True" 
+                          VerticalContentAlignment="Center">
                 </ComboBox>
 
                 <TextBox Grid.Row="1" Grid.Column="0" Name="txtLocalIP" VerticalContentAlignment="Center"/>
@@ -109,7 +109,7 @@
                 <DockPanel Grid.Row="3" Grid.ColumnSpan="2">
                     <Button Grid.Column="2" Name="btnReset" Content="Reset" Width="85" DockPanel.Dock="Right" VerticalContentAlignment="Center" Click="btnReset_Click"/>
                     <Button Grid.Column="1" Name="btnFlip" Content="Flip" Width="85" DockPanel.Dock="Right" VerticalContentAlignment="Center" Click="btnFlip_Click"/>
-                    <CheckBox Grid.Column="0" Content="Auto Flip"  VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+                    <CheckBox Grid.Column="0" Name="ckAutoFlip" Content="Auto Flip" IsChecked="{Binding AutoFlip}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
                     <!--Style="{StaticResource SliderCheckBox}"-->
                 </DockPanel>
                 <Label Grid.Row="4" Grid.ColumnSpan="2"  
@@ -121,7 +121,13 @@
                        HorizontalContentAlignment="Center" 
                        VerticalContentAlignment="Center"/>
 
-                <TextBox Grid.Row="5" Grid.Column="0" Name="txtQuery" VerticalContentAlignment="Center" MaxHeight="100" AcceptsReturn="True" TextWrapping="WrapWithOverflow" Grid.RowSpan="2"/>
+                <TextBox Grid.Row="5" Grid.Column="0" Name="txtQuery"
+                        Text="{Binding QueryString}"
+                         VerticalContentAlignment="Center" 
+                         MaxHeight="100" 
+                         AcceptsReturn="True"
+                         TextWrapping="WrapWithOverflow" 
+                         Grid.RowSpan="2"/>
                 <Button Grid.Row="5" Grid.Column="1" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Click="btnQuery_Click" Grid.RowSpan="2"/>
             </Grid>
             <ListBox Name="lbStoryList" Grid.Row="1" ItemContainerStyle="{StaticResource listBoxItemMouseOver}">

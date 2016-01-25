@@ -8,8 +8,36 @@ namespace PlanningPoker
     [Serializable]
     public class ApplicationConfig
     {
-        private string cardSequence;
-        public String CardSequence;
+        private bool autoFlip = false;
+        public bool AutoFlip
+        {
+            get
+            {
+                return autoFlip;
+            }
+            set
+            {
+                autoFlip = value;
+            }
+        }
+
+        public string UserName
+        {
+            get;
+            set;
+        }
+
+        public string Role
+        {
+            get;
+            set;
+        }
+
+        public string QueryString
+        {
+            get;
+            set;
+        }
     }
 
 }

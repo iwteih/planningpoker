@@ -19,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PlanningPoker
 {
@@ -67,7 +68,6 @@ namespace PlanningPoker
             storyList.Add(s3);
         }
 
-
         private void btnQuery_Click(object sender, RoutedEventArgs e)
         {
             string queryString = txtQuery.Text;
@@ -81,18 +81,59 @@ namespace PlanningPoker
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadConfig();
-            LoadUserName();
         }
 
         private void LoadConfig()
         {
-            gameInfo.LoadAppConfig();
+            LoadAppConfig();
+            gameInfo.LoadCardSequence();
             cbRole.ItemsSource = Enum.GetNames(typeof(Role));
+        }
+
+        private void LoadAppConfig()
+        {
+            Action action = delegate()
+            {
+                ApplicationConfig appconfig = IOUtil.LoadIsolatedData();
+                string userName = appconfig.UserName;
+
+                if (string.IsNullOrEmpty(userName))
+                {
+                    appconfig.UserName = Utils.GetUserName();
+                    IOUtil.SaveIsolatedData(appconfig);
+                }
+
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action<ApplicationConfig>(UpdateUI), appconfig);
+            };
+            action.BeginInvoke(null, null);
+        }
+
+        private void UpdateUI(ApplicationConfig appconfig)
+        {
+            bool autoFlip = appconfig.AutoFlip;
+            string userName = appconfig.UserName;
+            string role = appconfig.Role;
+            string queryString = appconfig.QueryString;
+
+            gameInfo.UserName = userName;
+            gameInfo.AutoFlip = autoFlip;
+            gameInfo.Role = role;
+            gameInfo.QueryString = queryString;
         }
 
         private void LoadUserName()
         {
-            gameInfo.LoadUserName();
+            Action action = delegate()
+            {
+                String userName = Utils.GetUserName();
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action<string>(UpdateUserName), userName);
+            };
+            action.BeginInvoke(null, null);
+        }
+
+        private void UpdateUserName(string userName)
+        {
+            gameInfo.UserName = userName;
         }
 
         private ServiceHost startServer(string serverIP)
@@ -228,6 +269,13 @@ namespace PlanningPoker
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            ApplicationConfig appconfig = IOUtil.LoadIsolatedData();
+            appconfig.AutoFlip = ckAutoFlip.IsChecked.Value;
+            appconfig.QueryString = txtQuery.Text;
+            appconfig.Role = cbRole.Text.Trim();
+            appconfig.UserName = txtUserName.Text.Trim();
+            IOUtil.SaveIsolatedData(appconfig);
+
             if (gamePlay != null)
             {
                 gamePlay.Exit(txtUserName.Text.Trim());

@@ -27,7 +27,7 @@ namespace PlanningPoker.Utility
 
                 using (IsolatedStorageFile f = IsolatedStorageFile.GetUserStoreForAssembly())
                 {
-                    using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream("Zugger", FileMode.OpenOrCreate, f))
+                    using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream("PlanningPoker", FileMode.OpenOrCreate, f))
                     {
                         byteContent = new byte[stream.Length];
 
@@ -54,7 +54,7 @@ namespace PlanningPoker.Utility
 
             using (IsolatedStorageFile f = IsolatedStorageFile.GetUserStoreForAssembly())
             {
-                using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream("Zugger", FileMode.Create, f))
+                using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream("PlanningPoker", FileMode.Create, f))
                 {
                     stream.Seek(0, SeekOrigin.Begin);
                     stream.Write(byteContent, 0, byteContent.Length);

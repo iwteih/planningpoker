@@ -54,8 +54,8 @@
             </Setter>
         </Style>
 
-        <!--http://www.cnblogs.com/akwwl/articles/3445097.html-->
-        <Style x:Key="CheckRadioFocusVisual">
+        <!--http://www.cnblogs.com/akwwl/articles/3445097.html slidder checkbox-->
+        <!--<Style x:Key="CheckRadioFocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>
                     <ControlTemplate>
@@ -133,7 +133,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>-->
         
     </Application.Resources>
 </Application>

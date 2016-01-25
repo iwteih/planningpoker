@@ -15,6 +15,9 @@ namespace PlanningPoker.Entity
     {
         private static readonly DependencyProperty UserNameProperty;
         private static readonly DependencyProperty ScoreProperty;
+        private static readonly DependencyProperty AutoFlipProperty;
+        private static readonly DependencyProperty RoleProperty;
+        private static readonly DependencyProperty QueryStringProperty;
         private static readonly DependencyProperty CanStartServiceProperty;
         private static readonly DependencyProperty CanConnectServerProperty;
 
@@ -25,18 +28,28 @@ namespace PlanningPoker.Entity
         static GameInfo()
         {
             UserNameProperty = DependencyProperty.Register("UserName", typeof(string), typeof(GameInfo));
+
             ScoreProperty = DependencyProperty.Register("Score",
                typeof(string),
                typeof(GameInfo),
                new PropertyMetadata("-"));
 
-            CanStartServiceProperty = DependencyProperty.Register("CanStartService", 
-                typeof(Visibility), 
-                typeof(GameInfo), 
+            AutoFlipProperty = DependencyProperty.Register("AutoFlip",
+                 typeof(bool),
+                 typeof(GameInfo),
+                 new PropertyMetadata(false));
+
+            RoleProperty = DependencyProperty.Register("Role", typeof(string), typeof(GameInfo));
+
+            QueryStringProperty = DependencyProperty.Register("QueryString", typeof(string), typeof(GameInfo));
+
+            CanStartServiceProperty = DependencyProperty.Register("CanStartService",
+                typeof(Visibility),
+                typeof(GameInfo),
                 new PropertyMetadata(Visibility.Hidden));
-            CanConnectServerProperty = DependencyProperty.Register("CanConnectServer", 
-                typeof(Visibility), 
-                typeof(GameInfo), 
+            CanConnectServerProperty = DependencyProperty.Register("CanConnectServer",
+                typeof(Visibility),
+                typeof(GameInfo),
                 new PropertyMetadata(Visibility.Hidden));
 
         }
@@ -46,7 +59,7 @@ namespace PlanningPoker.Entity
             get
             {
                 string port = ConfigurationManager.AppSettings["Port"];
-                if(string.IsNullOrEmpty(port))
+                if (string.IsNullOrEmpty(port))
                 {
                     return "8088";
                 }
@@ -54,7 +67,7 @@ namespace PlanningPoker.Entity
             }
         }
 
-        public void LoadAppConfig()
+        public void LoadCardSequence()
         {
             string defaultSequence = "0, 1/2, 1, 2, 3, 5, 8, 13, 20, 40, 100, ?, coffee";
             string selectedSequence = ConfigurationManager.AppSettings["DefaultSequence"];
@@ -72,14 +85,6 @@ namespace PlanningPoker.Entity
             {
                 cardSquence.Add(str.Trim());
             }
-        }
-
-        /// <summary>
-        /// This method takes a bit time.
-        /// </summary>
-        public void LoadUserName()
-        {
-            UserName = Utils.GetUserName();
         }
 
         public string UserName
@@ -103,6 +108,42 @@ namespace PlanningPoker.Entity
             set
             {
                 base.SetValue(ScoreProperty, value);
+            }
+        }
+
+        public bool AutoFlip
+        {
+            get
+            {
+                return (bool)base.GetValue(AutoFlipProperty);
+            }
+            set
+            {
+                base.SetValue(AutoFlipProperty, value);
+            }
+        }
+
+        public string Role
+        {
+            get
+            {
+                return (string)base.GetValue(RoleProperty);
+            }
+            set
+            {
+                base.SetValue(RoleProperty, value);
+            }
+        }
+
+        public string QueryString
+        {
+            get
+            {
+                return (string)base.GetValue(QueryStringProperty);
+            }
+            set
+            {
+                base.SetValue(QueryStringProperty, value);
             }
         }
 

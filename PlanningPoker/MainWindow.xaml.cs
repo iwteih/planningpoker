@@ -272,7 +272,10 @@ namespace PlanningPoker
             ApplicationConfig appconfig = IOUtil.LoadIsolatedData();
             appconfig.AutoFlip = ckAutoFlip.IsChecked.Value;
             appconfig.QueryString = txtQuery.Text;
-            appconfig.Role = cbRole.Text.Trim();
+            if (cbRole.Text != null)
+            {
+                appconfig.Role = cbRole.Text.Trim();
+            }
             appconfig.UserName = txtUserName.Text.Trim();
             IOUtil.SaveIsolatedData(appconfig);
 

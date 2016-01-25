@@ -1,0 +1,15 @@
+http://www.cnblogs.com/artech/archive/2011/08/07/2129799.html
+
+ NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
+ binding.MaxBufferSize = int.MaxValue;
+ binding.MaxReceivedMessageSize = int.MaxValue;
+ XmlDictionaryReaderQuotas quo = new XmlDictionaryReaderQuotas();
+ binding.ReaderQuotas = quo;
+ binding.ReaderQuotas.MaxArrayLength = 65536;
+ binding.ReaderQuotas.MaxBytesPerRead = 10 * 1024 * 1024;
+ binding.ReaderQuotas.MaxStringContentLength = 10 * 1024 * 1024; //65536;
+           
+ binding.ReceiveTimeout = TimeSpan.MaxValue;//设置连接自动断开的空闲时长；
+ binding.MaxConnections = 100;
+ binding.ListenBacklog = 200;
+ binding.TransferMode = TransferMode.Buffered;

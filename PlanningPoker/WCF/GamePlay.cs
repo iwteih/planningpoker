@@ -26,47 +26,11 @@ namespace PlanningPoker.WCF
 
         public void Join(string user, string role)
         {
-            //bool exist = false;
-
-            //lock (gameInfo)
-            //{
-            //    Participant p = gameInfo.ParticipantsList.FirstOrDefault(f => f.ParticipantName == user);
-            //    if (p == null)
-            //    {
-            //        gameInfo.ParticipantsList.Add(
-            //            new Participant()
-            //        {
-            //            ParticipantName = user,
-            //            Role = role,
-            //            PlayingCard = CardStatus.Pending.ToString()
-            //        });
-            //        exist = false;
-            //    }
-            //    else
-            //    {
-            //        exist = true;
-            //    }
-            //}
-
-            //if (!exist)
-            //{
-                ChannelManager.Instance.BroadcastJoinEvent(user, role, gameInfo.ParticipantsList.ToArray());
-            //}
+            ChannelManager.Instance.BroadcastJoinEvent(user, role, gameInfo.ParticipantsList.ToArray());
         }
 
         public void Play(string user, string pokerValue)
         {
-            //lock (gameInfo)
-            //{
-            //    Participant p = gameInfo.ParticipantsList.Where(f => f.ParticipantName == user).FirstOrDefault();
-
-            //    if (p != null)
-            //    {
-            //        p.UnflipedPlayingCard = pokerValue;
-            //        p.PlayingCard = CardStatus.Ready.ToString();
-            //        //p.PlayingCard = pokerValue;
-            //    }
-            //}
             ChannelManager.Instance.BroadcastPlayEvent(user, pokerValue);
         }
 
@@ -78,15 +42,6 @@ namespace PlanningPoker.WCF
 
         public void Exit(string user)
         {
-            lock (gameInfo)
-            {
-                Participant p = gameInfo.ParticipantsList.Where(f => f.ParticipantName == user).FirstOrDefault();
-
-                if (p != null)
-                {
-                    gameInfo.ParticipantsList.Remove(p);
-                }
-            }
             ChannelManager.Instance.BroadcastExitEvent(user);
         }
 

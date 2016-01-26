@@ -117,7 +117,7 @@ namespace PlanningPoker
             bool autoFlip = appconfig.AutoFlip;
             string userName = appconfig.UserName;
             string role = appconfig.Role;
-            if(String.IsNullOrEmpty(appconfig.Role))
+            if (String.IsNullOrEmpty(appconfig.Role))
             {
                 role = Role.Dev.ToString();
             }
@@ -344,7 +344,14 @@ namespace PlanningPoker
 
             if (gamePlay != null)
             {
-                gamePlay.Exit(txtUserName.Text.Trim());
+                try
+                {
+                    gamePlay.Exit(txtUserName.Text.Trim());
+                }
+                catch (CommunicationObjectFaultedException exp)
+                {
+                    logger.Error("error close window", exp);
+                }
             }
             if (host != null)
             {
@@ -358,7 +365,14 @@ namespace PlanningPoker
             {
                 if (gamePlay != null)
                 {
-                    gamePlay.Withdraw(txtUserName.Text.Trim());
+                    try
+                    {
+                        gamePlay.Withdraw(txtUserName.Text.Trim());
+                    }
+                    catch (CommunicationObjectFaultedException exp)
+                    {
+                        logger.Error("error withdraw card", exp);
+                    }
                 }
                 return;
             }
@@ -366,7 +380,14 @@ namespace PlanningPoker
             string cardValue = lbCardSequence.SelectedItem.ToString();
             if (gamePlay != null)
             {
-                gamePlay.Play(txtUserName.Text.Trim(), cardValue);
+                try
+                {
+                    gamePlay.Play(txtUserName.Text.Trim(), cardValue);
+                }
+                catch (CommunicationObjectFaultedException exp)
+                {
+                    logger.Error("error play card", exp);
+                }
             }
         }
 

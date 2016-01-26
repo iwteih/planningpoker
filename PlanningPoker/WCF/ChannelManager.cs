@@ -25,7 +25,6 @@ namespace PlanningPoker.WCF
                 lock (locker)
                 {
                     callbackChannelList.Add(callbackChannel);
-                    logger.Debug("channel registered");
                 }
             }
         }
@@ -37,7 +36,6 @@ namespace PlanningPoker.WCF
                 lock (locker)
                 {
                     callbackChannelList.Remove(callbackChannel);
-                    logger.Debug("channel unregistered");
                 }
             }
         }

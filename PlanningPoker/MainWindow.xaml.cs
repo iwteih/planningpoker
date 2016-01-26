@@ -1,4 +1,5 @@
-﻿using PlanningPoker.Entity;
+﻿using log4net;
+using PlanningPoker.Entity;
 using PlanningPoker.Utility;
 using PlanningPoker.WCF;
 using System;
@@ -28,6 +29,8 @@ namespace PlanningPoker
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         ServiceHost host = null;
         private ObservableCollection<Story> storyList = new ObservableCollection<Story>();
 
@@ -92,6 +95,7 @@ namespace PlanningPoker
 
         private void LoadAppConfig()
         {
+            gameInfo.UserName = "Fething user name ...";
             Action action = delegate()
             {
                 ApplicationConfig appconfig = IOUtil.LoadIsolatedData();
@@ -113,6 +117,10 @@ namespace PlanningPoker
             bool autoFlip = appconfig.AutoFlip;
             string userName = appconfig.UserName;
             string role = appconfig.Role;
+            if(String.IsNullOrEmpty(appconfig.Role))
+            {
+                role = Role.Dev.ToString();
+            }
             string queryString = appconfig.QueryString;
 
             gameInfo.UserName = userName;
@@ -192,11 +200,6 @@ namespace PlanningPoker
         void callback_ResetEventHandler(object sender, EventArgs e)
         {
             Withdraw();
-        }
-
-        void callback_FlipEventHandler(object sender, EventArgs e)
-        {
-
         }
 
         private void btnStart_Click(object sender, RoutedEventArgs e)

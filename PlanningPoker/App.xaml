@@ -5,7 +5,11 @@
              xmlns:entity="clr-namespace:PlanningPoker.Entity"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <convert:Bool2Visible x:Key="bool2v"/>
+        <convert:MessageLength2Visible x:Key="msglen2v"/>
+
         <DataTemplate x:Key="ParticipantsTemplate">
+
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
@@ -17,6 +21,11 @@
                 <TextBlock Grid.Row="2" Text="{Binding Role}" HorizontalAlignment="Center" />
             </Grid>
         </DataTemplate>
+
+        <Style TargetType="Button">
+            <Setter Property="Width" Value="85"/>
+            <Setter Property="Height" Value="30"/>
+        </Style>
 
         <Style x:Key="listBoxItemMouseOver" TargetType="ListBoxItem">
             <Style.Resources>
@@ -134,6 +143,6 @@
                 </Setter.Value>
             </Setter>
         </Style>-->
-        
+
     </Application.Resources>
 </Application>

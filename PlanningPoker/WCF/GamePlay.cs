@@ -26,7 +26,7 @@ namespace PlanningPoker.WCF
 
         public void Join(string user, string role)
         {
-            ChannelManager.Instance.BroadcastJoinEvent(user, role, gameInfo.ParticipantsList.ToArray());
+            ChannelManager.Instance.BroadcastJoinEvent(gameInfo.Moderator, user, role, gameInfo.ParticipantsList.ToArray());
         }
 
         public void Play(string user, string pokerValue)

@@ -80,6 +80,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converter\Bool2Visible.cs" />
+    <Compile Include="Converter\MessageLength2Visible.cs" />
     <Compile Include="Entity\ApplicationConfig.cs" />
     <Compile Include="Converter\FaceVisibilityConverter.cs" />
     <Compile Include="Entity\CardStatus.cs" />
@@ -89,6 +91,7 @@
     <Compile Include="Utility\IOUtil.cs" />
     <Compile Include="Utility\IPUtil.cs" />
     <Compile Include="Utility\Utils.cs" />
+    <Compile Include="WCF\AppEventArgs.cs" />
     <Compile Include="WCF\Callback.cs" />
     <Compile Include="WCF\ChannelManager.cs" />
     <Compile Include="WCF\GamePlay.cs" />

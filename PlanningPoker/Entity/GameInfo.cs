@@ -20,6 +20,7 @@ namespace PlanningPoker.Entity
         private static readonly DependencyProperty QueryStringProperty;
         private static readonly DependencyProperty CanStartServiceProperty;
         private static readonly DependencyProperty CanConnectServerProperty;
+        private static readonly DependencyProperty MessageProperty;
 
         public static readonly GameInfo Instance = new GameInfo();
 
@@ -44,14 +45,16 @@ namespace PlanningPoker.Entity
             QueryStringProperty = DependencyProperty.Register("QueryString", typeof(string), typeof(GameInfo));
 
             CanStartServiceProperty = DependencyProperty.Register("CanStartService",
-                typeof(Visibility),
+                typeof(bool),
                 typeof(GameInfo),
-                new PropertyMetadata(Visibility.Hidden));
+                new PropertyMetadata(false));
+            
             CanConnectServerProperty = DependencyProperty.Register("CanConnectServer",
-                typeof(Visibility),
+                typeof(bool),
                 typeof(GameInfo),
-                new PropertyMetadata(Visibility.Hidden));
+                new PropertyMetadata(false));
 
+            MessageProperty = DependencyProperty.Register("Message", typeof(string), typeof(GameInfo));
         }
 
         public string Port
@@ -147,11 +150,11 @@ namespace PlanningPoker.Entity
             }
         }
 
-        public Visibility CanStartService
+        public bool CanStartService
         {
             get
             {
-                return (Visibility)base.GetValue(CanStartServiceProperty);
+                return (bool)base.GetValue(CanStartServiceProperty);
             }
             set
             {
@@ -159,11 +162,11 @@ namespace PlanningPoker.Entity
             }
         }
 
-        public Visibility CanConnectServer
+        public bool CanConnectServer
         {
             get
             {
-                return (Visibility)base.GetValue(CanConnectServerProperty);
+                return (bool)base.GetValue(CanConnectServerProperty);
             }
             set
             {
@@ -194,6 +197,20 @@ namespace PlanningPoker.Entity
                 return participantsList.FirstOrDefault(f => f.ParticipantName == UserName);
             }
         }
+
+        public string Message
+        {
+            get
+            {
+                return (string)base.GetValue(MessageProperty);
+            }
+            set
+            {
+                base.SetValue(MessageProperty, value);
+            }
+        }
+
+        public string Moderator{ get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

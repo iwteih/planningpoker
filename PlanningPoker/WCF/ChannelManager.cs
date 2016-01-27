@@ -40,7 +40,7 @@ namespace PlanningPoker.WCF
             }
         }
 
-        public void BroadcastJoinEvent(string user, string role, Participant[] participants)
+        public void BroadcastJoinEvent(string moderator, string user, string role, Participant[] participants)
         {
             if (callbackChannelList.Count > 0)
             {
@@ -48,7 +48,7 @@ namespace PlanningPoker.WCF
                 {
                     try
                     {
-                        channel.Join(user, role, participants);
+                        channel.Join(moderator, user, role, participants);
                     }
                     catch
                     {

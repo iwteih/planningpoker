@@ -11,6 +11,7 @@ namespace PlanningPoker.WCF
     /// </summary>
     public class Callback : ICallback
     {
+        public event EventHandler<UserExitEventArgs> ExitEventHander;
         /// <summary>
         /// Someone played a card.
         /// </summary>
@@ -28,7 +29,7 @@ namespace PlanningPoker.WCF
 
         private GameInfo gameInfo = GameInfo.Instance;
 
-        public void Join(string user, string role, Participant[] participants)
+        public void Join(string moderator, string user, string role, Participant[] participants)
         {
             lock (gameInfo)
             {
@@ -74,6 +75,7 @@ namespace PlanningPoker.WCF
                     p.Reset();
                     gameInfo.ParticipantsList.Add(p);
                 }
+                gameInfo.Moderator = moderator;
             }
         }
 
@@ -115,6 +117,7 @@ namespace PlanningPoker.WCF
 
         public void Exit(string user)
         {
+            bool exit = false;
             lock (gameInfo)
             {
                 Participant p = gameInfo.ParticipantsList.Where(f => f.ParticipantName == user).FirstOrDefault();
@@ -122,9 +125,14 @@ namespace PlanningPoker.WCF
                 if (p != null)
                 {
                     gameInfo.ParticipantsList.Remove(p);
+                    exit = true;
                 }
             }
-            //ChannelManager.Instance.BroadcastExitEvent(user);
+
+            if (exit && ExitEventHander != null)
+            {
+                ExitEventHander(null, new UserExitEventArgs() { ExitUser = user });
+            }
         }
 
 

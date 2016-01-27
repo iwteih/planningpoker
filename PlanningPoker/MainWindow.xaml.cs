@@ -29,8 +29,9 @@ namespace PlanningPoker
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        private bool isModeratorExit = false;
         ServiceHost host = null;
         private ObservableCollection<Story> storyList = new ObservableCollection<Story>();
 
@@ -146,31 +147,76 @@ namespace PlanningPoker
 
         private ServiceHost startServer(string serverIP)
         {
-            //TODO: try catch
-            Uri baseAddress = new Uri(string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name));
-            host = new ServiceHost(typeof(GamePlay), baseAddress);
-            host.AddServiceEndpoint(typeof(IGamePlay), new NetTcpBinding(), "");
-            ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
-            host.Description.Behaviors.Add(smb);
-            host.Open();
-            return host;
+            try
+            {
+                Uri baseAddress = new Uri(string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name));
+                host = new ServiceHost(typeof(GamePlay), baseAddress);
+                host.AddServiceEndpoint(typeof(IGamePlay), new NetTcpBinding(), "");
+                ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
+                host.Description.Behaviors.Add(smb);
+                host.Open();
+                return host;
+            }
+            catch (Exception exp)
+            {
+                log.Error(string.Format("cannot start servie, {0}", serverIP), exp);
+                gameInfo.Message = exp.Message;
+                return null;
+            }
         }
 
         private IGamePlay ConnectServer(string serverIP)
         {
-            //TODO: try catch
-            Callback callback = new Callback();
-            string baseAddress = string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name);
-            DuplexChannelFactory<IGamePlay> channel = new DuplexChannelFactory<IGamePlay>(
-                new InstanceContext(callback),
-                new NetTcpBinding(),
-                new EndpointAddress(baseAddress));
-            gamePlay = channel.CreateChannel();
+            try
+            {
+                Callback callback = new Callback();
+                string baseAddress = string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name);
+                DuplexChannelFactory<IGamePlay> channel = new DuplexChannelFactory<IGamePlay>(
+                    new InstanceContext(callback),
+                    new NetTcpBinding(),
+                    new EndpointAddress(baseAddress));
+                gamePlay = channel.CreateChannel();
 
-            callback.PlayEventHandler += callback_PlayEventHandler;
-            callback.ResetEventHandler += callback_ResetEventHandler;
+                callback.ExitEventHander += callback_ExitEventHandler;
+                callback.PlayEventHandler += callback_PlayEventHandler;
+                callback.ResetEventHandler += callback_ResetEventHandler;
 
-            return gamePlay;
+                return gamePlay;
+            }
+            catch (Exception exp)
+            {
+                log.Error(string.Format("cannot connect to server {0}", serverIP), exp);
+                gameInfo.Message = exp.Message;
+                return null;
+            }
+        }
+
+        void goToInitializedStatus()
+        {
+            gamePlay = null;
+            Withdraw();
+            gameInfo.CanConnectServer = false;
+            gameInfo.Score = "-";
+            gameInfo.ParticipantsList.Clear();
+        }
+
+        void callback_ExitEventHandler(object sender, UserExitEventArgs e)
+        {
+            // moderator exits
+            if (e.ExitUser == gameInfo.Moderator)
+            {
+                if (IsServer)
+                {
+                    isModeratorExit = true;
+                    this.Close();
+                }
+                else
+                {
+                    // notify moderator has exited
+                    goToInitializedStatus();
+                    gameInfo.Message = string.Format("{0} has ended this game!", e.ExitUser);
+                }
+            }
         }
 
         void callback_PlayEventHandler(object sender, EventArgs e)
@@ -206,18 +252,19 @@ namespace PlanningPoker
         {
             string localIP = IPUtil.GetLocalIP();
             string serverIP = string.Format("{0}:{1}", localIP, gameInfo.Port);
+
+            // IP not changed
+            if(txtLocalIP.Text == serverIP)
+            {
+                return;
+            }
+
             txtLocalIP.Text = serverIP;
 
-
             this.host = startServer(serverIP);
-
-            //this.gamePlay = connectServer(serverIP);
-            //this.gamePlay.Regist();
-            //this.gamePlay.Join(txtUserName.Text.Trim(), cbRole.Text);
-            //Withdraw();
-            Join(serverIP);
-
-            gameInfo.CanStartService = System.Windows.Visibility.Visible;
+            gameInfo.Moderator = gameInfo.UserName;
+            bool joined = Join(serverIP);
+            gameInfo.CanStartService = joined;
         }
 
         private void btnConnect_Click(object sender, RoutedEventArgs e)
@@ -228,21 +275,29 @@ namespace PlanningPoker
                 return;
             }
 
-            //this.gamePlay = connectServer(txtServerIP.Text.Trim());
-            //this.gamePlay.Regist();
-            //this.gamePlay.Join(txtUserName.Text.Trim(), cbRole.Text);
-            //Withdraw();
-            Join(txtServerIP.Text.Trim());
-
-            this.gameInfo.CanConnectServer = System.Windows.Visibility.Visible;
+            bool joined = Join(txtServerIP.Text.Trim());
+            this.gameInfo.CanConnectServer = joined;
         }
 
-        private void Join(String serverIP)
+        private bool Join(String serverIP)
         {
             Withdraw();
             this.gamePlay = ConnectServer(serverIP);
-            this.gamePlay.Regist();
-            this.gamePlay.Join(txtUserName.Text.Trim(), cbRole.Text);
+
+            try
+            {
+                this.gamePlay.Regist();
+                this.gamePlay.Join(txtUserName.Text.Trim(), cbRole.Text);
+                return true;
+            }
+            catch (Exception exp)
+            {
+                this.gamePlay = null;
+                log.Error("cannot join", exp);
+                gameInfo.Message = exp.Message;
+            }
+
+            return false;
         }
 
         private void Reset()
@@ -330,6 +385,24 @@ namespace PlanningPoker
             return Enum.GetNames(typeof(Role)).Contains(role);
         }
 
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            // if moderator wants to exit, notify all clients
+            if (IsServer && !isModeratorExit)
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                e.Cancel = false;
+            }
+
+            if (gamePlay != null)
+            {
+                gamePlay.Exit(txtUserName.Text.Trim());
+            }
+        }
+
         private void Window_Closed(object sender, EventArgs e)
         {
             ApplicationConfig appconfig = IOUtil.LoadIsolatedData();
@@ -342,17 +415,17 @@ namespace PlanningPoker
             appconfig.UserName = txtUserName.Text.Trim();
             IOUtil.SaveIsolatedData(appconfig);
 
-            if (gamePlay != null)
-            {
-                try
-                {
-                    gamePlay.Exit(txtUserName.Text.Trim());
-                }
-                catch (CommunicationObjectFaultedException exp)
-                {
-                    logger.Error("error close window", exp);
-                }
-            }
+            //if (gamePlay != null)
+            //{
+            //    try
+            //    {
+            //        gamePlay.Exit(txtUserName.Text.Trim());
+            //    }
+            //    catch (CommunicationObjectFaultedException exp)
+            //    {
+            //        logger.Error("error close window", exp);
+            //    }
+            //}
             if (host != null)
             {
                 host.Close();
@@ -365,14 +438,14 @@ namespace PlanningPoker
             {
                 if (gamePlay != null)
                 {
-                    try
-                    {
-                        gamePlay.Withdraw(txtUserName.Text.Trim());
-                    }
-                    catch (CommunicationObjectFaultedException exp)
-                    {
-                        logger.Error("error withdraw card", exp);
-                    }
+                    //try
+                    //{
+                    gamePlay.Withdraw(txtUserName.Text.Trim());
+                    //}
+                    //catch (CommunicationObjectFaultedException exp)
+                    //{
+                    //    logger.Error("error withdraw card", exp);
+                    //}
                 }
                 return;
             }
@@ -380,14 +453,14 @@ namespace PlanningPoker
             string cardValue = lbCardSequence.SelectedItem.ToString();
             if (gamePlay != null)
             {
-                try
-                {
-                    gamePlay.Play(txtUserName.Text.Trim(), cardValue);
-                }
-                catch (CommunicationObjectFaultedException exp)
-                {
-                    logger.Error("error play card", exp);
-                }
+                //try
+                //{
+                gamePlay.Play(txtUserName.Text.Trim(), cardValue);
+                //}
+                //catch (CommunicationObjectFaultedException exp)
+                //{
+                //    logger.Error("error play card", exp);
+                //}
             }
         }
 
@@ -413,6 +486,11 @@ namespace PlanningPoker
             {
                 return host != null;
             }
+        }
+
+        private void btnMessage_Click(object sender, RoutedEventArgs e)
+        {
+            gameInfo.Message = string.Empty;
         }
     }
 }

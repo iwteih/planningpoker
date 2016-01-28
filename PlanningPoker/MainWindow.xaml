@@ -38,7 +38,7 @@
                              VerticalScrollBarVisibility="Auto"
                              VerticalContentAlignment="Top"/>
                 <Grid Grid.Row="1">
-                    <ItemsControl Name="participants" ItemsSource="{Binding Participants}" ItemTemplate="{StaticResource ParticipantsTemplate}">
+                    <ItemsControl Name="participants" ItemsSource="{Binding ParticipantsList}" ItemTemplate="{StaticResource ParticipantsTemplate}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel ScrollViewer.HorizontalScrollBarVisibility="Hidden"/>

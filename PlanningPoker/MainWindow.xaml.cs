@@ -44,7 +44,6 @@ namespace PlanningPoker
             log4net.Config.XmlConfigurator.Configure();
 
             this.lbStoryList.ItemsSource = storyList;
-            this.participants.ItemsSource = gameInfo.ParticipantsList;
             this.DataContext = gameInfo;
 
             //MockData();
@@ -150,8 +149,11 @@ namespace PlanningPoker
             try
             {
                 Uri baseAddress = new Uri(string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name));
+                NetTcpBinding netTcpBinding = new NetTcpBinding();
+                netTcpBinding.MaxBufferSize = 2147483647;
+                netTcpBinding.MaxReceivedMessageSize = 2147483647;
                 host = new ServiceHost(typeof(GamePlay), baseAddress);
-                host.AddServiceEndpoint(typeof(IGamePlay), new NetTcpBinding(), "");
+                host.AddServiceEndpoint(typeof(IGamePlay), netTcpBinding, "");
                 ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
                 host.Description.Behaviors.Add(smb);
                 host.Open();
@@ -169,8 +171,11 @@ namespace PlanningPoker
         {
             try
             {
-                Callback callback = new Callback();
                 string baseAddress = string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name);
+                Callback callback = new Callback();
+                NetTcpBinding netTcpBinding = new NetTcpBinding();
+                netTcpBinding.MaxBufferSize = 2147483647;
+                netTcpBinding.MaxReceivedMessageSize = 2147483647;
                 DuplexChannelFactory<IGamePlay> channel = new DuplexChannelFactory<IGamePlay>(
                     new InstanceContext(callback),
                     new NetTcpBinding(),

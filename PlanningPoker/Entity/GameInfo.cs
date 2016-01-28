@@ -83,8 +83,15 @@ namespace PlanningPoker.Entity
                 }
             }
 
+            LoadCardSequence(defaultSequence);
+        }
+
+        public void LoadCardSequence(string sequence)
+        {
+            CardSequenceString = sequence;
             cardSquence.Clear();
-            foreach (String str in defaultSequence.Split(new String[] { "," }, StringSplitOptions.RemoveEmptyEntries))
+
+            foreach (String str in sequence.Split(new String[] { "," }, StringSplitOptions.RemoveEmptyEntries))
             {
                 cardSquence.Add(str.Trim());
             }
@@ -211,6 +218,7 @@ namespace PlanningPoker.Entity
         }
 
         public string Moderator{ get; set; }
+        public string CardSequenceString{ get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

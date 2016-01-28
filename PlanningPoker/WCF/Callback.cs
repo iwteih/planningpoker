@@ -29,7 +29,7 @@ namespace PlanningPoker.WCF
 
         private GameInfo gameInfo = GameInfo.Instance;
 
-        public void Join(string moderator, string user, string role, Participant[] participants)
+        public void Join(string moderator, string user, string role, string cardSequence, Participant[] participants)
         {
             lock (gameInfo)
             {
@@ -76,6 +76,11 @@ namespace PlanningPoker.WCF
                     gameInfo.ParticipantsList.Add(p);
                 }
                 gameInfo.Moderator = moderator;
+
+                if(gameInfo.CardSequenceString != cardSequence)
+                {
+                    gameInfo.LoadCardSequence(cardSequence);
+                }
             }
         }
 

@@ -20,7 +20,7 @@
         <Grid Grid.Column="0" >
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" MinHeight="65"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*" MinHeight="300" />
                     <RowDefinition Height="Auto" MinHeight="140"/>
                 </Grid.RowDefinitions>
@@ -34,14 +34,22 @@
                 <TextBox Grid.Row="0" Text="{Binding ElementName=lbStoryList, Path=SelectedItem.Title}" 
                              TextWrapping="WrapWithOverflow" 
                              AcceptsReturn="True" 
+                             Height="65"
                              MaxHeight="100"
                              VerticalScrollBarVisibility="Auto"
                              VerticalContentAlignment="Top"/>
                 <Grid Grid.Row="1">
                     <ItemsControl Name="participants" ItemsSource="{Binding ParticipantsList}" ItemTemplate="{StaticResource ParticipantsTemplate}">
+                        <ItemsControl.Template>
+                        <ControlTemplate>
+                                <ScrollViewer x:Name="ScrollViewer" Padding="{TemplateBinding Padding}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <ItemsPresenter />
+                                </ScrollViewer>
+                            </ControlTemplate>
+                        </ItemsControl.Template>
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel ScrollViewer.HorizontalScrollBarVisibility="Hidden"/>
+                                <WrapPanel/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
@@ -54,6 +62,7 @@
                              ItemsSource="{Binding CardSquence}"
                              BorderThickness="0"
                              Background="Transparent"
+                             SelectedItem="{Binding SelectedCard}"
                              SelectionChanged="lbCardSequence_SelectionChanged">
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -118,7 +127,7 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top" Margin="5,5"/>
                                 </Grid>
-                                <TextBox Name="txtLocalIP" VerticalContentAlignment="Center" />
+                                <TextBox Name="txtLocalIP" Text="{Binding LocalIP}" VerticalContentAlignment="Center" />
                             </DockPanel>
 
                             <DockPanel Grid.Row="1" Margin="0, 5">
@@ -155,7 +164,7 @@
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top" Margin="5"/>
                             </Grid>
-                            <TextBox Name="txtServerIP" VerticalContentAlignment="Center"/>
+                            <TextBox Name="txtServerIP" Text="{Binding ServerIP}" VerticalContentAlignment="Center"/>
                         </DockPanel>
                     </TabItem>
                 </TabControl>
@@ -187,7 +196,7 @@
                     <Expander Header="Click to Query" Grid.Row="0" Margin="0, 5, 0, 0">
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition/>
+                                <RowDefinition />
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0" Margin="0, 0, 0, 5">
@@ -195,7 +204,7 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <DockPanel Grid.Column="0">
+                                <DockPanel Grid.Column="0" Margin="0,5">
                                     <TextBlock Text="User:" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0, 0, 5, 0"/>
                                     <TextBox Name="txtQueryUser" VerticalAlignment="Center"/>
                                 </DockPanel>
@@ -206,12 +215,14 @@
                             </Grid>
 
                             <DockPanel Grid.Row ="1">
-                                <Button DockPanel.Dock="Right" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Click="btnQuery_Click"/>
+                                <Button DockPanel.Dock="Bottom" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Margin="5" Click="btnQuery_Click"/>
                                 <TextBox Name="txtQuery" 
                                  Text="{Binding QueryString}"
+                                 Height="60"
                                  MaxHeight="100"
                                  AcceptsReturn="True"
-                                 TextWrapping="WrapWithOverflow" />
+                                 TextWrapping="WrapWithOverflow" 
+                                 VerticalScrollBarVisibility="Auto"/>
                             </DockPanel>
                         </Grid>
                     </Expander>

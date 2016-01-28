@@ -21,6 +21,9 @@ namespace PlanningPoker.Entity
         private static readonly DependencyProperty CanStartServiceProperty;
         private static readonly DependencyProperty CanConnectServerProperty;
         private static readonly DependencyProperty MessageProperty;
+        private static readonly DependencyProperty LocalIPProperty;
+        private static readonly DependencyProperty ServerIPProperty;
+        private static readonly DependencyProperty SelectedCardProperty;
 
         public static readonly GameInfo Instance = new GameInfo();
 
@@ -55,6 +58,9 @@ namespace PlanningPoker.Entity
                 new PropertyMetadata(false));
 
             MessageProperty = DependencyProperty.Register("Message", typeof(string), typeof(GameInfo));
+            LocalIPProperty = DependencyProperty.Register("LocalIP", typeof(string), typeof(GameInfo));
+            ServerIPProperty = DependencyProperty.Register("ServerIP", typeof(string), typeof(GameInfo));
+            SelectedCardProperty = DependencyProperty.Register("SelectedCard", typeof(string), typeof(GameInfo));
         }
 
         public string Port
@@ -97,7 +103,6 @@ namespace PlanningPoker.Entity
             }
         }
 
-
         public void LoadRoleList()
         {
             string[] roles = Enum.GetNames(typeof(Role));
@@ -108,7 +113,6 @@ namespace PlanningPoker.Entity
                 roleList.Add(role);
             }
         }
-
 
         public string UserName
         {
@@ -224,6 +228,30 @@ namespace PlanningPoker.Entity
             }
         }
 
+        public string LocalIP
+        {
+            get
+            {
+                return (string)base.GetValue(LocalIPProperty);
+            }
+            set
+            {
+                base.SetValue(LocalIPProperty, value);
+            }
+        }
+
+        public string ServerIP
+        {
+            get
+            {
+                return (string)base.GetValue(ServerIPProperty);
+            }
+            set
+            {
+                base.SetValue(ServerIPProperty, value);
+            }
+        }
+
         public string Message
         {
             get
@@ -236,19 +264,19 @@ namespace PlanningPoker.Entity
             }
         }
 
-        public string Moderator{ get; set; }
-        public string CardSequenceString{ get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // Create the OnPropertyChanged method to raise the event
-        protected void OnPropertyChanged(string name)
+        public string SelectedCard
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
+            get
             {
-                handler(this, new PropertyChangedEventArgs(name));
+                return (string)base.GetValue(SelectedCardProperty);
+            }
+            set
+            {
+                base.SetValue(SelectedCardProperty, value);
             }
         }
+        
+        public string Moderator{ get; set; }
+        public string CardSequenceString{ get; set; }
     }
 }

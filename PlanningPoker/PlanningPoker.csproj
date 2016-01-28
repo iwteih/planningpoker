@@ -88,11 +88,11 @@
     <Compile Include="Entity\GameInfo.cs" />
     <Compile Include="Entity\Story.cs" />
     <Compile Include="Entity\Participant.cs" />
-    <Compile Include="FormStates\BeforePlayState_Client.cs" />
-    <Compile Include="FormStates\BeforePlayState_Server.cs" />
-    <Compile Include="FormStates\IFormState.cs" />
-    <Compile Include="FormStates\PlayingState_Client.cs" />
-    <Compile Include="FormStates\PlayingState_Server.cs" />
+    <Compile Include="FormStates\GameStateBase.cs" />
+    <Compile Include="FormStates\GameStateClient.cs" />
+    <Compile Include="FormStates\GameStateServer.cs" />
+    <Compile Include="FormStates\IGameState.cs" />
+    <Compile Include="FormStates\MockGameState.cs" />
     <Compile Include="Utility\IOUtil.cs" />
     <Compile Include="Utility\IPUtil.cs" />
     <Compile Include="Utility\Utils.cs" />

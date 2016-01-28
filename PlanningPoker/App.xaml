@@ -23,8 +23,21 @@
         </DataTemplate>
 
         <Style TargetType="Button">
-            <Setter Property="Width" Value="85"/>
-            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="75"/>
+            <Setter Property="Height" Value="25"/>
+        </Style>
+        
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="25"/>
+        </Style>
+
+        <Style TargetType="PasswordBox">
+            <Setter Property="Height" Value="25"/>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Width" Value="75"/>
+            <Setter Property="Height" Value="25"/>
         </Style>
 
         <Style x:Key="listBoxItemMouseOver" TargetType="ListBoxItem">

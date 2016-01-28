@@ -97,6 +97,19 @@ namespace PlanningPoker.Entity
             }
         }
 
+
+        public void LoadRoleList()
+        {
+            string[] roles = Enum.GetNames(typeof(Role));
+            roleList.Clear();
+            
+            foreach(string role in roles)
+            {
+                roleList.Add(role);
+            }
+        }
+
+
         public string UserName
         {
             get
@@ -191,6 +204,12 @@ namespace PlanningPoker.Entity
         public ObservableCollection<Participant> ParticipantsList
         {
             get { return participantsList; }
+        }
+
+        private ObservableCollection<string> roleList = new ObservableCollection<string>();
+        public ObservableCollection<string> RoleList 
+        {
+            get { return roleList; }
         }
 
         public Participant CurrentParticipant

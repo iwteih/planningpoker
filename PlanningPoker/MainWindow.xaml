@@ -76,7 +76,6 @@
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
-                    <RowDefinition />
                     <RowDefinition Height="120"/>
                 </Grid.RowDefinitions>
                 <GroupBox Grid.Row="0">
@@ -89,6 +88,7 @@
                           Text="{Binding Role}"
                           Width="85"
                           IsEditable="True" 
+                          ItemsSource="{Binding RoleList}"
                           VerticalContentAlignment="Center">
                         </ComboBox>
                         <TextBox Name="txtUserName" 
@@ -97,45 +97,69 @@
                          VerticalContentAlignment="Center" />
                     </DockPanel>
                 </GroupBox>
-                <GroupBox Grid.Row="1" Grid.ColumnSpan="2">
-                    <GroupBox.Header>
-                        <TextBlock Text="Server" FontStyle="Italic" FontSize="15"/>
-                    </GroupBox.Header>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <DockPanel Grid.Row="0" Margin="0, 5">
-                            <Grid DockPanel.Dock="Right">
-                                <Button Name="btnStart" Content="Start" VerticalContentAlignment="Center" Click="btnStart_Click"/>
-                                <Ellipse Fill="Green" Visibility="{Binding CanStartService,  Converter={StaticResource bool2v}}" Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5,5"/>
-                            </Grid>
-                            <TextBox Name="txtLocalIP" VerticalContentAlignment="Center" />
-                        </DockPanel>
+                <TabControl Grid.Row="1" Grid.ColumnSpan="2">
+                    <TabItem>
+                        <TabItem.Header>
+                            <TextBlock Text="Server" FontStyle="Italic" FontSize="15"/>
+                        </TabItem.Header>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <DockPanel Grid.Row="0" Margin="0, 5">
+                                <Grid DockPanel.Dock="Right">
+                                    <Button Name="btnStart" Content="Start"
+                                    VerticalContentAlignment="Center"
+                                    Click="btnStart_Click"/>
+                                    <Ellipse Fill="Green" Visibility="{Binding
+                                    CanStartService,  Converter={StaticResource
+                                    bool2v}}" Width="10" Height="10"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top" Margin="5,5"/>
+                                </Grid>
+                                <TextBox Name="txtLocalIP" VerticalContentAlignment="Center" />
+                            </DockPanel>
 
-                        <DockPanel Grid.Row="1" Margin="0, 5">
-                            <Button Name="btnFlip" Content="Flip"  DockPanel.Dock="Right" VerticalContentAlignment="Center" Click="btnFlip_Click"/>
-                            <Button Name="btnReset" Content="Reset" DockPanel.Dock="Right" VerticalContentAlignment="Center" Click="btnReset_Click"/>
-                            <CheckBox Name="ckAutoFlip" Content="Auto Flip" IsChecked="{Binding AutoFlip}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-                            <!--Style="{StaticResource SliderCheckBox}"-->
-                        </DockPanel>
-                    </Grid>
-                </GroupBox>
-
-                <GroupBox Grid.Row="2">
-                    <GroupBox.Header>
-                        <TextBlock Text="Client" FontStyle="Italic" FontSize="15"/>
-                    </GroupBox.Header>
-                    <DockPanel Margin="0,5">
-                        <Grid DockPanel.Dock="Right" Width="85">
-                            <Button Name="btnConnect" DockPanel.Dock="Right" Content="Connect" VerticalContentAlignment="Center" Click="btnConnect_Click" HorizontalAlignment="Left" Width="85"/>
-                            <Ellipse Fill="Green" Visibility="{Binding CanConnectServer, Converter={StaticResource bool2v}}" Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5"/>
+                            <DockPanel Grid.Row="1" Margin="0, 5">
+                                <Button Name="btnFlip" Content="Flip"
+                                DockPanel.Dock="Right"
+                                VerticalContentAlignment="Center"
+                                Click="btnFlip_Click"/>
+                                <Button Name="btnReset" Content="Reset"
+                                DockPanel.Dock="Right"
+                                VerticalContentAlignment="Center"
+                                Click="btnReset_Click"/>
+                                <CheckBox Name="ckAutoFlip" Content="Auto Flip"
+                                IsChecked="{Binding AutoFlip}"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"/>
+                                <!--Style="{StaticResource SliderCheckBox}"-->
+                            </DockPanel>
                         </Grid>
-                        <TextBox Name="txtServerIP" VerticalContentAlignment="Center"/>
-                    </DockPanel>
-                </GroupBox>
-                <GroupBox Grid.Row="3">
+                    </TabItem>
+                    <TabItem>
+                        <TabItem.Header>
+                            <TextBlock Text="Client" FontStyle="Italic" FontSize="15"/>
+                        </TabItem.Header>
+                        <DockPanel Margin="0,5">
+                            <Grid DockPanel.Dock="Right" Width="85">
+                                <Button Name="btnConnect" DockPanel.Dock="Right"
+                                Content="Connect"
+                                VerticalContentAlignment="Center"
+                                Click="btnConnect_Click"
+                                HorizontalAlignment="Left" Width="85"/>
+                                <Ellipse Fill="Green" Visibility="{Binding
+                                CanConnectServer, Converter={StaticResource
+                                bool2v}}" Width="10" Height="10"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top" Margin="5"/>
+                            </Grid>
+                            <TextBox Name="txtServerIP" VerticalContentAlignment="Center"/>
+                        </DockPanel>
+                    </TabItem>
+                </TabControl>
+                <GroupBox Grid.Row="2">
                     <GroupBox.Header>
                         <TextBlock Text="Story Point" FontStyle="Italic" FontSize="15"/>
                     </GroupBox.Header>
@@ -170,7 +194,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
-                                </Grid.ColumnDefinitions> 
+                                </Grid.ColumnDefinitions>
                                 <DockPanel Grid.Column="0">
                                     <TextBlock Text="User:" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0, 0, 5, 0"/>
                                     <TextBox Name="txtQueryUser" VerticalAlignment="Center"/>
@@ -180,7 +204,7 @@
                                     <PasswordBox Name="txtQueryPwd" VerticalAlignment="Center"/>
                                 </DockPanel>
                             </Grid>
-                            
+
                             <DockPanel Grid.Row ="1">
                                 <Button DockPanel.Dock="Right" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Click="btnQuery_Click"/>
                                 <TextBox Name="txtQuery" 
@@ -251,5 +275,5 @@
         </Grid>
     </Grid>
 
-    
+
 </Window>

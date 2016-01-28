@@ -89,8 +89,8 @@ namespace PlanningPoker
         private void LoadConfig()
         {
             LoadAppConfig();
+            gameInfo.LoadRoleList();
             gameInfo.LoadCardSequence();
-            cbRole.ItemsSource = Enum.GetNames(typeof(Role));
         }
 
         private void LoadAppConfig()

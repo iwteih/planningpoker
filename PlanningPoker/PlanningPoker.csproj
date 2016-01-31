@@ -58,6 +58,10 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.5\lib\net35-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -80,6 +84,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Control\RichTextBoxBindable.cs" />
     <Compile Include="Converter\Bool2Visible.cs" />
     <Compile Include="Converter\MessageLength2Visible.cs" />
     <Compile Include="Entity\ApplicationConfig.cs" />
@@ -93,9 +98,19 @@
     <Compile Include="FormStates\GameStateServer.cs" />
     <Compile Include="FormStates\IGameState.cs" />
     <Compile Include="FormStates\MockGameState.cs" />
+    <Compile Include="PMS\IPMSOperator.cs" />
+    <Compile Include="PMS\JIRA\Assignee.cs" />
+    <Compile Include="PMS\JIRA\Fields.cs" />
+    <Compile Include="PMS\JIRA\Issue.cs" />
+    <Compile Include="PMS\JIRA\IssueList.cs" />
+    <Compile Include="PMS\JIRA\IssueType.cs" />
+    <Compile Include="PMS\JIRA\JIRAOperator.cs" />
+    <Compile Include="PMS\JIRA\Priority.cs" />
+    <Compile Include="PMS\JIRA\Status.cs" />
     <Compile Include="Utility\IOUtil.cs" />
     <Compile Include="Utility\IPUtil.cs" />
     <Compile Include="Utility\Utils.cs" />
+    <Compile Include="Utility\WebUtil.cs" />
     <Compile Include="WCF\AppEventArgs.cs" />
     <Compile Include="WCF\Callback.cs" />
     <Compile Include="WCF\ChannelManager.cs" />

@@ -1,6 +1,7 @@
 ﻿<Window x:Class="PlanningPoker.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctrl="clr-namespace:PlanningPoker.Control"
         xmlns:entity="clr-namespace:PlanningPoker.Entity"
         Title="Planning Poker -- Powered By Yiming Bao" 
         WindowStartupLocation="CenterScreen"
@@ -31,13 +32,16 @@
                         <GradientStop Color="Chocolate" Offset="1" />
                     </RadialGradientBrush>
                 </Grid.Background>
-                <TextBox Grid.Row="0" Text="{Binding ElementName=lbStoryList, Path=SelectedItem.Title}" 
-                             TextWrapping="WrapWithOverflow" 
+                <ctrl:RichTextBoxBindable Grid.Row="0"
+                             Story="{Binding ElementName=lbStoryList, Path=SelectedItem}" 
                              AcceptsReturn="True" 
                              Height="65"
                              MaxHeight="100"
                              VerticalScrollBarVisibility="Auto"
-                             VerticalContentAlignment="Top"/>
+                             VerticalContentAlignment="Top"
+                             IsDocumentEnabled="True"
+                             IsReadOnly="True">
+                </ctrl:RichTextBoxBindable>
                 <Grid Grid.Row="1">
                     <ItemsControl Name="participants" ItemsSource="{Binding ParticipantsList}" ItemTemplate="{StaticResource ParticipantsTemplate}">
                         <ItemsControl.Template>
@@ -227,8 +231,16 @@
                         </Grid>
                     </Expander>
                     <ProgressBar Name="processBar" Grid.Row="1" Height="5" Opacity="0" IsIndeterminate="True" Margin="0, 3, 0, 3"/>
-                    <ListBox Name="lbStoryList" Grid.Row="2" ItemContainerStyle="{StaticResource listBoxItemMouseOver}">
-                        <ListBox.ItemTemplate>
+                    <ListView Name="lbStoryList" Grid.Row="2" ItemContainerStyle="{StaticResource listBoxItemMouseOver}">
+                        <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}"/>
+                            <GridViewColumn Header="Assignee" DisplayMemberBinding="{Binding Assignee}"/>
+                            <GridViewColumn Header="Priority" DisplayMemberBinding="{Binding Priority}"/>
+                            <GridViewColumn Header="Summary" DisplayMemberBinding="{Binding Summary}"/>
+                        </GridView>
+                        </ListView.View>
+                        <!--<ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -247,8 +259,8 @@
                                    ToolTip="标题"/>
                                 </Grid>
                             </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                        </ListBox.ItemTemplate>-->
+                    </ListView>
                 </Grid>
             </GroupBox>
         </Grid>

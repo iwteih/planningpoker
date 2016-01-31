@@ -40,7 +40,7 @@
             <Setter Property="Height" Value="25"/>
         </Style>
 
-        <Style x:Key="listBoxItemMouseOver" TargetType="ListBoxItem">
+        <Style x:Key="listBoxItemMouseOver" TargetType="ListViewItem">
             <Style.Resources>
                 <!--SelectedItem with focus-->
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#40BF4D"/>
@@ -59,7 +59,7 @@
                     </Setter>
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value ="Red" />
+                    <Setter Property="Background" Value ="LimeGreen" />
                 </Trigger>
             </Style.Triggers>
         </Style>

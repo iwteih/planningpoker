@@ -1,6 +1,7 @@
 ﻿using log4net;
 using PlanningPoker.Entity;
 using PlanningPoker.FormStates;
+using PlanningPoker.PMS;
 using PlanningPoker.Utility;
 using PlanningPoker.WCF;
 using System;
@@ -68,10 +69,16 @@ namespace PlanningPoker
         private void btnQuery_Click(object sender, RoutedEventArgs e)
         {
             string queryString = txtQuery.Text;
-            if (!String.IsNullOrEmpty(queryString))
+            //if (!String.IsNullOrEmpty(queryString))
             {
-                Console.WriteLine(queryString);
-                //TODO: query from jira
+                IPMSOperator op = new JIRAOperator();
+                List<Story> list = op.Query(txtQueryUser.Text, txtQueryPwd.Password, txtQuery.Text);
+
+                storyList.Clear();
+                foreach(Story story in list)
+                {
+                    storyList.Add(story);
+                }
             }
         }
 

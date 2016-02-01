@@ -205,9 +205,34 @@ namespace PlanningPoker
             }
 
             gameState = GameStateClient.Instance;
+            gameState.StorySyncComplete += gameState_StorySyncComplete;
+            gameState.StoryListSyncComplete += gameState_StoryListSyncComplete;
             gameState.Join(gameInfo.ServerIP);
         }
 
+        void gameState_StorySyncComplete(object sender, EventArgs e)
+        {
+            ScrollIntoView();
+        }
+
+        void gameState_StoryListSyncComplete(object sender, EventArgs e)
+        {
+            if (gameInfo.SyncStory != null && gameInfo.StoryList != null)
+            {
+                ScrollIntoView();
+                expQuery.IsExpanded = false;
+            }
+        }
+
+        void ScrollIntoView()
+        {
+            Story story = gameInfo.StoryList.FirstOrDefault(f => f.Title == gameInfo.SyncStory.Title);
+            if (story != null)
+            {
+                lbStoryList.ScrollIntoView(story);
+                lbStoryList.SelectedItem = story;
+            }
+        }
 
         private void btnReset_Click(object sender, RoutedEventArgs e)
         {
@@ -288,6 +313,11 @@ namespace PlanningPoker
         {
             Story story = ((sender as ListBox).SelectedItem as Story);
             gameInfo.CurrentStory = story;
+        }
+
+        private void btnSyncStoryList_Click(object sender, RoutedEventArgs e)
+        {
+            gameState.SyncStoryList(gameInfo.StoryList.ToList());
         }
     }
 }

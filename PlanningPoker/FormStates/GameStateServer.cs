@@ -203,5 +203,15 @@ namespace PlanningPoker.FormStates
             gameInfo.SyncStory = e.Story;
             // do not re-assign the story, bc/ server may view another story
         }
+        
+        public override void callback_StoryListSyncEventHandler(object sender, StoryListSyncArgs e)
+        {
+            
+        }
+
+        public override void SyncStoryList(List<Story> storyList)
+        {
+            gamePlay.SyncStoryList(storyList);
+        }
     }
 }

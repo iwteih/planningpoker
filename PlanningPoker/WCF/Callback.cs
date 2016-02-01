@@ -30,7 +30,12 @@ namespace PlanningPoker.WCF
         /// <summary>
         /// Server wants to sync story.
         /// </summary>
-        public event EventHandler<StorySyncArgs> StorySyncEventHandler; 
+        public event EventHandler<StorySyncArgs> StorySyncEventHandler;
+
+        /// <summary>
+        /// Server wants to sync story list.
+        /// </summary>
+        public event EventHandler<StoryListSyncArgs> StoryListSyncEventHandler;
 
         private GameInfo gameInfo = GameInfo.Instance;
 
@@ -83,7 +88,7 @@ namespace PlanningPoker.WCF
                 }
                 gameInfo.Moderator = moderator;
 
-                if(gameInfo.CardSequenceString != cardSequence)
+                if (gameInfo.CardSequenceString != cardSequence)
                 {
                     gameInfo.LoadCardSequence(cardSequence);
                 }
@@ -105,11 +110,11 @@ namespace PlanningPoker.WCF
                 if (p != null)
                 {
                     p.Play(pokerValue);
-                    played = true;                    
+                    played = true;
                 }
             }
 
-            if(played)
+            if (played)
             {
                 if (PlayEventHandler != null)
                 {
@@ -162,7 +167,7 @@ namespace PlanningPoker.WCF
                 }
             }
 
-            if(FlipEventHandler != null)
+            if (FlipEventHandler != null)
             {
                 FlipEventHandler(null, null);
             }
@@ -178,7 +183,7 @@ namespace PlanningPoker.WCF
                 }
             }
 
-            if(ResetEventHandler != null)
+            if (ResetEventHandler != null)
             {
                 ResetEventHandler(null, null);
             }
@@ -193,6 +198,19 @@ namespace PlanningPoker.WCF
         public void SyncStory(Story story)
         {
             gameInfo.CurrentStory = story;
+
+            if (StorySyncEventHandler != null)
+            {
+                StorySyncEventHandler(null, new StorySyncArgs() { Story = story });
+            }
+        }
+
+        public void SyncStoryList(List<Story> storyList)
+        {
+            if (StoryListSyncEventHandler != null)
+            {
+                StoryListSyncEventHandler(null, new StoryListSyncArgs() { StoryList = storyList });
+            }
         }
     }
 }

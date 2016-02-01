@@ -40,6 +40,25 @@ namespace PlanningPoker.WCF
             }
         }
 
+        public void BroadcastSyncStoryListEvent( List<Story> storyList)
+        {
+            if (callbackChannelList.Count > 0)
+            {
+                foreach (var callback in callbackChannelList.ToArray())
+                {
+                    try
+                    {
+                        callback.SyncStoryList(storyList);
+                    }
+                    catch
+                    {
+                        logger.Error("error BroadcastSyncStoryListEvent");
+                        callbackChannelList.Remove(callback);
+                    }
+                }
+            }
+        }
+
         public void BroadcastJoinEvent(string moderator, string user, string role, Story story, string cardSequence, Participant[] participants)
         {
             if (callbackChannelList.Count > 0)
@@ -192,5 +211,6 @@ namespace PlanningPoker.WCF
                 }
             }
         }
+
     }
 }

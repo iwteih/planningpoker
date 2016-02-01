@@ -17,5 +17,9 @@ namespace PlanningPoker.FormStates
         void Flip();
         void Exit();
         void SyncStory(Story story);
+        void SyncStoryList(List<Story> storyList);
+
+        event EventHandler StorySyncComplete;
+        event EventHandler StoryListSyncComplete;
     }
 }

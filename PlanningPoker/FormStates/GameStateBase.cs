@@ -16,14 +16,16 @@ namespace PlanningPoker.FormStates
 
         protected IGamePlay gamePlay;
         protected GameInfo gameInfo = GameInfo.Instance;
-        
+
         public abstract bool IsModeratorExit { get; }
         public abstract void Flip();
         public abstract void Reset();
         public abstract void Join(string serverIP);
         public abstract void SyncStory(Story story);
+        public abstract void SyncStoryList(List<Story> storyList);
         public abstract void callback_ExitEventHandler(object sender, UserExitEventArgs e);
         public abstract void callback_StorySyncEventHandler(object sender, StorySyncArgs e);
+        public abstract void callback_StoryListSyncEventHandler(object sender, StoryListSyncArgs e);
 
         public bool JoinGame(String serverIP)
         {
@@ -64,7 +66,8 @@ namespace PlanningPoker.FormStates
                 callback.ExitEventHandler += callback_ExitEventHandler;
                 callback.PlayEventHandler += callback_PlayEventHandler;
                 callback.ResetEventHandler += callback_ResetEventHandler;
-                callback.StorySyncEventHandler +=callback_StorySyncEventHandler;
+                callback.StorySyncEventHandler += callback_StorySyncEventHandler;
+                callback.StoryListSyncEventHandler += callback_StoryListSyncEventHandler;
 
                 return gamePlay;
             }
@@ -151,6 +154,27 @@ namespace PlanningPoker.FormStates
                 //{
                 //    logger.Error("error play card", exp);
                 //}
+            }
+        }
+
+
+        public event EventHandler StorySyncComplete;
+
+        protected void OnStorySyncComplete()
+        {
+            if (StorySyncComplete != null)
+            {
+                StorySyncComplete(null, null);
+            }
+        }
+
+        public event EventHandler StoryListSyncComplete;
+
+        protected void OnStoryListSyncComplete()
+        {
+            if (StoryListSyncComplete != null)
+            {
+                StoryListSyncComplete(null, null);
             }
         }
     }

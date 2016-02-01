@@ -53,5 +53,13 @@ namespace PlanningPoker.FormStates
         public void SyncStory(Entity.Story story)
         {
         }
+
+
+        public void SyncStoryList(List<Entity.Story> storyList)
+        {
+        }
+
+        public event EventHandler StorySyncComplete;
+        public event EventHandler StoryListSyncComplete;
     }
 }

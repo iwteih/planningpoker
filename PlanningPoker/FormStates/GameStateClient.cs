@@ -56,6 +56,28 @@ namespace PlanningPoker.FormStates
         {
             gameInfo.SyncStory = e.Story;
             gameInfo.CurrentStory = e.Story;
+            OnStorySyncComplete();
         }
+        
+        public override void callback_StoryListSyncEventHandler(object sender, WCF.StoryListSyncArgs e)
+        {
+            if(e.StoryList != null)
+            {
+                gameInfo.StoryList.Clear();
+
+                foreach(var story in e.StoryList)
+                {
+                    gameInfo.StoryList.Add(story);
+                }
+            }
+
+            OnStoryListSyncComplete();
+        }
+
+        public override void SyncStoryList(List<Story> storyList)
+        {
+            
+        }
+
     }
 }

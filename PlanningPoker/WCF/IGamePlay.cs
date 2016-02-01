@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlanningPoker.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -37,6 +38,9 @@ namespace PlanningPoker.WCF
         void ShowScore(string score);
 
         [OperationContract(IsOneWay = true)]
-        void SyncStory(Entity.Story story);
+        void SyncStory(Story story);
+
+        [OperationContract(IsOneWay = true)]
+        void SyncStoryList(List<Story> storyList);
     }
 }

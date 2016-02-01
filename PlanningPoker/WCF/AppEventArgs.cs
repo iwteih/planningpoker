@@ -15,4 +15,9 @@ namespace PlanningPoker.WCF
     {
         public Story Story { get; set; }
     }
+
+    public class StoryListSyncArgs :EventArgs
+    {
+        public List<Story> StoryList { get; set; }
+    }
 }

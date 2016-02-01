@@ -321,6 +321,23 @@ namespace PlanningPoker.Entity
             }
         }
 
+        public bool ShouldSyncStoryList
+        {
+            get
+            {
+                string sync = ConfigurationManager.AppSettings["SyncStoryList"];
 
+                if (string.IsNullOrEmpty(sync))
+                {
+                    return false;
+                }
+
+                if(sync.ToUpper() == "TRUE")
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
     }
 }

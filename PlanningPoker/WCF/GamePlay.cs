@@ -26,10 +26,16 @@ namespace PlanningPoker.WCF
 
         public void Join(string user, string role)
         {
-            ChannelManager.Instance.BroadcastJoinEvent(gameInfo.Moderator, user, role, 
-                gameInfo.SyncStory, 
-                gameInfo.CardSequenceString, 
+
+            ChannelManager.Instance.BroadcastJoinEvent(gameInfo.Moderator, user, role,
+                gameInfo.SyncStory,
+                gameInfo.CardSequenceString,
                 gameInfo.ParticipantsList.ToArray());
+
+            if (gameInfo.ShouldSyncStoryList)
+            {
+                SyncStoryList(gameInfo.StoryList.ToList());
+            }
         }
 
         public void Play(string user, string pokerValue)
@@ -66,6 +72,11 @@ namespace PlanningPoker.WCF
         public void SyncStory(Story story)
         {
             ChannelManager.Instance.BroadcastSyncStory(story);
+        }
+
+        public void SyncStoryList(List<Story> storyList)
+        {
+            ChannelManager.Instance.BroadcastSyncStoryListEvent(storyList);
         }
     }
 }

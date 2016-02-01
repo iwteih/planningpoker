@@ -10,7 +10,7 @@ namespace PlanningPoker.WCF
     public interface ICallback
     {
         [OperationContract(IsOneWay = true)]
-        void Join(string moderator, string user, string role, string cardSequnce, Participant[] participants);
+        void Join(string moderator, string user, string role, Story story, string cardSequnce, Participant[] participants);
 
         [OperationContract(IsOneWay = true)]
         void Play(string user, string pokerValue);
@@ -29,5 +29,9 @@ namespace PlanningPoker.WCF
 
         [OperationContract(IsOneWay = true)]
         void ShowScore(string score);
+
+        [OperationContract(IsOneWay = true)]
+        void SyncStory(Story story);
+
     }
 }

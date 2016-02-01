@@ -24,10 +24,15 @@ namespace PlanningPoker.Entity
         private static readonly DependencyProperty LocalIPProperty;
         private static readonly DependencyProperty ServerIPProperty;
         private static readonly DependencyProperty SelectedCardProperty;
+        private static readonly DependencyProperty CurrentStoryProperty;
+
+        private ObservableCollection<Story> storyList = new ObservableCollection<Story>();
 
         public static readonly GameInfo Instance = new GameInfo();
 
-        private GameInfo() { }
+        private GameInfo()
+        {
+        }
 
         static GameInfo()
         {
@@ -51,7 +56,7 @@ namespace PlanningPoker.Entity
                 typeof(bool),
                 typeof(GameInfo),
                 new PropertyMetadata(false));
-            
+
             CanConnectServerProperty = DependencyProperty.Register("CanConnectServer",
                 typeof(bool),
                 typeof(GameInfo),
@@ -61,6 +66,7 @@ namespace PlanningPoker.Entity
             LocalIPProperty = DependencyProperty.Register("LocalIP", typeof(string), typeof(GameInfo));
             ServerIPProperty = DependencyProperty.Register("ServerIP", typeof(string), typeof(GameInfo));
             SelectedCardProperty = DependencyProperty.Register("SelectedCard", typeof(string), typeof(GameInfo));
+            CurrentStoryProperty = DependencyProperty.Register("CurrentStory", typeof(Story), typeof(GameInfo));
         }
 
         public string Port
@@ -107,8 +113,8 @@ namespace PlanningPoker.Entity
         {
             string[] roles = Enum.GetNames(typeof(Role));
             roleList.Clear();
-            
-            foreach(string role in roles)
+
+            foreach (string role in roles)
             {
                 roleList.Add(role);
             }
@@ -211,7 +217,7 @@ namespace PlanningPoker.Entity
         }
 
         private ObservableCollection<string> roleList = new ObservableCollection<string>();
-        public ObservableCollection<string> RoleList 
+        public ObservableCollection<string> RoleList
         {
             get { return roleList; }
         }
@@ -275,8 +281,46 @@ namespace PlanningPoker.Entity
                 base.SetValue(SelectedCardProperty, value);
             }
         }
-        
-        public string Moderator{ get; set; }
-        public string CardSequenceString{ get; set; }
+
+        public Story CurrentStory
+        {
+            get
+            {
+                return (Story)base.GetValue(CurrentStoryProperty);
+            }
+            set
+            {
+                base.SetValue(CurrentStoryProperty, value);
+            }
+        }
+
+        public string Moderator { get; set; }
+        public string CardSequenceString { get; set; }
+
+        public Story SyncStory { get; set; }
+
+        public string PMS
+        {
+            get
+            {
+                string pms = ConfigurationManager.AppSettings["PMS"];
+
+                if (!string.IsNullOrEmpty(pms))
+                {
+                    return pms.ToUpper();
+                }
+                return null;
+            }
+        }
+
+        public ObservableCollection<Story>  StoryList
+        {
+            get
+            {
+                return storyList;
+            }
+        }
+
+
     }
 }

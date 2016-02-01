@@ -46,5 +46,16 @@ namespace PlanningPoker.FormStates
             // client is not allowed to send reset command
         }
 
+
+        public override void SyncStory(Story story)
+        {
+            // client is not allowed to send syncstory command
+        }
+
+        public override void callback_StorySyncEventHandler(object sender, WCF.StorySyncArgs e)
+        {
+            gameInfo.SyncStory = e.Story;
+            gameInfo.CurrentStory = e.Story;
+        }
     }
 }

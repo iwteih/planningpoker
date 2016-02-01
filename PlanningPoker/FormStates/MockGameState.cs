@@ -48,5 +48,10 @@ namespace PlanningPoker.FormStates
         void IGameState.Join(string serverIP)
         {
         }
+
+
+        public void SyncStory(Entity.Story story)
+        {
+        }
     }
 }

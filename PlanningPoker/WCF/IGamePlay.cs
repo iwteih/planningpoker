@@ -35,5 +35,8 @@ namespace PlanningPoker.WCF
 
         [OperationContract(IsOneWay = true)]
         void ShowScore(string score);
+
+        [OperationContract(IsOneWay = true)]
+        void SyncStory(Entity.Story story);
     }
 }

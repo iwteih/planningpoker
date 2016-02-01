@@ -10,6 +10,32 @@
         Loaded="Window_Loaded"
         Closing="Window_Closing"
         Closed="Window_Closed">
+    <Window.Resources>
+        <Style x:Key="listBoxItemMouseOver" TargetType="ListViewItem">
+            <Style.Resources>
+                <!--SelectedItem with focus-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#40BF4D"/>
+                <!--SelectedItem without focus-->
+                <!--<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="LightBlue" Opacity=".4"/>-->
+            </Style.Resources>
+            <EventSetter Event="MouseDoubleClick" Handler="ListViewItemDoubleClick"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#DDEFBA" Offset="0"/>
+                                <GradientStop Color="#94CD54" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value ="LimeGreen" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -21,7 +47,7 @@
         <Grid Grid.Column="0" >
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" MinHeight="65" MaxHeight="200"/>
                     <RowDefinition Height="*" MinHeight="300" />
                     <RowDefinition Height="Auto" MinHeight="140"/>
                 </Grid.RowDefinitions>
@@ -33,19 +59,19 @@
                     </RadialGradientBrush>
                 </Grid.Background>
                 <ctrl:RichTextBoxBindable Grid.Row="0"
-                             Story="{Binding ElementName=lbStoryList, Path=SelectedItem}" 
+                             Story="{Binding CurrentStory}" 
                              AcceptsReturn="True" 
-                             Height="65"
-                             MaxHeight="100"
+                             MaxHeight="200"
                              VerticalScrollBarVisibility="Auto"
                              VerticalContentAlignment="Top"
                              IsDocumentEnabled="True"
                              IsReadOnly="True">
                 </ctrl:RichTextBoxBindable>
+                <GridSplitter  HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="3" BorderBrush="red"/>
                 <Grid Grid.Row="1">
                     <ItemsControl Name="participants" ItemsSource="{Binding ParticipantsList}" ItemTemplate="{StaticResource ParticipantsTemplate}">
                         <ItemsControl.Template>
-                        <ControlTemplate>
+                            <ControlTemplate>
                                 <ScrollViewer x:Name="ScrollViewer" Padding="{TemplateBinding Padding}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                     <ItemsPresenter />
                                 </ScrollViewer>
@@ -110,7 +136,7 @@
                          VerticalContentAlignment="Center" />
                     </DockPanel>
                 </GroupBox>
-                <TabControl Grid.Row="1" Grid.ColumnSpan="2">
+                <TabControl Name="tbctrlServerOrClient"  Grid.Row="1" Grid.ColumnSpan="2">
                     <TabItem>
                         <TabItem.Header>
                             <TextBlock Text="Server" FontStyle="Italic" FontSize="15"/>
@@ -197,7 +223,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Expander Header="Click to Query" Grid.Row="0" Margin="0, 5, 0, 0">
+                    <Expander Name="expQuery" Header="Click to show/hide query section" IsExpanded="True" Grid.Row="0" Margin="0, 5, 0, 0">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition />
@@ -219,7 +245,7 @@
                             </Grid>
 
                             <DockPanel Grid.Row ="1">
-                                <Button DockPanel.Dock="Bottom" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Margin="5" Click="btnQuery_Click"/>
+                                <Button DockPanel.Dock="Bottom" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Margin="0, 5, 0, 0" Click="btnQuery_Click"/>
                                 <TextBox Name="txtQuery" 
                                  Text="{Binding QueryString}"
                                  Height="60"
@@ -230,36 +256,18 @@
                             </DockPanel>
                         </Grid>
                     </Expander>
-                    <ProgressBar Name="processBar" Grid.Row="1" Height="5" Opacity="0" IsIndeterminate="True" Margin="0, 3, 0, 3"/>
-                    <ListView Name="lbStoryList" Grid.Row="2" ItemContainerStyle="{StaticResource listBoxItemMouseOver}">
+                    <ProgressBar Name="processBar" Grid.Row="1" Height="5" Visibility="Hidden" IsIndeterminate="True" Margin="0, 3, 0, 3"/>
+                    <ListView Name="lbStoryList" Grid.Row="2" ItemsSource="{Binding StoryList}" 
+                              ItemContainerStyle="{StaticResource listBoxItemMouseOver}" 
+                              SelectionChanged="lbStoryList_SelectionChanged">
                         <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}"/>
-                            <GridViewColumn Header="Assignee" DisplayMemberBinding="{Binding Assignee}"/>
-                            <GridViewColumn Header="Priority" DisplayMemberBinding="{Binding Priority}"/>
-                            <GridViewColumn Header="Summary" DisplayMemberBinding="{Binding Summary}"/>
-                        </GridView>
+                            <GridView>
+                                <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}"/>
+                                <GridViewColumn Header="Assignee" DisplayMemberBinding="{Binding Assignee}"/>
+                                <GridViewColumn Header="Priority" DisplayMemberBinding="{Binding Priority}"/>
+                                <GridViewColumn Header="Summary" DisplayMemberBinding="{Binding Summary}"/>
+                            </GridView>
                         </ListView.View>
-                        <!--<ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <Label Content="{Binding Severity}" Grid.Row="0" Grid.Column="0"
-                                   ToolTip="严重程度"/>
-                                    <Label Content="{Binding ID}" Grid.Row="0" Grid.Column="1" 
-                                   ToolTip="ID"/>
-                                    <Label Content="{Binding Title}" Grid.Row="0" Grid.Column="2"
-                                   ToolTip="标题"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>-->
                     </ListView>
                 </Grid>
             </GroupBox>
@@ -297,6 +305,4 @@
             </StackPanel>
         </Grid>
     </Grid>
-
-
 </Window>

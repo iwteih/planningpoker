@@ -40,30 +40,6 @@
             <Setter Property="Height" Value="25"/>
         </Style>
 
-        <Style x:Key="listBoxItemMouseOver" TargetType="ListViewItem">
-            <Style.Resources>
-                <!--SelectedItem with focus-->
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#40BF4D"/>
-                <!--SelectedItem without focus-->
-                <!--<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="LightBlue" Opacity=".4"/>-->
-            </Style.Resources>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#DDEFBA" Offset="0"/>
-                                <GradientStop Color="#94CD54" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Setter.Value>
-                    </Setter>
-                </Trigger>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value ="LimeGreen" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
         <Style x:Key="singleCheckListBox" TargetType="{x:Type ListBoxItem}">
             <Setter Property="Template">
                 <Setter.Value>

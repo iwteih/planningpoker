@@ -21,7 +21,9 @@ namespace PlanningPoker.FormStates
         public abstract void Flip();
         public abstract void Reset();
         public abstract void Join(string serverIP);
+        public abstract void SyncStory(Story story);
         public abstract void callback_ExitEventHandler(object sender, UserExitEventArgs e);
+        public abstract void callback_StorySyncEventHandler(object sender, StorySyncArgs e);
 
         public bool JoinGame(String serverIP)
         {
@@ -59,9 +61,10 @@ namespace PlanningPoker.FormStates
                     new EndpointAddress(baseAddress));
                 gamePlay = channel.CreateChannel();
 
-                callback.ExitEventHander += callback_ExitEventHandler;
+                callback.ExitEventHandler += callback_ExitEventHandler;
                 callback.PlayEventHandler += callback_PlayEventHandler;
                 callback.ResetEventHandler += callback_ResetEventHandler;
+                callback.StorySyncEventHandler +=callback_StorySyncEventHandler;
 
                 return gamePlay;
             }
@@ -150,6 +153,5 @@ namespace PlanningPoker.FormStates
                 //}
             }
         }
-
     }
 }

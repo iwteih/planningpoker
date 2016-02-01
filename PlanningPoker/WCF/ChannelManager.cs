@@ -40,20 +40,20 @@ namespace PlanningPoker.WCF
             }
         }
 
-        public void BroadcastJoinEvent(string moderator, string user, string role, string cardSequence, Participant[] participants)
+        public void BroadcastJoinEvent(string moderator, string user, string role, Story story, string cardSequence, Participant[] participants)
         {
             if (callbackChannelList.Count > 0)
             {
-                foreach (var channel in callbackChannelList.ToArray())
+                foreach (var callback in callbackChannelList.ToArray())
                 {
                     try
                     {
-                        channel.Join(moderator, user, role, cardSequence, participants);
+                        callback.Join(moderator, user, role, story, cardSequence, participants);
                     }
                     catch
                     {
                         logger.Error(string.Format("error BroadcastJoinEvent,user={0},role={1}", user, role));
-                        callbackChannelList.Remove(channel);
+                        callbackChannelList.Remove(callback);
                     }
                 }
             }
@@ -63,16 +63,16 @@ namespace PlanningPoker.WCF
         {
             if (callbackChannelList.Count > 0)
             {
-                foreach (var channel in callbackChannelList.ToArray())
+                foreach (var callback in callbackChannelList.ToArray())
                 {
                     try
                     {
-                        channel.Play(user, pokerValue);
+                        callback.Play(user, pokerValue);
                     }
                     catch
                     {
                         logger.Error(string.Format("error BroadcastPlayEvent,user={0},role={1}", user, pokerValue));
-                        callbackChannelList.Remove(channel);
+                        callbackChannelList.Remove(callback);
                     }
                 }
             }
@@ -82,16 +82,16 @@ namespace PlanningPoker.WCF
         {
             if (callbackChannelList.Count > 0)
             {
-                foreach (var channel in callbackChannelList.ToArray())
+                foreach (var callback in callbackChannelList.ToArray())
                 {
                     try
                     {
-                        channel.Exit(user);
+                        callback.Exit(user);
                     }
                     catch
                     {
                         logger.Error(string.Format("error BroadcastExitEvent,user={0}", user));
-                        callbackChannelList.Remove(channel);
+                        callbackChannelList.Remove(callback);
                     }
                 }
             }
@@ -102,16 +102,16 @@ namespace PlanningPoker.WCF
         {
             if (callbackChannelList.Count > 0)
             {
-                foreach (var channel in callbackChannelList.ToArray())
+                foreach (var callback in callbackChannelList.ToArray())
                 {
                     try
                     {
-                        channel.Withdraw(user);
+                        callback.Withdraw(user);
                     }
                     catch
                     {
                         logger.Error(string.Format("error BroadcastWithdrawEvent,user={0}", user));
-                        callbackChannelList.Remove(channel);
+                        callbackChannelList.Remove(callback);
                     }
                 }
             }
@@ -121,16 +121,16 @@ namespace PlanningPoker.WCF
         {
             if (callbackChannelList.Count > 0)
             {
-                foreach (var channel in callbackChannelList.ToArray())
+                foreach (var callback in callbackChannelList.ToArray())
                 {
                     try
                     {
-                        channel.Flip();
+                        callback.Flip();
                     }
                     catch
                     {
                         logger.Error("error BroadcastFlipEvent");
-                        callbackChannelList.Remove(channel);
+                        callbackChannelList.Remove(callback);
                     }
                 }
             }
@@ -140,35 +140,54 @@ namespace PlanningPoker.WCF
         {
             if (callbackChannelList.Count > 0)
             {
-                foreach (var channel in callbackChannelList.ToArray())
+                foreach (var callback in callbackChannelList.ToArray())
                 {
                     try
                     {
-                        channel.Reset();
+                        callback.Reset();
                     }
                     catch(Exception exp)
                     {
                         logger.Error("error BroadcastRestEvent", exp);
-                        callbackChannelList.Remove(channel);
+                        callbackChannelList.Remove(callback);
                     }
                 }
             }
         }
 
-        internal void BroadcaseShowScoreEvent(string score)
+        internal void BroadcastShowScoreEvent(string score)
         {
             if (callbackChannelList.Count > 0)
             {
-                foreach (var channel in callbackChannelList.ToArray())
+                foreach (var callback in callbackChannelList.ToArray())
                 {
                     try
                     {
-                        channel.ShowScore(score);
+                        callback.ShowScore(score);
                     }
                     catch (Exception exp)
                     {
                         logger.Error("error BroadcastRestEvent", exp);
-                        callbackChannelList.Remove(channel);
+                        callbackChannelList.Remove(callback);
+                    }
+                }
+            }
+        }
+
+        internal void BroadcastSyncStory(Story story)
+        {
+            if (callbackChannelList.Count > 0)
+            {
+                foreach (var callback in callbackChannelList.ToArray())
+                {
+                    try
+                    {
+                        callback.SyncStory(story);
+                    }
+                    catch (Exception exp)
+                    {
+                        logger.Error("error BroadcastSyncStory", exp);
+                        callbackChannelList.Remove(callback);
                     }
                 }
             }

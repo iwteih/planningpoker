@@ -36,7 +36,7 @@ namespace PlanningPoker.PMS
                     story.Title = issue.Key;
                     story.Summary = issue.Fields.Summary;
                     story.Assignee = issue.Fields.Assignee.DisplayName;
-                    story.URL = string.Format("{0}/{1}", issue.Self.Substring(0, issue.Self.IndexOf("/rest/api")), issue.Key);
+                    story.URL = string.Format("{0}/browse/{1}", issue.Self.Substring(0, issue.Self.IndexOf("/rest/api")), issue.Key);
                     story.IssueType = issue.Fields.IssueType.Name;
                     story.IssueTypeIcon = issue.Fields.IssueType.IconUrl;
                     story.Description = issue.Fields.Description;

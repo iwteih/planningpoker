@@ -33,7 +33,6 @@ namespace PlanningPoker
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private ObservableCollection<Story> storyList = new ObservableCollection<Story>();
         GameInfo gameInfo = GameInfo.Instance;
         IGameState gameState = MockGameState.Instance;
 
@@ -42,44 +41,71 @@ namespace PlanningPoker
             InitializeComponent();
             log4net.Config.XmlConfigurator.Configure();
 
-            this.lbStoryList.ItemsSource = storyList;
+            //this.lbStoryList.ItemsSource = storyList;
             this.DataContext = gameInfo;
             //MockData();
         }
 
-        private void MockData()
-        {
-            Participant p1 = new Participant() { ParticipantName = "P1", PlayingCard = "HAT", Role = "dev" };
-            Participant p2 = new Participant() { ParticipantName = "P2", PlayingCard = "2", Role = "QA" };
-            gameInfo.ParticipantsList.Add(p1);
-            for (int i = 0; i < 100; i++)
-            {
-                gameInfo.ParticipantsList.Add(p2);
-            }
+        //private void MockData()
+        //{
+        //    Participant p1 = new Participant() { ParticipantName = "P1", PlayingCard = "HAT", Role = "dev" };
+        //    Participant p2 = new Participant() { ParticipantName = "P2", PlayingCard = "2", Role = "QA" };
+        //    gameInfo.ParticipantsList.Add(p1);
+        //    for (int i = 0; i < 100; i++)
+        //    {
+        //        gameInfo.ParticipantsList.Add(p2);
+        //    }
 
 
-            Story s1 = new Story { Title = "title1", URL = "url1" };
-            Story s2 = new Story { Title = "title2", URL = "url2" };
-            Story s3 = new Story { Title = "title3", URL = "url3" };
-            storyList.Add(s1);
-            storyList.Add(s2);
-            storyList.Add(s3);
-        }
+        //    Story s1 = new Story { Title = "title1", URL = "url1" };
+        //    Story s2 = new Story { Title = "title2", URL = "url2" };
+        //    Story s3 = new Story { Title = "title3", URL = "url3" };
+        //    storyList.Add(s1);
+        //    storyList.Add(s2);
+        //    storyList.Add(s3);
+        //}
 
         private void btnQuery_Click(object sender, RoutedEventArgs e)
         {
             string queryString = txtQuery.Text;
             //if (!String.IsNullOrEmpty(queryString))
             {
-                IPMSOperator op = new JIRAOperator();
-                List<Story> list = op.Query(txtQueryUser.Text, txtQueryPwd.Password, txtQuery.Text);
+                IPMSOperator op = null;
 
-                storyList.Clear();
-                foreach(Story story in list)
+                if (gameInfo.PMS == "JIRA")
                 {
-                    storyList.Add(story);
+                    op = new JIRAOperator();
                 }
+
+                if (op == null)
+                {
+                    gameInfo.Message = "Please specify a PMS type in config file";
+                    return;
+                }
+
+                string queryText = txtQuery.Text;
+                string queryUser = txtQueryUser.Text;
+                string queryPwd = txtQueryPwd.Password;
+
+                Action action = delegate()
+                {
+                    List<Story> list = op.Query(queryUser, queryPwd, queryText);
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action<List<Story>>(UpdateStoryList), list);
+                };
+                action.BeginInvoke(null, null);
+                processBar.Visibility = System.Windows.Visibility.Visible;
             }
+        }
+
+        private void UpdateStoryList(List<Story> list)
+        {
+            gameInfo.StoryList.Clear();
+            foreach (Story story in list)
+            {
+                gameInfo.StoryList.Add(story);
+            }
+            processBar.Visibility = System.Windows.Visibility.Hidden;
+            expQuery.IsExpanded = false;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -128,6 +154,7 @@ namespace PlanningPoker
             gameInfo.AutoFlip = autoFlip;
             gameInfo.Role = role;
             gameInfo.QueryString = queryString;
+            tbctrlServerOrClient.SelectedIndex = appconfig.TabIndex_ServerOrClient;
         }
 
         private void LoadUserName()
@@ -151,7 +178,7 @@ namespace PlanningPoker
             string serverIP = string.Format("{0}:{1}", localIP, gameInfo.Port);
 
             // IP not changed
-            if(txtLocalIP.Text.Trim() == serverIP)
+            if (txtLocalIP.Text.Trim() == serverIP)
             {
                 return;
             }
@@ -215,6 +242,7 @@ namespace PlanningPoker
                 appconfig.Role = cbRole.Text.Trim();
             }
             appconfig.UserName = txtUserName.Text.Trim();
+            appconfig.TabIndex_ServerOrClient = tbctrlServerOrClient.SelectedIndex;
             IOUtil.SaveIsolatedData(appconfig);
 
             GameStateServer state = gameState as GameStateServer;
@@ -244,6 +272,22 @@ namespace PlanningPoker
         private void btnMessage_Click(object sender, RoutedEventArgs e)
         {
             gameInfo.Message = string.Empty;
+        }
+
+        private void ListViewItemDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Story story = lbStoryList.SelectedItem as Story;
+
+            if (story != null)
+            {
+                gameState.SyncStory(story);
+            }
+        }
+
+        private void lbStoryList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Story story = ((sender as ListBox).SelectedItem as Story);
+            gameInfo.CurrentStory = story;
         }
     }
 }

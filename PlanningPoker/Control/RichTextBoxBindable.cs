@@ -64,7 +64,7 @@ namespace PlanningPoker.Control
             paragraph.Inlines.Add(new LineBreak());
             paragraph.Inlines.Add(new Run(string.Format("Assignee: {0}", story.Assignee)));
             paragraph.Inlines.Add(new LineBreak());
-            paragraph.Inlines.Add(new Run(story.Summary));
+            paragraph.Inlines.Add(new Underline(new Bold(new Run(story.Summary))));
             paragraph.Inlines.Add(new LineBreak());
             paragraph.Inlines.Add(new Run(story.Description));
             document.Blocks.Add(paragraph);

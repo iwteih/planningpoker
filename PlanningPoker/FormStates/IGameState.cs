@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlanningPoker.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,6 @@ namespace PlanningPoker.FormStates
         void Reset();
         void Flip();
         void Exit();
+        void SyncStory(Story story);
     }
 }

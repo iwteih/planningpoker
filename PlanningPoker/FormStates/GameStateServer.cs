@@ -36,6 +36,10 @@ namespace PlanningPoker.FormStates
             {
                 Uri baseAddress = new Uri(string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name));
                 NetTcpBinding netTcpBinding = new NetTcpBinding();
+                netTcpBinding.OpenTimeout = new TimeSpan(0, 5, 0);
+                netTcpBinding.SendTimeout = new TimeSpan(0, 5, 0);
+                netTcpBinding.ReceiveTimeout = new TimeSpan(0,30, 0);
+                netTcpBinding.CloseTimeout = new TimeSpan(0, 0, 5);
                 netTcpBinding.MaxBufferSize = 2147483647;
                 netTcpBinding.MaxReceivedMessageSize = 2147483647;
                 host = new ServiceHost(typeof(GamePlay), baseAddress);
@@ -177,11 +181,27 @@ namespace PlanningPoker.FormStates
         public override void Reset()
         {
             // only server can reset the game
-            if (gamePlay != null)// && host != null
+            if (gamePlay != null)
             {
                 gamePlay.Reset();
             }
         }
 
+
+        public override void SyncStory(Story story)
+        {
+            if (gamePlay != null)
+            {
+                gameInfo.SyncStory = story;
+                gamePlay.SyncStory(story);
+            }
+        }
+
+        public override void callback_StorySyncEventHandler(object sender, StorySyncArgs e)
+        {
+            // unnecessary, because this can only be called once
+            gameInfo.SyncStory = e.Story;
+            // do not re-assign the story, bc/ server may view another story
+        }
     }
 }

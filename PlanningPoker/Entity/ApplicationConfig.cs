@@ -38,6 +38,12 @@ namespace PlanningPoker
             get;
             set;
         }
+
+        public int TabIndex_ServerOrClient
+        {
+            get;
+            set;
+        }
     }
 
 }

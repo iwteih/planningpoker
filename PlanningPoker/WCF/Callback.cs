@@ -11,7 +11,7 @@ namespace PlanningPoker.WCF
     /// </summary>
     public class Callback : ICallback
     {
-        public event EventHandler<UserExitEventArgs> ExitEventHander;
+        public event EventHandler<UserExitEventArgs> ExitEventHandler;
         /// <summary>
         /// Someone played a card.
         /// </summary>
@@ -27,9 +27,14 @@ namespace PlanningPoker.WCF
         /// </summary>
         public event EventHandler ResetEventHandler;
 
+        /// <summary>
+        /// Server wants to sync story.
+        /// </summary>
+        public event EventHandler<StorySyncArgs> StorySyncEventHandler; 
+
         private GameInfo gameInfo = GameInfo.Instance;
 
-        public void Join(string moderator, string user, string role, string cardSequence, Participant[] participants)
+        public void Join(string moderator, string user, string role, Story story, string cardSequence, Participant[] participants)
         {
             lock (gameInfo)
             {
@@ -65,6 +70,7 @@ namespace PlanningPoker.WCF
                 }
 
                 Participant p = gameInfo.ParticipantsList.FirstOrDefault(f => f.ParticipantName == user);
+
                 if (p == null)
                 {
                     p = new Participant()
@@ -80,6 +86,11 @@ namespace PlanningPoker.WCF
                 if(gameInfo.CardSequenceString != cardSequence)
                 {
                     gameInfo.LoadCardSequence(cardSequence);
+                }
+
+                if (StorySyncEventHandler != null)
+                {
+                    StorySyncEventHandler(null, new StorySyncArgs() { Story = story });
                 }
             }
         }
@@ -134,9 +145,9 @@ namespace PlanningPoker.WCF
                 }
             }
 
-            if (exit && ExitEventHander != null)
+            if (exit && ExitEventHandler != null)
             {
-                ExitEventHander(null, new UserExitEventArgs() { ExitUser = user });
+                ExitEventHandler(null, new UserExitEventArgs() { ExitUser = user });
             }
         }
 
@@ -176,6 +187,12 @@ namespace PlanningPoker.WCF
         public void ShowScore(string score)
         {
             gameInfo.Score = score;
+        }
+
+
+        public void SyncStory(Story story)
+        {
+            gameInfo.CurrentStory = story;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,9 @@ namespace PlanningPoker.Utility
 {
     class WebUtil
     {
-        public static string Query(string user, string password, string url)
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public static string QueryBasicAuth(string user, string password, string url)
         {
             string usernamePassword = user + ":" + password;
             CredentialCache cache = new CredentialCache();
@@ -30,17 +33,25 @@ namespace PlanningPoker.Utility
             }
         }
 
-        public static string Query1(string user, string password, string url)
+        public static string Query(string user, string password, string url)
         {
-            var client = new WebClient { Credentials = new NetworkCredential(user, password) };
-            var response = client.DownloadString(url);
-            return response;
+            try
+            {
+                var client = new WebClient { Credentials = new NetworkCredential(user, password), Encoding = Encoding.UTF8 };
+                var response = client.DownloadString(url);
+                return response;
+            }
+            catch(Exception exp)
+            {
+                log.Error(string.Format("cannot get query resopnse,query text={0}", url), exp); 
+            }
+            return string.Empty;
         }
 
         public static string Query2()
         {
             string json = null;
-            using (StreamReader sr = new StreamReader(@"D:\code\my_proj\planningpoker\jira.json"))
+            using (StreamReader sr = new StreamReader(@"..\..\..\jira.json"))
             {
                 json = sr.ReadToEnd();
             }

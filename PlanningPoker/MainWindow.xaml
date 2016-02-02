@@ -20,16 +20,19 @@
             </Style.Resources>
             <EventSetter Event="MouseDoubleClick" Handler="ListViewItemDoubleClick"/>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
+                <DataTrigger Binding="{Binding  Path=IsSyncStory}" Value="True">
+                    <Setter Property="Background" Value="Orange"/>
+                </DataTrigger>
+                <!--<Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background">
                         <Setter.Value>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <LinearGradientBrush Opacity="0.5"  EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#DDEFBA" Offset="0"/>
                                 <GradientStop Color="#94CD54" Offset="1"/>
                             </LinearGradientBrush>
                         </Setter.Value>
                     </Setter>
-                </Trigger>
+                </Trigger>-->
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value ="LimeGreen" />
                 </Trigger>
@@ -245,10 +248,10 @@
                             </Grid>
 
                             <DockPanel Grid.Row ="1">
-                                <DockPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center">
+                                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button DockPanel.Dock="Right" Name="btnSyncStoryList" Content="Sync Stories" VerticalContentAlignment="Center" Margin="0, 5, 0, 0" Click="btnSyncStoryList_Click"/>
                                     <Button DockPanel.Dock="Right" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Margin="0, 5, 0, 0" Click="btnQuery_Click"/>
-                                </DockPanel>
+                                </StackPanel>
                                 <TextBox Name="txtQuery" 
                                  Text="{Binding QueryString}"
                                  Height="60"
@@ -265,7 +268,7 @@
                               SelectionChanged="lbStoryList_SelectionChanged">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}"/>
+                                <GridViewColumn Header="ID" DisplayMemberBinding="{Binding ID}"/>
                                 <GridViewColumn Header="Assignee" DisplayMemberBinding="{Binding Assignee}"/>
                                 <GridViewColumn Header="Priority" DisplayMemberBinding="{Binding Priority}"/>
                                 <GridViewColumn Header="Summary" DisplayMemberBinding="{Binding Summary}"/>

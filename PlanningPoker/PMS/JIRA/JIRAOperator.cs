@@ -33,7 +33,7 @@ namespace PlanningPoker.PMS
                 foreach (Issue issue in issueList.Issues)
                 {
                     Story story = new Story();
-                    story.Title = issue.Key;
+                    story.ID = issue.Key;
                     story.Summary = issue.Fields.Summary;
                     story.Assignee = issue.Fields.Assignee.DisplayName;
                     story.URL = string.Format("{0}/browse/{1}", issue.Self.Substring(0, issue.Self.IndexOf("/rest/api")), issue.Key);

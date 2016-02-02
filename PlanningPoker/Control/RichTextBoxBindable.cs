@@ -57,7 +57,7 @@ namespace PlanningPoker.Control
             //    Source = new BitmapImage(new Uri(story.IssueTypeIcon))
             //};
             //paragraph.Inlines.Add(icon);
-            Hyperlink hyperLink = new Hyperlink(new Run(story.Title));
+            Hyperlink hyperLink = new Hyperlink(new Run(story.ID));
             hyperLink.NavigateUri = new Uri(story.URL);
             hyperLink.RequestNavigate += hyperLink_RequestNavigate;
             paragraph.Inlines.Add(hyperLink);

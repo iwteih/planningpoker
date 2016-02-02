@@ -297,7 +297,7 @@ namespace PlanningPoker.Entity
         public string Moderator { get; set; }
         public string CardSequenceString { get; set; }
 
-        public Story SyncStory { get; set; }
+        //public Story SyncStory { get; set; }
 
         public string PMS
         {
@@ -313,7 +313,7 @@ namespace PlanningPoker.Entity
             }
         }
 
-        public ObservableCollection<Story>  StoryList
+        public ObservableCollection<Story> StoryList
         {
             get
             {
@@ -332,11 +332,35 @@ namespace PlanningPoker.Entity
                     return false;
                 }
 
-                if(sync.ToUpper() == "TRUE")
+                if (sync.ToUpper() == "TRUE")
                 {
                     return true;
                 }
                 return false;
+            }
+        }
+
+        public Story SyncStory
+        {
+            get
+            {
+                return storyList.FirstOrDefault(f => f.IsSyncStory);
+            }
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+
+                storyList.ToList().ForEach((Story s) => s.IsSyncStory = false);
+
+                Story syncStory = storyList.FirstOrDefault(f => f.ID == value.ID);
+
+                if (syncStory != null)
+                {
+                    syncStory.IsSyncStory = true;
+                }
             }
         }
     }

@@ -8,10 +8,22 @@ using System.Text;
 namespace PlanningPoker.Entity
 {
     [DataContract]
-    public class Story
+    public class Story : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Create the OnPropertyChanged method to raise the event
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
         [DataMember]
-        public string Title
+        public string ID
         {
             get;
             set;
@@ -66,5 +78,24 @@ namespace PlanningPoker.Entity
             set;
         }
 
+
+        private bool isSyncStory;
+        [DataMember]
+
+        public bool IsSyncStory
+        {
+            get
+            {
+                return isSyncStory;
+            }
+            set
+            {
+                if (value != isSyncStory)
+                {
+                    isSyncStory = value;
+                    OnPropertyChanged("IsSyncStory");
+                }
+            }
+        }
     }
 }

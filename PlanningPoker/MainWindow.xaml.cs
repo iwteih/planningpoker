@@ -217,16 +217,18 @@ namespace PlanningPoker
 
         void gameState_StoryListSyncComplete(object sender, EventArgs e)
         {
-            if (gameInfo.SyncStory != null && gameInfo.StoryList != null)
-            {
-                ScrollIntoView();
-                expQuery.IsExpanded = false;
-            }
+            ScrollIntoView();
+            expQuery.IsExpanded = false;
         }
 
         void ScrollIntoView()
         {
-            Story story = gameInfo.StoryList.FirstOrDefault(f => f.Title == gameInfo.SyncStory.Title);
+            if (gameInfo.StoryList == null)
+            {
+                return;
+            }
+
+            Story story = gameInfo.SyncStory;
             if (story != null)
             {
                 lbStoryList.ScrollIntoView(story);

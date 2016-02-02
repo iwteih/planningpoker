@@ -38,6 +38,42 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <ControlTemplate x:Key="circleButton">
+            <Grid>
+                <Ellipse x:Name="outerCircle" Width="20" Height="20">
+                    <Ellipse.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="White"/>
+                            <GradientStop Offset="1" Color="Silver"/>
+                        </LinearGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <Ellipse Width="18" Height="18">
+                    <Ellipse.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="Silver"/>
+                            <GradientStop Offset="1" Color="White"/>
+                        </LinearGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsMouseOver" Value="True">
+                    <Setter TargetName="outerCircle" Property="Fill" Value="Silver"/>
+                </Trigger>
+                <Trigger Property="Button.IsPressed" Value="True">
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <ScaleTransform ScaleX=".9" ScaleY=".9"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="RenderTransformOrigin" Value=".5,.5"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
     </Window.Resources>
 
     <Grid>
@@ -248,10 +284,26 @@
                             </Grid>
 
                             <DockPanel Grid.Row ="1">
-                                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Button DockPanel.Dock="Right" Name="btnSyncStoryList" Content="Sync Stories" VerticalContentAlignment="Center" Margin="0, 5, 0, 0" Click="btnSyncStoryList_Click"/>
-                                    <Button DockPanel.Dock="Right" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Margin="0, 5, 0, 0" Click="btnQuery_Click"/>
-                                </StackPanel>
+                                <Grid DockPanel.Dock="Bottom">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Name="btnQueryHelper" Grid.Column="0" Template="{StaticResource circleButton}" Width="20" Height="20" Click="btnQueryHelper_Click">
+                                        <TextBlock FontWeight="Bold" Text="?"/>
+                                    </Button>
+                                    <StackPanel Grid.Column="1" Margin="0, 5, 0, 0"  HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+                                        <Button DockPanel.Dock="Right" Name="btnSyncStoryList" Content="Sync Stories" VerticalContentAlignment="Center" Click="btnSyncStoryList_Click"/>
+                                        <Button DockPanel.Dock="Right" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Click="btnQuery_Click"/>
+                                    </StackPanel>
+                                </Grid>
+                                <!--<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0, 5, 0, 0">
+                                    <Button Template="{StaticResource circleButton}" Width="20" Height="20">
+                                        <TextBlock FontWeight="Bold" Text="?"/>
+                                    </Button>
+                                    <Button DockPanel.Dock="Right" Name="btnSyncStoryList" Content="Sync Stories" VerticalContentAlignment="Center" Click="btnSyncStoryList_Click"/>
+                                    <Button DockPanel.Dock="Right" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Click="btnQuery_Click"/>
+                                </StackPanel>-->
                                 <TextBox Name="txtQuery" 
                                  Text="{Binding QueryString}"
                                  Height="60"

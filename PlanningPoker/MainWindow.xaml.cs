@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Description;
@@ -41,7 +42,6 @@ namespace PlanningPoker
             InitializeComponent();
             log4net.Config.XmlConfigurator.Configure();
 
-            //this.lbStoryList.ItemsSource = storyList;
             this.DataContext = gameInfo;
             //MockData();
         }
@@ -320,6 +320,19 @@ namespace PlanningPoker
         private void btnSyncStoryList_Click(object sender, RoutedEventArgs e)
         {
             gameState.SyncStoryList(gameInfo.StoryList.ToList());
+        }
+
+        private void btnQueryHelper_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(gameInfo.PMS))
+            {
+                string url = ConfigurationManager.AppSettings[gameInfo.PMS + "_HelpUrl"];
+
+                if (!string.IsNullOrEmpty(url))
+                {
+                    Process.Start(new ProcessStartInfo(url));
+                }
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using log4net;
+using PlanningPoker.Control;
 using PlanningPoker.Entity;
 using PlanningPoker.FormStates;
 using PlanningPoker.PMS;
@@ -43,32 +44,12 @@ namespace PlanningPoker
             log4net.Config.XmlConfigurator.Configure();
 
             this.DataContext = gameInfo;
-            //MockData();
         }
-
-        //private void MockData()
-        //{
-        //    Participant p1 = new Participant() { ParticipantName = "P1", PlayingCard = "HAT", Role = "dev" };
-        //    Participant p2 = new Participant() { ParticipantName = "P2", PlayingCard = "2", Role = "QA" };
-        //    gameInfo.ParticipantsList.Add(p1);
-        //    for (int i = 0; i < 100; i++)
-        //    {
-        //        gameInfo.ParticipantsList.Add(p2);
-        //    }
-
-
-        //    Story s1 = new Story { Title = "title1", URL = "url1" };
-        //    Story s2 = new Story { Title = "title2", URL = "url2" };
-        //    Story s3 = new Story { Title = "title3", URL = "url3" };
-        //    storyList.Add(s1);
-        //    storyList.Add(s2);
-        //    storyList.Add(s3);
-        //}
 
         private void btnQuery_Click(object sender, RoutedEventArgs e)
         {
             string queryString = txtQuery.Text;
-            //if (!String.IsNullOrEmpty(queryString))
+            if (!String.IsNullOrEmpty(queryString))
             {
                 IPMSOperator op = null;
 
@@ -99,6 +80,8 @@ namespace PlanningPoker
 
         private void UpdateStoryList(List<Story> list)
         {
+            lbStoryList.Items.SortDescriptions.Clear();
+            ListViewBehavior.cleanLagecySortInfo(lbStoryList);
             gameInfo.StoryList.Clear();
             foreach (Story story in list)
             {

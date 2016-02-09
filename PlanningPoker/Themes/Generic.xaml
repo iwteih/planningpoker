@@ -1,6 +1,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctrl="clr-namespace:PlanningPoker.Control"
     xmlns:entity="clr-namespace:PlanningPoker.Entity"
     xmlns:convert="clr-namespace:PlanningPoker.Converter">
 
@@ -174,6 +175,31 @@
         </Setter>
     </Style>
 
+    <Style TargetType="{x:Type ctrl:ListViewArrowAdorner}">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Top"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ctrl:ListViewArrowAdorner}">
+                    <Path x:Name="path" 
+                          Data="M0,1L1,0L2,1"
+						  Stroke="{TemplateBinding Foreground}"
+						  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+						  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+						  Width="7" Height="4" Stretch="Fill"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="SortDirection"
+								 Value="Descending">
+                            <Setter TargetName="path"
+									Property="Data"
+                                Value="M0,0L1,1 2,0"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 
 </ResourceDictionary>

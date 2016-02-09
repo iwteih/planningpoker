@@ -84,7 +84,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Control\ListViewArrowAdorner.cs" />
+    <Compile Include="Control\ListViewBehavior.cs" />
     <Compile Include="Control\RichTextBoxBindable.cs" />
+    <Compile Include="Control\UIElementAdorner.cs" />
     <Compile Include="Converter\Bool2Visible.cs" />
     <Compile Include="Converter\MessageLength2Visible.cs" />
     <Compile Include="Entity\ApplicationConfig.cs" />
@@ -107,6 +110,7 @@
     <Compile Include="PMS\JIRA\JIRAOperator.cs" />
     <Compile Include="PMS\JIRA\Priority.cs" />
     <Compile Include="PMS\JIRA\Status.cs" />
+    <Compile Include="Utility\ExtensionMethods.cs" />
     <Compile Include="Utility\IOUtil.cs" />
     <Compile Include="Utility\IPUtil.cs" />
     <Compile Include="Utility\Utils.cs" />

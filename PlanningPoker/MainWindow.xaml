@@ -293,17 +293,10 @@
                                         <TextBlock FontWeight="Bold" Text="?"/>
                                     </Button>
                                     <StackPanel Grid.Column="1" Margin="0, 5, 0, 0"  HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
-                                        <Button DockPanel.Dock="Right" Name="btnSyncStoryList" Content="Sync Stories" VerticalContentAlignment="Center" Click="btnSyncStoryList_Click"/>
+                                        <Button DockPanel.Dock="Right" Name="btnSyncStoryList" Content="Sync" VerticalContentAlignment="Center" Click="btnSyncStoryList_Click"/>
                                         <Button DockPanel.Dock="Right" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Click="btnQuery_Click"/>
                                     </StackPanel>
                                 </Grid>
-                                <!--<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0, 5, 0, 0">
-                                    <Button Template="{StaticResource circleButton}" Width="20" Height="20">
-                                        <TextBlock FontWeight="Bold" Text="?"/>
-                                    </Button>
-                                    <Button DockPanel.Dock="Right" Name="btnSyncStoryList" Content="Sync Stories" VerticalContentAlignment="Center" Click="btnSyncStoryList_Click"/>
-                                    <Button DockPanel.Dock="Right" Name="btnQuery" Content="Query" VerticalContentAlignment="Center" Click="btnQuery_Click"/>
-                                </StackPanel>-->
                                 <TextBox Name="txtQuery" 
                                  Text="{Binding QueryString}"
                                  Height="60"
@@ -315,12 +308,14 @@
                         </Grid>
                     </Expander>
                     <ProgressBar Name="processBar" Grid.Row="1" Height="5" Visibility="Hidden" IsIndeterminate="True" Margin="0, 3, 0, 3"/>
-                    <ListView Name="lbStoryList" Grid.Row="2" ItemsSource="{Binding StoryList}" 
+                    <ListView Name="lbStoryList" Grid.Row="2" 
+                              ctrl:ListViewBehavior.HeaderSort="True"
+                              ItemsSource="{Binding StoryList}" 
                               ItemContainerStyle="{StaticResource listBoxItemMouseOver}" 
                               SelectionChanged="lbStoryList_SelectionChanged">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="ID" DisplayMemberBinding="{Binding ID}"/>
+                                <GridViewColumn Header="ID" DisplayMemberBinding="{Binding ID}" ctrl:ListViewBehavior.SortField="ID"/>
                                 <GridViewColumn Header="Assignee" DisplayMemberBinding="{Binding Assignee}"/>
                                 <GridViewColumn Header="Priority" DisplayMemberBinding="{Binding Priority}"/>
                                 <GridViewColumn Header="Summary" DisplayMemberBinding="{Binding Summary}"/>

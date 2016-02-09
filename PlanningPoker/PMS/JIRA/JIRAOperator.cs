@@ -18,8 +18,8 @@ namespace PlanningPoker.PMS
         public List<Story> Query(string user, string password, string url)
         {
             var list = new List<Story>();
-            //string json = WebUtil.Query(user, password, url);
-            string json = WebUtil.Query2();
+            string json = WebUtil.Query(user, password, url);
+            //string json = WebUtil.Query2();
 
             if (string.IsNullOrEmpty(json))
             {

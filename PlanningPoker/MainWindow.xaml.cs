@@ -70,7 +70,15 @@ namespace PlanningPoker
 
                 Action action = delegate()
                 {
-                    List<Story> list = op.Query(queryUser, queryPwd, queryText);
+                    List<Story> list = null;
+                    try
+                    {
+                        list = op.Query(queryUser, queryPwd, queryText);
+                    }
+                    catch (Exception exp)
+                    {
+                        this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(()=>gameInfo.Message = exp.Message));
+                    }
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action<List<Story>>(UpdateStoryList), list);
                 };
                 action.BeginInvoke(null, null);
@@ -80,6 +88,11 @@ namespace PlanningPoker
 
         private void UpdateStoryList(List<Story> list)
         {
+            if(list == null)
+            {
+                return;
+            }
+
             lbStoryList.Items.SortDescriptions.Clear();
             ListViewBehavior.cleanLagecySortInfo(lbStoryList);
             gameInfo.StoryList.Clear();

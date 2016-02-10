@@ -23,6 +23,8 @@ namespace PlanningPoker.Utility
             request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(new ASCIIEncoding().GetBytes(usernamePassword)));
             request.Method = "GET";
 
+            ServicePointManager.ServerCertificateValidationCallback = ValidateServerCertificate;
+
             using (WebResponse response = request.GetResponse())
             {
                 using (StreamReader streamReader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
@@ -33,19 +35,25 @@ namespace PlanningPoker.Utility
             }
         }
 
+        private static bool ValidateServerCertificate(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
+        }
+
         public static string Query(string user, string password, string url)
         {
             try
             {
+                ServicePointManager.ServerCertificateValidationCallback = ValidateServerCertificate;
                 var client = new WebClient { Credentials = new NetworkCredential(user, password), Encoding = Encoding.UTF8 };
                 var response = client.DownloadString(url);
                 return response;
             }
             catch(Exception exp)
             {
-                log.Error(string.Format("cannot get query resopnse,query text={0}", url), exp); 
+                log.Error(string.Format("cannot get query resopnse,query text={0}", url), exp);
+                throw exp;
             }
-            return string.Empty;
         }
 
         public static string Query2()

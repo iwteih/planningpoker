@@ -266,7 +266,7 @@
                     <GroupBox.Header>
                         <TextBlock Text="Story Point" FontStyle="Italic" FontSize="15"/>
                     </GroupBox.Header>
-                    <Grid >
+                    <Grid>
                         <TextBox Name="txtStoryPoint"
                             Foreground="Orange"
                             Background="MediumSeaGreen" 
@@ -286,6 +286,14 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
+                        <TextBlock Name="txtSaveSuccess" Text="√" 
+                                   Foreground="Orange" 
+                                   FontWeight="Bold" 
+                                   FontSize="16" 
+                                   HorizontalAlignment="Right" 
+                                   VerticalAlignment="Bottom"
+                                   Opacity="0"
+                                   Margin="0, 0, 32, 5"/>
                         <Button Name="btnUpateStoryPoint" 
                                 HorizontalAlignment="Right" 
                                 VerticalAlignment="Bottom" 
@@ -350,7 +358,7 @@
                             </DockPanel>
                         </Grid>
                     </Expander>
-                    <ProgressBar Name="processBar" Grid.Row="1" Height="5" Visibility="Hidden" IsIndeterminate="True" Margin="0, 3, 0, 3"/>
+                    <ProgressBar Name="processBar" Grid.Row="1" Height="5" Visibility="Collapsed" IsIndeterminate="True" Margin="0, 3, 0, 3"/>
                     <ListView Name="lbStoryList" Grid.Row="2" 
                               ctrl:ListViewBehavior.HeaderSort="True"
                               ItemsSource="{Binding StoryList}" 

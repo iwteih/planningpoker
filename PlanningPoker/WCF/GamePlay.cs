@@ -26,7 +26,6 @@ namespace PlanningPoker.WCF
 
         public void Join(string user, string role)
         {
-
             ChannelManager.Instance.BroadcastJoinEvent(gameInfo.Moderator, user, role,
                 gameInfo.SyncStory,
                 gameInfo.CardSequenceString,

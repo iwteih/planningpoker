@@ -36,22 +36,6 @@ namespace PlanningPoker.FormStates
             }
         }
 
-        public override void Flip()
-        {
-            // client is not allowed to send flip command
-        }
-
-        public override void Reset()
-        {
-            // client is not allowed to send reset command
-        }
-
-
-        public override void SyncStory(Story story)
-        {
-            // client is not allowed to send syncstory command
-        }
-
         public override void callback_StorySyncEventHandler(object sender, WCF.StorySyncArgs e)
         {
             gameInfo.SyncStory = e.Story;
@@ -72,12 +56,6 @@ namespace PlanningPoker.FormStates
             }
 
             OnStoryListSyncComplete();
-        }
-
-        public override void SyncStoryList(List<Story> storyList)
-        {
-            
-        }
-
+        }        
     }
 }

@@ -26,9 +26,8 @@ namespace PlanningPoker.Utility
 
             if (response.ErrorException != null)
             {
-                log.Error(string.Format("error post,url={0},status={1}", url, response.StatusCode));
-                var exp = new ApplicationException(response.StatusDescription, response.ErrorException);
-                throw exp;
+                log.Error(string.Format("error post,url={0},status={1}, exception={2}", url, response.StatusCode, response.ErrorException));
+                throw response.ErrorException;
             }
             return response.StatusCode;
         }
@@ -45,9 +44,8 @@ namespace PlanningPoker.Utility
 
             if (response.ErrorException != null)
             {
-                log.Error(string.Format("error post,url={0},status={1}", url, response.StatusCode));
-                var exp = new ApplicationException(response.StatusDescription, response.ErrorException);
-                throw exp;
+                log.Error(string.Format("error get,url={0},status={1},exception={2}", url, response.StatusCode, response.ErrorException));
+                throw response.ErrorException;
             }
 
             return response.Data;
@@ -66,9 +64,8 @@ namespace PlanningPoker.Utility
 
             if (response.ErrorException != null)
             {
-                log.Error(string.Format("error post,url={0},status={1}", url, response.StatusCode));
-                var exp = new ApplicationException(response.StatusDescription, response.ErrorException);
-                throw exp;
+                log.Error(string.Format("error put,url={0},status={1},exception={2}", url, response.StatusCode, response.ErrorException));
+                throw response.ErrorException;
             }
 
             return response.StatusCode;

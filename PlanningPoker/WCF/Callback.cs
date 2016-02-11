@@ -156,7 +156,6 @@ namespace PlanningPoker.WCF
             }
         }
 
-
         public void Flip()
         {
             lock (gameInfo)
@@ -193,7 +192,6 @@ namespace PlanningPoker.WCF
         {
             gameInfo.Score = score;
         }
-
 
         public void SyncStory(Story story)
         {

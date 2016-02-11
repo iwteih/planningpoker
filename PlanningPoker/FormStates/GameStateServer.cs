@@ -4,6 +4,7 @@ using PlanningPoker.Utility;
 using PlanningPoker.WCF;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Description;
@@ -19,13 +20,13 @@ namespace PlanningPoker.FormStates
 
         private ServiceHost host = null;
         private bool isModeratorExit = false;
-        
+
         /// <summary>
         /// An callback to close window.
         /// </summary>
         public event EventHandler CloseFormHandler;
 
-        private GameStateServer() 
+        private GameStateServer()
         {
             gameInfo.Moderator = gameInfo.UserName;
         }
@@ -38,10 +39,11 @@ namespace PlanningPoker.FormStates
                 NetTcpBinding netTcpBinding = new NetTcpBinding();
                 netTcpBinding.OpenTimeout = new TimeSpan(0, 5, 0);
                 netTcpBinding.SendTimeout = new TimeSpan(0, 5, 0);
-                netTcpBinding.ReceiveTimeout = new TimeSpan(0,30, 0);
+                netTcpBinding.ReceiveTimeout = new TimeSpan(0, 30, 0);
                 netTcpBinding.CloseTimeout = new TimeSpan(0, 0, 5);
                 netTcpBinding.MaxBufferSize = 2147483647;
                 netTcpBinding.MaxReceivedMessageSize = 2147483647;
+                netTcpBinding.Security.Mode = SecurityMode.None;
                 host = new ServiceHost(typeof(GamePlay), baseAddress);
                 host.AddServiceEndpoint(typeof(IGamePlay), netTcpBinding, "");
                 ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
@@ -50,6 +52,13 @@ namespace PlanningPoker.FormStates
             }
             catch (Exception exp)
             {
+                try
+                {
+                    CloseServer();
+                }
+                catch { }
+                host = null;
+
                 log.Error(string.Format("cannot start servie, {0}", serverIP), exp);
                 gameInfo.Message = exp.Message;
             }
@@ -57,7 +66,7 @@ namespace PlanningPoker.FormStates
 
         public void CloseServer()
         {
-            if(host != null)
+            if (host != null)
             {
                 host.Close();
             }
@@ -65,7 +74,7 @@ namespace PlanningPoker.FormStates
 
         public bool IsConnected
         {
-            get { return host != null; }
+            get { return gameInfo.CanStartService; }
         }
 
         public override void callback_ExitEventHandler(object sender, WCF.UserExitEventArgs e)
@@ -74,7 +83,7 @@ namespace PlanningPoker.FormStates
             if (e.ExitUser == gameInfo.Moderator)
             {
                 isModeratorExit = true;
-                
+
                 if (CloseFormHandler != null)
                 {
                     CloseFormHandler(null, null);
@@ -88,6 +97,9 @@ namespace PlanningPoker.FormStates
             gameInfo.CanStartService = joined;
         }
 
+        /// <summary>
+        /// Flag to indicate the moderator has exited. 
+        /// </summary>
         public override bool IsModeratorExit
         {
             get
@@ -187,7 +199,6 @@ namespace PlanningPoker.FormStates
             }
         }
 
-
         public override void SyncStory(Story story)
         {
             if (gamePlay != null)
@@ -203,15 +214,64 @@ namespace PlanningPoker.FormStates
             gameInfo.SyncStory = e.Story;
             // do not re-assign the story, bc/ server may view another story
         }
-        
+
         public override void callback_StoryListSyncEventHandler(object sender, StoryListSyncArgs e)
         {
-            
+
         }
 
         public override void SyncStoryList(List<Story> storyList)
         {
             gamePlay.SyncStoryList(storyList);
+        }
+
+        public override bool UpdateStoryPoint(PMS.IPMSOperator pmsOperator, string username, string password)
+        {
+            if (gameInfo.SyncStory == null)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(gameInfo.Score) || gameInfo.Score == "-")
+            {
+                return false;
+            }
+
+            if (pmsOperator == null)
+            {
+                return false;
+            }
+
+            string storyPointField = ConfigurationManager.AppSettings["StoryPointField"];
+            if (string.IsNullOrEmpty(storyPointField))
+            {
+                gameInfo.Message = "Please specify StoryPointField in config file";
+                return false;
+            }
+
+            gameInfo.SyncStory.StoryPoint = gameInfo.Score;
+
+            if (gameInfo.Score.Contains("/"))
+            {
+                gameInfo.SyncStory.StoryPoint = Utils.FractionToFloat(gameInfo.Score).ToString();
+            }
+
+            bool success = false;
+            try
+            {
+                success = pmsOperator.UpdateStoryPoint(username, password, gameInfo.SyncStory, storyPointField);
+
+                if (!success)
+                {
+                    gameInfo.Message = "Save story point failed!!";
+                }
+            }
+            catch (Exception exp)
+            {
+                gameInfo.Message = exp.Message;
+            }
+
+            return success;
         }
     }
 }

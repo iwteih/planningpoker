@@ -5,11 +5,11 @@ using System.Text;
 
 namespace PlanningPoker.FormStates
 {
-    class MockGameState : IGameState
+    class InitGameState : IGameState
     {
-        public static readonly MockGameState Instance = new MockGameState();
+        public static readonly InitGameState Instance = new InitGameState();
 
-        private MockGameState() { }
+        private InitGameState() { }
 
         public bool IsModeratorExit
         {
@@ -57,6 +57,11 @@ namespace PlanningPoker.FormStates
 
         public void SyncStoryList(List<Entity.Story> storyList)
         {
+        }
+
+        public bool UpdateStoryPoint(PMS.IPMSOperator pmsOperator, string username, string password)
+        {
+            return false;
         }
 
         public event EventHandler StorySyncComplete;

@@ -18,11 +18,12 @@ namespace PlanningPoker.FormStates
         protected GameInfo gameInfo = GameInfo.Instance;
 
         public abstract bool IsModeratorExit { get; }
-        public abstract void Flip();
-        public abstract void Reset();
-        public abstract void Join(string serverIP);
-        public abstract void SyncStory(Story story);
-        public abstract void SyncStoryList(List<Story> storyList);
+        public virtual void Flip() { }
+        public virtual void Reset() { }
+        public virtual void Join(string serverIP) { }
+        public virtual void SyncStory(Story story) { }
+        public virtual void SyncStoryList(List<Story> storyList) { }
+        public virtual bool UpdateStoryPoint(PMS.IPMSOperator pmsOperator, string username, string password) { return false; }
         public abstract void callback_ExitEventHandler(object sender, UserExitEventArgs e);
         public abstract void callback_StorySyncEventHandler(object sender, StorySyncArgs e);
         public abstract void callback_StoryListSyncEventHandler(object sender, StoryListSyncArgs e);
@@ -57,9 +58,10 @@ namespace PlanningPoker.FormStates
                 NetTcpBinding netTcpBinding = new NetTcpBinding();
                 netTcpBinding.MaxBufferSize = 2147483647;
                 netTcpBinding.MaxReceivedMessageSize = 2147483647;
+                netTcpBinding.Security.Mode = SecurityMode.None;
                 DuplexChannelFactory<IGamePlay> channel = new DuplexChannelFactory<IGamePlay>(
                     new InstanceContext(callback),
-                    new NetTcpBinding(),
+                    netTcpBinding,
                     new EndpointAddress(baseAddress));
                 gamePlay = channel.CreateChannel();
 

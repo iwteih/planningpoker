@@ -21,6 +21,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -36,7 +37,7 @@ namespace PlanningPoker
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         GameInfo gameInfo = GameInfo.Instance;
-        IGameState gameState = MockGameState.Instance;
+        IGameState gameState = InitGameState.Instance;
 
         public MainWindow()
         {
@@ -91,7 +92,13 @@ namespace PlanningPoker
                     }
                     catch (Exception exp)
                     {
-                        this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => gameInfo.Message = exp.Message));
+                        this.Dispatcher.BeginInvoke(
+                            DispatcherPriority.Send, 
+                            new Action(() => 
+                            {
+                                processBar.Visibility = System.Windows.Visibility.Collapsed; 
+                                gameInfo.Message = exp.Message;
+                            }));
                     }
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action<List<Story>>(UpdateStoryList), list);
                 };
@@ -209,7 +216,7 @@ namespace PlanningPoker
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
             // if already connected
-            if (string.IsNullOrEmpty(txtServerIP.Text) || gameState is GameStateClient)
+            if (gameInfo.CanConnectServer)
             {
                 return;
             }
@@ -255,7 +262,7 @@ namespace PlanningPoker
         {
             // if moderator wants to exit, notify all clients
             GameStateServer state = gameState as GameStateServer;
-            if (state != null && state.IsConnected && !gameState.IsModeratorExit)
+            if (state != null && state.IsConnected && !state.IsModeratorExit)
             {
                 e.Cancel = true;
             }
@@ -347,54 +354,20 @@ namespace PlanningPoker
 
         private void btnUpateStoryPoint_Click(object sender, RoutedEventArgs e)
         {
-            if (gameInfo.SyncStory == null)
+            if (gameState is GameStateServer)
             {
-                return;
-            }
-
-            if (string.IsNullOrEmpty(gameInfo.Score) || gameInfo.Score == "-")
-            {
-                return;
-            }
-
-            if (PMSOpertor == null)
-            {
-                return;
-            }
-
-            if (Validation.GetHasError(txtStoryPoint))
-            {
-                return;
-            }
-
-            string storyPointField = ConfigurationManager.AppSettings["StoryPointField"];
-            if (string.IsNullOrEmpty(storyPointField))
-            {
-                gameInfo.Message = "Please specify StoryPointField in config file";
-                return;
-            }
-
-            gameInfo.SyncStory.StoryPoint = gameInfo.Score;
-
-            if(gameInfo.Score.Contains("/"))
-            {
-                gameInfo.SyncStory.StoryPoint = Utils.FractionToFloat(gameInfo.Score).ToString();
-            }
-
-            string queryUser = txtQueryUser.Text;
-            string queryPwd = txtQueryPwd.Password;
-            try
-            {
-                bool success = PMSOpertor.UpdateStoryPoint(queryUser, queryPwd, gameInfo.SyncStory, storyPointField);
-
-                if(!success)
+                if (Validation.GetHasError(txtStoryPoint))
                 {
-                    gameInfo.Message = "Save story point failed!!";
+                    return;
                 }
-            }
-            catch(Exception exp)
-            {
-                gameInfo.Message = exp.Message;
+
+                bool success = gameState.UpdateStoryPoint(pmsOperator, txtQueryUser.Text, txtQueryPwd.Password);
+
+                if (success)
+                {
+                    DoubleAnimation da = new DoubleAnimation(1, 0, TimeSpan.FromSeconds(6));
+                    this.txtSaveSuccess.BeginAnimation(TextBlock.OpacityProperty, da);
+                }
             }
         }
     }

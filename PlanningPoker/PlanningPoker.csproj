@@ -99,7 +99,7 @@
     <Compile Include="FormStates\GameStateClient.cs" />
     <Compile Include="FormStates\GameStateServer.cs" />
     <Compile Include="FormStates\IGameState.cs" />
-    <Compile Include="FormStates\MockGameState.cs" />
+    <Compile Include="FormStates\InitGameState.cs" />
     <Compile Include="PMS\IPMSOperator.cs" />
     <Compile Include="PMS\JIRA\Assignee.cs" />
     <Compile Include="PMS\JIRA\Fields.cs" />

@@ -19,11 +19,11 @@ namespace PlanningPoker.Utility
             return name;
         }
 
-        public static double FractionToDouble(string fraction)
+        public static double FractionToFloat(string fraction)
         {
-            double result;
+            float result;
 
-            if (double.TryParse(fraction, out result))
+            if (float.TryParse(fraction, out result))
             {
                 return result;
             }
@@ -38,14 +38,14 @@ namespace PlanningPoker.Utility
                 {
                     if (split.Length == 2)
                     {
-                        return (double)a / b;
+                        return (float)a / b;
                     }
 
                     int c;
 
                     if (int.TryParse(split[2], out c))
                     {
-                        return a + (double)b / c;
+                        return a + (float)b / c;
                     }
                 }
             }

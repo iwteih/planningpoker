@@ -19,5 +19,19 @@ namespace PlanningPoker.Utility
             }
             return addressIP;
         }
+
+        public static string GetHost(string url)
+        {
+            Uri uri = new Uri(url);
+            return uri.GetLeftPart(UriPartial.Authority);
+        }
+
+        public static string GetResource(string url)
+        {
+            Uri uri = new Uri(url);
+            string host = uri.GetLeftPart(UriPartial.Authority);
+            string resource = url.Replace(host, string.Empty);
+            return resource;
+        }
     }
 }

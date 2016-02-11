@@ -1,12 +1,11 @@
 ﻿using log4net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using PlanningPoker.Entity;
 using PlanningPoker.PMS.JIRA;
 using PlanningPoker.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 namespace PlanningPoker.PMS
@@ -19,15 +18,7 @@ namespace PlanningPoker.PMS
         public List<Story> Query(string user, string password, string url)
         {
             var list = new List<Story>();
-            string json = WebUtil.Query(user, password, url);
-            //string json = WebUtil.Query2();
-
-            if (string.IsNullOrEmpty(json))
-            {
-                return list;
-            }
-
-            var issueList = JsonConvert.DeserializeObject<JIRA.IssueList>(json);
+            var issueList = RestUtil.Get<IssueList>(user, password, url);
 
             if (issueList != null)
             {
@@ -49,12 +40,36 @@ namespace PlanningPoker.PMS
             return list;
         }
 
-        public void UpdateStoryPoint(string user, string password, Story story, string storyPointField)
+        public bool UpdateStoryPoint(string user, string password, Story story, string storyPointField)
         {
             string postString = string.Format("{0}\"fields\":{0}\"{2}\":{3}{1}{1}", "{", "}", storyPointField, story.StoryPoint);
-            string url = string.Format(POST_URL, story.URL.Substring(0, story.URL.IndexOf("/browse")), story.ID);
-            WebUtil.PutHTTP(user, password, postString, url);
+            string url = string.Format(POST_URL, IPUtil.GetHost(story.URL), story.ID);
+            //HttpStatusCode statusCode = WebUtil.PutHTTP(user, password, postString, url);
+            HttpStatusCode statusCode = RestUtil.Put(user, password, postString, url);
             
+            if(statusCode == HttpStatusCode.NoContent)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private string session = null;
+
+        // not work, weird, put session returns 404
+        public void NewSession(string username, string password, string url)
+        {
+            string host = IPUtil.GetHost(url);
+            url = string.Format("{0}/jira/rest/auth/1/session", host);
+
+            string payload = string.Format("{0}\"username\": \"{2}\", \"password\": \"{3}\"{1}", "{", "}", username, password);
+
+            //SessionInfo sessionInfo = RestUtil.GetEntity_Post<SessionInfo>(username, password, url, payload);
+            WebUtil.PostHTTP(username, password, payload, url);
+
+            //Console.WriteLine(sessionInfo.Session.Name);
+            //Console.WriteLine(sessionInfo.Session.Value);
         }
     }
 }

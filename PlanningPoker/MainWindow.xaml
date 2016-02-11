@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ctrl="clr-namespace:PlanningPoker.Control"
         xmlns:entity="clr-namespace:PlanningPoker.Entity"
+        xmlns:rule="clr-namespace:PlanningPoker.Rules"
         Title="Planning Poker -- Powered By Yiming Bao" 
         WindowStartupLocation="CenterScreen"
         Height="700" Width="1100" 
@@ -80,10 +81,18 @@
                 <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Grid>
             <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsMouseOver" Value="True">
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <ScaleTransform ScaleX="1.05" ScaleY="1.05"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="RenderTransformOrigin" Value=".5,.5"/>
+                </Trigger>
                 <Trigger Property="Button.IsPressed" Value="True">
                     <Setter Property="RenderTransform">
                         <Setter.Value>
-                            <ScaleTransform ScaleX=".9" ScaleY=".9"/>
+                            <ScaleTransform ScaleX="1.0" ScaleY="1.0"/>
                         </Setter.Value>
                     </Setter>
                     <Setter Property="RenderTransformOrigin" Value=".5,.5"/>
@@ -258,15 +267,25 @@
                         <TextBlock Text="Story Point" FontStyle="Italic" FontSize="15"/>
                     </GroupBox.Header>
                     <Grid >
-                        <TextBox Foreground="Orange"
-                       Background="MediumSeaGreen" 
-                       FontSize="36"
-                       FontWeight="ExtraBold" 
-                       Text="{Binding Score}" 
-                       Height="Auto"
-                       HorizontalContentAlignment="Center" 
-                       VerticalContentAlignment="Center"
-                       Margin="0, 5"/>
+                        <TextBox Name="txtStoryPoint"
+                            Foreground="Orange"
+                            Background="MediumSeaGreen" 
+                            FontSize="36"
+                            FontWeight="ExtraBold"                        
+                            Height="Auto"
+                            Style="{StaticResource textBoxInError}"
+                            HorizontalContentAlignment="Center" 
+                            VerticalContentAlignment="Center"
+                            Validation.ErrorTemplate="{StaticResource validationTemplate}"
+                            Margin="0, 5">
+                            <TextBox.Text>
+                                <Binding Path="Score">
+                                    <Binding.ValidationRules>
+                                        <rule:NumericValidator/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
                         <Button Name="btnUpateStoryPoint" 
                                 HorizontalAlignment="Right" 
                                 VerticalAlignment="Bottom" 

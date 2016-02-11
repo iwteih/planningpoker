@@ -8,7 +8,6 @@
     <convert:FaceBackgroundConverter x:Key="faceBackgroundConverter"/>
     <convert:FaceVisibilityConverter x:Key="faceVisibilityConverter"/>
 
-    
     <LinearGradientBrush x:Key="CardNormalBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="#00FFFFFF" Offset="0" />
         <GradientStop Color="#77FFFFFF" Offset="0.5" />

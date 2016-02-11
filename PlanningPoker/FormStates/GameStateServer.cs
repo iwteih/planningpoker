@@ -120,7 +120,7 @@ namespace PlanningPoker.FormStates
 
                     if (p.UnflipedPlayingCard.Contains("/"))
                     {
-                        v = Utils.FractionToDouble(p.UnflipedPlayingCard);
+                        v = Utils.FractionToFloat(p.UnflipedPlayingCard);
                         canParse = true;
                     }
                     else
@@ -152,7 +152,7 @@ namespace PlanningPoker.FormStates
 
                     if (card.Contains("/"))
                     {
-                        c = Utils.FractionToDouble(card);
+                        c = Utils.FractionToFloat(card);
                         canParse = true;
                     }
                     else

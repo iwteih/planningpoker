@@ -58,9 +58,8 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.5\lib\net35-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net35\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net35\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -86,7 +85,6 @@
     </ApplicationDefinition>
     <Compile Include="Control\ListViewArrowAdorner.cs" />
     <Compile Include="Control\ListViewBehavior.cs" />
-    <Compile Include="Control\NumericTextBox.cs" />
     <Compile Include="Control\RichTextBoxBindable.cs" />
     <Compile Include="Control\UIElementAdorner.cs" />
     <Compile Include="Converter\Bool2Visible.cs" />
@@ -110,10 +108,13 @@
     <Compile Include="PMS\JIRA\IssueType.cs" />
     <Compile Include="PMS\JIRA\JIRAOperator.cs" />
     <Compile Include="PMS\JIRA\Priority.cs" />
+    <Compile Include="PMS\JIRA\SessionInfo.cs" />
     <Compile Include="PMS\JIRA\Status.cs" />
+    <Compile Include="Rules\NumericValidator.cs" />
     <Compile Include="Utility\ExtensionMethods.cs" />
     <Compile Include="Utility\IOUtil.cs" />
     <Compile Include="Utility\IPUtil.cs" />
+    <Compile Include="Utility\RestUtil.cs" />
     <Compile Include="Utility\Utils.cs" />
     <Compile Include="Utility\WebUtil.cs" />
     <Compile Include="WCF\AppEventArgs.cs" />

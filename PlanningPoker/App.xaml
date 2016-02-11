@@ -8,6 +8,28 @@
         <convert:Bool2Visible x:Key="bool2v"/>
         <convert:MessageLength2Visible x:Key="msglen2v"/>
 
+        <LinearGradientBrush x:Key="shinyBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Offset="0" Color="Snow"/>
+            <GradientStop Offset="0.5" Color="LightGray"/>
+            <GradientStop Offset="1" Color="Snow"/>
+        </LinearGradientBrush>
+
+        <ControlTemplate x:Key="validationTemplate">
+            <Border BorderThickness="4" BorderBrush="Red">
+                <AdornedElementPlaceholder/>
+            </Border>
+        </ControlTemplate>
+
+        <Style x:Key="textBoxInError" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+              Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                              Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
         <DataTemplate x:Key="ParticipantsTemplate">
 
             <Grid>
@@ -25,6 +47,7 @@
         <Style TargetType="Button">
             <Setter Property="Width" Value="75"/>
             <Setter Property="Height" Value="25"/>
+            <Setter Property="Background" Value="{StaticResource shinyBrush}"/>
         </Style>
         
         <Style TargetType="TextBox">

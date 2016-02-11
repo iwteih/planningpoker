@@ -43,7 +43,6 @@ namespace PlanningPoker.WCF
             ChannelManager.Instance.BroadcastPlayEvent(user, pokerValue);
         }
 
-
         public void Withdraw(string user)
         {
             ChannelManager.Instance.BroadcastWithdrawEvent(user);

@@ -357,8 +357,12 @@ namespace PlanningPoker
                 return;
             }
 
-
             if (PMSOpertor == null)
+            {
+                return;
+            }
+
+            if (Validation.GetHasError(txtStoryPoint))
             {
                 return;
             }
@@ -369,15 +373,24 @@ namespace PlanningPoker
                 gameInfo.Message = "Please specify StoryPointField in config file";
                 return;
             }
-            
 
             gameInfo.SyncStory.StoryPoint = gameInfo.Score;
+
+            if(gameInfo.Score.Contains("/"))
+            {
+                gameInfo.SyncStory.StoryPoint = Utils.FractionToFloat(gameInfo.Score).ToString();
+            }
 
             string queryUser = txtQueryUser.Text;
             string queryPwd = txtQueryPwd.Password;
             try
             {
-                PMSOpertor.UpdateStoryPoint(queryUser, queryPwd, gameInfo.SyncStory, storyPointField);
+                bool success = PMSOpertor.UpdateStoryPoint(queryUser, queryPwd, gameInfo.SyncStory, storyPointField);
+
+                if(!success)
+                {
+                    gameInfo.Message = "Save story point failed!!";
+                }
             }
             catch(Exception exp)
             {

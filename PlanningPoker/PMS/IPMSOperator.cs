@@ -10,6 +10,6 @@ namespace PlanningPoker.PMS
     {
         List<Story> Query(string user, string password, string url);
 
-        void UpdateStoryPoint(string user, string password, Story story, string storyPointField);
+        bool UpdateStoryPoint(string user, string password, Story story, string storyPointField);
     }
 }

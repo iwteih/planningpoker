@@ -46,21 +46,35 @@ namespace PlanningPoker
             this.DataContext = gameInfo;
         }
 
+        private IPMSOperator pmsOperator = null;
+        private IPMSOperator PMSOpertor
+        {
+            get
+            {
+                if (pmsOperator == null)
+                {
+                    if (gameInfo.PMS == "JIRA")
+                    {
+                        pmsOperator = new JIRAOperator();
+                    }
+                }
+
+                if (pmsOperator == null)
+                {
+                    gameInfo.Message = "Please specify PMS type in config file";
+                }
+
+                return pmsOperator;
+            }
+        }
+
         private void btnQuery_Click(object sender, RoutedEventArgs e)
         {
             string queryString = txtQuery.Text;
             if (!String.IsNullOrEmpty(queryString))
             {
-                IPMSOperator op = null;
-
-                if (gameInfo.PMS == "JIRA")
+                if (PMSOpertor == null)
                 {
-                    op = new JIRAOperator();
-                }
-
-                if (op == null)
-                {
-                    gameInfo.Message = "Please specify a PMS type in config file";
                     return;
                 }
 
@@ -73,11 +87,11 @@ namespace PlanningPoker
                     List<Story> list = null;
                     try
                     {
-                        list = op.Query(queryUser, queryPwd, queryText);
+                        list = PMSOpertor.Query(queryUser, queryPwd, queryText);
                     }
                     catch (Exception exp)
                     {
-                        this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(()=>gameInfo.Message = exp.Message));
+                        this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => gameInfo.Message = exp.Message));
                     }
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action<List<Story>>(UpdateStoryList), list);
                 };
@@ -88,7 +102,7 @@ namespace PlanningPoker
 
         private void UpdateStoryList(List<Story> list)
         {
-            if(list == null)
+            if (list == null)
             {
                 return;
             }
@@ -328,6 +342,46 @@ namespace PlanningPoker
                 {
                     Process.Start(new ProcessStartInfo(url));
                 }
+            }
+        }
+
+        private void btnUpateStoryPoint_Click(object sender, RoutedEventArgs e)
+        {
+            if (gameInfo.SyncStory == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(gameInfo.Score) || gameInfo.Score == "-")
+            {
+                return;
+            }
+
+
+            if (PMSOpertor == null)
+            {
+                return;
+            }
+
+            string storyPointField = ConfigurationManager.AppSettings["StoryPointField"];
+            if (string.IsNullOrEmpty(storyPointField))
+            {
+                gameInfo.Message = "Please specify StoryPointField in config file";
+                return;
+            }
+            
+
+            gameInfo.SyncStory.StoryPoint = gameInfo.Score;
+
+            string queryUser = txtQueryUser.Text;
+            string queryPwd = txtQueryPwd.Password;
+            try
+            {
+                PMSOpertor.UpdateStoryPoint(queryUser, queryPwd, gameInfo.SyncStory, storyPointField);
+            }
+            catch(Exception exp)
+            {
+                gameInfo.Message = exp.Message;
             }
         }
     }

@@ -14,6 +14,7 @@ namespace PlanningPoker.Utility
                 if (_IPAddress.AddressFamily.ToString() == "InterNetwork")
                 {
                     addressIP = _IPAddress.ToString();
+                    return addressIP;
                 }
             }
             return addressIP;

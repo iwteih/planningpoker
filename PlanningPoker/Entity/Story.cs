@@ -81,7 +81,6 @@ namespace PlanningPoker.Entity
 
         private bool isSyncStory;
         [DataMember]
-
         public bool IsSyncStory
         {
             get
@@ -97,5 +96,7 @@ namespace PlanningPoker.Entity
                 }
             }
         }
+
+        public string StoryPoint { get; set; }
     }
 }

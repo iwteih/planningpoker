@@ -14,6 +14,7 @@ namespace PlanningPoker.PMS
     class JIRAOperator : IPMSOperator
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly string POST_URL = "{0}/rest/api/2/issue/{1}";
 
         public List<Story> Query(string user, string password, string url)
         {
@@ -48,6 +49,12 @@ namespace PlanningPoker.PMS
             return list;
         }
 
-
+        public void UpdateStoryPoint(string user, string password, Story story, string storyPointField)
+        {
+            string postString = string.Format("{0}\"fields\":{0}\"{2}\":{3}{1}{1}", "{", "}", storyPointField, story.StoryPoint);
+            string url = string.Format(POST_URL, story.URL.Substring(0, story.URL.IndexOf("/browse")), story.ID);
+            WebUtil.PutHTTP(user, password, postString, url);
+            
+        }
     }
 }

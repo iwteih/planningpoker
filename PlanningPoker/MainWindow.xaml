@@ -74,6 +74,22 @@
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
+        <ControlTemplate x:Key="saveButton">
+            <Grid>
+                <Image Source="Resources/save.png"/>
+                <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsPressed" Value="True">
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <ScaleTransform ScaleX=".9" ScaleY=".9"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="RenderTransformOrigin" Value=".5,.5"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
     </Window.Resources>
 
     <Grid>
@@ -241,15 +257,23 @@
                     <GroupBox.Header>
                         <TextBlock Text="Story Point" FontStyle="Italic" FontSize="15"/>
                     </GroupBox.Header>
-                    <Label
-                       Foreground="Orange"
+                    <Grid >
+                        <TextBox Foreground="Orange"
                        Background="MediumSeaGreen" 
                        FontSize="36"
                        FontWeight="ExtraBold" 
-                       Content="{Binding Score}" 
+                       Text="{Binding Score}" 
+                       Height="Auto"
                        HorizontalContentAlignment="Center" 
                        VerticalContentAlignment="Center"
-                        Margin="0, 5"/>
+                       Margin="0, 5"/>
+                        <Button Name="btnUpateStoryPoint" 
+                                HorizontalAlignment="Right" 
+                                VerticalAlignment="Bottom" 
+                                Width="Auto" Margin="0,5" 
+                                Template="{StaticResource saveButton}" 
+                                Click="btnUpateStoryPoint_Click"/>
+                    </Grid>
                 </GroupBox>
             </Grid>
             <GroupBox Grid.Row="1">

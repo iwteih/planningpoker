@@ -277,6 +277,30 @@ namespace PlanningPoker
 
             // notify exit
             gameState.Exit();
+
+            if (e.Cancel)
+            {
+                // in case the network has problem, server cannot trigger
+                // the exit callback, that will prevent form closing, so
+                // here start a timer to make sure 3 seconds later, the 
+                // form can be closed.
+                DispatcherTimer timer = new DispatcherTimer();
+                timer.Interval = new TimeSpan(0, 0, 3);
+                timer.Tick += timer_Tick;
+                timer.Start();
+            }
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            GameStateServer state = gameState as GameStateServer;
+            if(state != null)
+            {
+                log.Warn("form closing due to time out");
+                state.IsModeratorExit = true;
+            }
+
+            this.Close();
         }
 
         private void Window_Closed(object sender, EventArgs e)

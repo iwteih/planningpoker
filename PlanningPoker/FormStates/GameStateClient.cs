@@ -34,6 +34,10 @@ namespace PlanningPoker.FormStates
             {
                 return false;
             }
+            set
+            {
+                throw new NotSupportedException("cannot set IsModeratorExit in client side");
+            }
         }
 
         public override void callback_StorySyncEventHandler(object sender, WCF.StorySyncArgs e)

@@ -106,6 +106,10 @@ namespace PlanningPoker.FormStates
             {
                 return isModeratorExit;
             }
+            set
+            {
+                isModeratorExit = value;
+            }
         }
 
         public override void Flip()

@@ -17,7 +17,7 @@ namespace PlanningPoker.FormStates
         protected IGamePlay gamePlay;
         protected GameInfo gameInfo = GameInfo.Instance;
 
-        public abstract bool IsModeratorExit { get; }
+        public abstract bool IsModeratorExit { get; set; }
         public virtual void Flip() { }
         public virtual void Reset() { }
         public virtual void Join(string serverIP) { }

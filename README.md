@@ -46,4 +46,4 @@ You can adjust your role in the profile section.
 ### Known issue
 * If the GUI has been inactive for a time, the connection between server and client will be lost.
   Workaround is to operate GUI from time to time.
-* Clients perhaps cannot connect to server if they are in different subnet.
+* Clients perhaps cannot connect to server if they are in different subnet or blocked by firewall.

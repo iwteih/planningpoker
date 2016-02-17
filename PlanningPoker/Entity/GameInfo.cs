@@ -74,10 +74,6 @@ namespace PlanningPoker.Entity
             get
             {
                 string port = ConfigurationManager.AppSettings["Port"];
-                if (string.IsNullOrEmpty(port))
-                {
-                    return "8088";
-                }
                 return port;
             }
         }

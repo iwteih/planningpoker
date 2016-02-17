@@ -191,11 +191,14 @@ namespace PlanningPoker
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            string localIP = IPUtil.GetLocalIP();
-            string serverIP = string.Format("{0}:{1}", localIP, gameInfo.Port);
+            string serverIP = IPUtil.GetLocalIP();
 
-            // IP not changed
-            if (txtLocalIP.Text.Trim() == serverIP)
+            if (!string.IsNullOrEmpty(gameInfo.Port))
+            {
+                serverIP = string.Format("{0}:{1}", serverIP, gameInfo.Port);
+            }            
+
+            if (gameInfo.CanStartService)
             {
                 return;
             }

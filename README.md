@@ -41,7 +41,7 @@ You can adjust your role in the profile section.
    "Story Point" should be a customized field. You can find it in the JIRA API like http://kelpie9:8081/rest/api/2/issue/XSS-13/editmeta.
    Then edit PlanningPoker.exe.config, change the value of StoryPointField to that in your environment.
 4. How to adjust the port?
-   Edit PlanningPoker.exe.config, change the value of Port to what you need.
+   By default, the port used by PlanningPoker is 808, if the port is occupied, you can change it on your own: edit PlanningPoker.exe.config, change the value of Port to what you need.
 
 ### Known issue
 * If the GUI has been inactive for a time, the connection between server and client will be lost.

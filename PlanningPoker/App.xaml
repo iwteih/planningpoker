@@ -75,6 +75,17 @@
             </Setter>
         </Style>
 
+        <Style x:Key="ellipseFill" TargetType="Ellipse">
+            <Setter Property="Fill">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 1">
+                        <GradientStop Offset="0" Color="LimeGreen"/>
+                        <GradientStop Offset="1" Color="Green"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+ 
         <!--http://www.cnblogs.com/akwwl/articles/3445097.html slidder checkbox-->
         <!--<Style x:Key="CheckRadioFocusVisual">
             <Setter Property="Control.Template">

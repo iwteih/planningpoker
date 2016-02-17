@@ -32,7 +32,7 @@ namespace PlanningPoker.Utility
             return response.StatusCode;
         }
 
-        public static T Get<T>(string user, string password, string url) where T : new()
+        public static IRestResponse<T> Get<T>(string user, string password, string url) where T : new()
         {
             var client = new RestClient(IPUtil.GetHost(url));
             client.Authenticator = new HttpBasicAuthenticator(user, password);
@@ -42,16 +42,22 @@ namespace PlanningPoker.Utility
             ServicePointManager.ServerCertificateValidationCallback = ((sender, certificate, chain, sslPolicyErrors) => true);
             var response = client.Execute<T>(request);
 
+            if(response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                log.Error("Unauthorized");
+                throw new UnauthorizedAccessException("Unauthorized");
+            }
+
             if (response.ErrorException != null)
             {
                 log.Error(string.Format("error get,url={0},status={1},exception={2}", url, response.StatusCode, response.ErrorException));
                 throw response.ErrorException;
             }
 
-            return response.Data;
+            return response;
         }
 
-        public static HttpStatusCode Put(string user, string password, string payload, string url)
+        public static IRestResponse Put(string user, string password, string payload, string url)
         {
             var client = new RestClient(IPUtil.GetHost(url));
             client.Authenticator = new HttpBasicAuthenticator(user, password);
@@ -68,7 +74,7 @@ namespace PlanningPoker.Utility
                 throw response.ErrorException;
             }
 
-            return response.StatusCode;
+            return response;
         }
     }
 }

@@ -51,7 +51,7 @@ namespace PlanningPoker.Control
             ListView listView = sender as ListView;
             if (listView == null)
                 throw new InvalidOperationException("HeaderSort Property can only be set on a ListView");
-            
+
             if ((bool)e.NewValue)
             {
                 listView.AddHandler(GridViewColumnHeader.ClickEvent, new RoutedEventHandler(OnListViewHeaderClick));
@@ -67,20 +67,20 @@ namespace PlanningPoker.Control
             listView.Items.SortDescriptions.Clear();
             List<GridViewColumnHeader> headers = listView.GetVisualChildren<GridViewColumnHeader>().ToList();
 
-            foreach(var header in headers)
+            foreach (var header in headers)
             {
                 AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(header);
                 Adorner[] adorners = adornerLayer.GetAdorners(header);
 
-                if(adorners == null)
+                if (adorners == null)
                 {
                     continue;
                 }
 
-                foreach(Adorner adorner in adorners)
+                foreach (Adorner adorner in adorners)
                 {
                     UIElementAdorner uiElementAdorner = adorner as UIElementAdorner;
-                    if (uiElementAdorner!= null && uiElementAdorner.Child is ListViewArrowAdorner)
+                    if (uiElementAdorner != null && uiElementAdorner.Child is ListViewArrowAdorner)
                     {
                         adornerLayer.Remove(adorner);
                     }
@@ -131,6 +131,11 @@ namespace PlanningPoker.Control
             GridViewColumnHeader header = e.OriginalSource as GridViewColumnHeader;
 
             if (header == null)
+            {
+                return;
+            }
+
+            if (listView.Items == null || listView.Items.Count == 0)
             {
                 return;
             }

@@ -18,11 +18,11 @@ namespace PlanningPoker.PMS
         public List<Story> Query(string user, string password, string url)
         {
             var list = new List<Story>();
-            var issueList = RestUtil.Get<IssueList>(user, password, url);
+            var response= RestUtil.Get<IssueList>(user, password, url);
 
-            if (issueList != null)
+            if (response.Data != null)
             {
-                foreach (Issue issue in issueList.Issues)
+                foreach (Issue issue in response.Data.Issues)
                 {
                     Story story = new Story();
                     story.ID = issue.Key;
@@ -45,11 +45,17 @@ namespace PlanningPoker.PMS
             string postString = string.Format("{0}\"fields\":{0}\"{2}\":{3}{1}{1}", "{", "}", storyPointField, story.StoryPoint);
             string url = string.Format(POST_URL, IPUtil.GetHost(story.URL), story.ID);
             //HttpStatusCode statusCode = WebUtil.PutHTTP(user, password, postString, url);
-            HttpStatusCode statusCode = RestUtil.Put(user, password, postString, url);
+            var response = RestUtil.Put(user, password, postString, url);
             
-            if(statusCode == HttpStatusCode.NoContent)
+            if(response.StatusCode == HttpStatusCode.NoContent)
             {
                 return true;
+            }
+            
+            if(response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                string content = response.Content;
+                throw new InvalidOperationException(content);
             }
 
             return false;

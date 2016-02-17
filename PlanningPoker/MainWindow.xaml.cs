@@ -365,8 +365,11 @@ namespace PlanningPoker
 
                 if (success)
                 {
-                    DoubleAnimation da = new DoubleAnimation(1, 0, TimeSpan.FromSeconds(6));
-                    this.txtSaveSuccess.BeginAnimation(TextBlock.OpacityProperty, da);
+                    Storyboard storyboard = this.FindResource("storyboard_StoryPointSaved") as Storyboard;
+                    if (storyboard != null)
+                    {
+                        storyboard.Begin();
+                    }
                 }
             }
         }

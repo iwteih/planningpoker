@@ -21,9 +21,6 @@
             </Style.Resources>
             <EventSetter Event="MouseDoubleClick" Handler="ListViewItemDoubleClick"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding  Path=IsSyncStory}" Value="True">
-                    <Setter Property="Background" Value="Orange"/>
-                </DataTrigger>
                 <!--<Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background">
                         <Setter.Value>
@@ -34,9 +31,20 @@
                         </Setter.Value>
                     </Setter>
                 </Trigger>-->
-                <Trigger Property="IsSelected" Value="True">
+                <!--<Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value ="LimeGreen" />
-                </Trigger>
+                </Trigger>-->
+                <DataTrigger Binding="{Binding Path=IsSyncStory}" Value="True">
+                    <Setter Property="Background" Value="Orange"/>
+                </DataTrigger>
+                <!--<MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding
+                                   RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True"/>
+                        <Condition Binding="{Binding IsSyncStory}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Background" Value="Orange"/>
+                </MultiDataTrigger>-->
             </Style.Triggers>
         </Style>
 
@@ -84,7 +92,7 @@
                 <Trigger Property="Button.IsMouseOver" Value="True">
                     <Setter Property="RenderTransform">
                         <Setter.Value>
-                            <ScaleTransform ScaleX="1.05" ScaleY="1.05"/>
+                            <ScaleTransform ScaleX="1.0" ScaleY="1.0"/>
                         </Setter.Value>
                     </Setter>
                     <Setter Property="RenderTransformOrigin" Value=".5,.5"/>
@@ -92,13 +100,22 @@
                 <Trigger Property="Button.IsPressed" Value="True">
                     <Setter Property="RenderTransform">
                         <Setter.Value>
-                            <ScaleTransform ScaleX="1.0" ScaleY="1.0"/>
+                            <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
                         </Setter.Value>
                     </Setter>
                     <Setter Property="RenderTransformOrigin" Value=".5,.5"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+        <Storyboard x:Key="storyboard_StoryPointSaved">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="txtSaveSuccess" Storyboard.TargetProperty="Width" Duration="0:0:1.5">
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
+                <LinearDoubleKeyFrame Value="50" KeyTime="0:0:0.5"/>
+                <LinearDoubleKeyFrame Value="50" KeyTime="0:0:1"/>
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:1.5"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+
     </Window.Resources>
 
     <Grid>
@@ -213,30 +230,27 @@
                             <DockPanel Grid.Row="0" Margin="0, 5">
                                 <Grid DockPanel.Dock="Right">
                                     <Button Name="btnStart" Content="Start"
-                                    VerticalContentAlignment="Center"
-                                    Click="btnStart_Click"/>
-                                    <Ellipse Fill="Green" Visibility="{Binding
-                                    CanStartService,  Converter={StaticResource
-                                    bool2v}}" Width="10" Height="10"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Top" Margin="5,5"/>
+                                        VerticalContentAlignment="Center"
+                                        Click="btnStart_Click"/>
+                                    <Ellipse Style="{StaticResource ellipseFill}" Visibility="{Binding CanStartService,  Converter={StaticResource bool2v}}" Width="10" Height="10"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top" Margin="5,5"/>
                                 </Grid>
                                 <TextBox Name="txtLocalIP" Text="{Binding LocalIP}" VerticalContentAlignment="Center" />
                             </DockPanel>
 
                             <DockPanel Grid.Row="1" Margin="0, 5">
                                 <Button Name="btnFlip" Content="Flip"
-                                DockPanel.Dock="Right"
-                                VerticalContentAlignment="Center"
-                                Click="btnFlip_Click"/>
+                                    DockPanel.Dock="Right"
+                                    VerticalContentAlignment="Center"
+                                    Click="btnFlip_Click"/>
                                 <Button Name="btnReset" Content="Reset"
-                                DockPanel.Dock="Right"
-                                VerticalContentAlignment="Center"
-                                Click="btnReset_Click"/>
-                                <CheckBox Name="ckAutoFlip" Content="Auto Flip"
-                                IsChecked="{Binding AutoFlip}"
-                                VerticalAlignment="Center"
-                                VerticalContentAlignment="Center"/>
+                                    DockPanel.Dock="Right"
+                                    VerticalContentAlignment="Center"
+                                    Click="btnReset_Click"/>
+                                <CheckBox Name="ckAutoFlip" Content="Auto Flip" IsChecked="{Binding AutoFlip}"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"/>
                                 <!--Style="{StaticResource SliderCheckBox}"-->
                             </DockPanel>
                         </Grid>
@@ -252,9 +266,8 @@
                                 VerticalContentAlignment="Center"
                                 Click="btnConnect_Click"
                                 HorizontalAlignment="Left" Width="85"/>
-                                <Ellipse Fill="Green" Visibility="{Binding
-                                CanConnectServer, Converter={StaticResource
-                                bool2v}}" Width="10" Height="10"
+                                <Ellipse Style="{StaticResource ellipseFill}" Visibility="{Binding CanConnectServer, Converter={StaticResource bool2v}}"
+                                Width="10" Height="10"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top" Margin="5"/>
                             </Grid>
@@ -286,20 +299,34 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock Name="txtSaveSuccess" Text="√" 
-                                   Foreground="Orange" 
-                                   FontWeight="Bold" 
-                                   FontSize="16" 
-                                   HorizontalAlignment="Right" 
-                                   VerticalAlignment="Bottom"
-                                   Opacity="0"
-                                   Margin="0, 0, 32, 5"/>
-                        <Button Name="btnUpateStoryPoint" 
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,5">
+                            <Border BorderBrush="{x:Null}">
+                                <TextBlock Name="txtSaveSuccess" Text="√" 
+                                   Foreground="Tomato" 
+                                   FontWeight="ExtraBold" 
+                                   TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="14" 
+                                   Width="0"
+                                   Height="18"
+                                   Opacity="1"
+                                   Margin="0, 0, -5, 0">
+                                    <TextBlock.Background>
+                                        <LinearGradientBrush StartPoint="1, 1" EndPoint="1, 0">
+                                            <GradientStop Offset="0" Color="PowderBlue"/>
+                                            <GradientStop Offset="0.5" Color="SkyBlue"/>
+                                            <GradientStop Offset="1" Color="PowderBlue"/>
+                                        </LinearGradientBrush>
+                                    </TextBlock.Background>
+                                </TextBlock>
+                            </Border>
+                            <Button Name="btnUpateStoryPoint" Background="Yellow"
                                 HorizontalAlignment="Right" 
-                                VerticalAlignment="Bottom" 
-                                Width="Auto" Margin="0,5" 
-                                Template="{StaticResource saveButton}" 
-                                Click="btnUpateStoryPoint_Click"/>
+                                Width="Auto" Margin="0,0" 
+                                Click="btnUpateStoryPoint_Click"
+                                Template="{StaticResource saveButton}"/>
+                        </StackPanel>
                     </Grid>
                 </GroupBox>
             </Grid>

@@ -125,25 +125,27 @@ namespace PlanningPoker.FormStates
             int count = 0;
             foreach (Participant p in gameInfo.ParticipantsList)
             {
-                if (IsCalculatable(p.Role))
+                if (!IsCalculatableRole(p.Role))
                 {
-                    double v;
-                    bool canParse = false;
+                    continue;
+                }
 
-                    if (p.UnflipedPlayingCard.Contains("/"))
-                    {
-                        v = Utils.FractionToFloat(p.UnflipedPlayingCard);
-                        canParse = true;
-                    }
-                    else
-                    {
-                        canParse = double.TryParse(p.UnflipedPlayingCard, out v);
-                    }
-                    if (canParse)
-                    {
-                        total = total == null ? v : total + v;
-                        count++;
-                    }
+                double v;
+                bool canParse = false;
+
+                if (p.UnflipedPlayingCard.Contains("/"))
+                {
+                    v = Utils.FractionToFloat(p.UnflipedPlayingCard);
+                    canParse = true;
+                }
+                else
+                {
+                    canParse = double.TryParse(p.UnflipedPlayingCard, out v);
+                }
+                if (canParse)
+                {
+                    total = total == null ? v : total + v;
+                    count++;
                 }
             }
 
@@ -185,9 +187,22 @@ namespace PlanningPoker.FormStates
             return "-";
         }
 
-        private bool IsCalculatable(string role)
+        private bool IsCalculatableRole(string role)
         {
-            return Enum.GetNames(typeof(Role)).Contains(role);
+            bool flag = Enum.GetNames(typeof(Role)).Contains(role);
+
+            if (!flag)
+            {
+                return false;
+            }
+
+            Role r = (Role)Enum.Parse(typeof(Role), role, true);
+            if (r == Role.Dev || r == Role.QA)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public override void Reset()

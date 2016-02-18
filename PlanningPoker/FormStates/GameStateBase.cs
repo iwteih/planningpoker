@@ -35,7 +35,7 @@ namespace PlanningPoker.FormStates
 
             try
             {
-                this.gamePlay.Regist();
+                //this.gamePlay.Regist();
                 this.gamePlay.Join(gameInfo.UserName, gameInfo.Role);
                 return true;
             }
@@ -53,17 +53,25 @@ namespace PlanningPoker.FormStates
         {
             try
             {
-                string baseAddress = string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name);
+                //string baseAddress = string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name);
                 Callback callback = new Callback();
-                NetTcpBinding netTcpBinding = new NetTcpBinding();
-                netTcpBinding.MaxBufferSize = 2147483647;
+                Uri baseAddress = new Uri(string.Format("http://{0}/{1}", serverIP, typeof(GamePlay).Name));
+                WSDualHttpBinding netTcpBinding = new WSDualHttpBinding();
+                netTcpBinding.ClientBaseAddress = baseAddress;
+                //NetTcpBinding netTcpBinding = new NetTcpBinding();
                 netTcpBinding.MaxReceivedMessageSize = 2147483647;
-                netTcpBinding.Security.Mode = SecurityMode.None;
-                DuplexChannelFactory<IGamePlay> channel = new DuplexChannelFactory<IGamePlay>(
-                    new InstanceContext(callback),
-                    netTcpBinding,
-                    new EndpointAddress(baseAddress));
-                gamePlay = channel.CreateChannel();
+                //DuplexChannelFactory<IGamePlay> channel = new DuplexChannelFactory<IGamePlay>(
+                //    new InstanceContext(callback),
+                //    netTcpBinding,
+                //    new EndpointAddress(baseAddress));
+                //gamePlay = channel.CreateChannel();
+
+                InstanceContext callbackInstance = new InstanceContext(new Program());
+                using (StockQuoteDuplexServiceClient client = new StockQuoteDuplexServiceClient(callbackInstance))
+                {
+                    client.SendQuoteRequest(symbol);
+                    waitForResponse.WaitOne();
+                }
 
                 callback.ExitEventHandler += callback_ExitEventHandler;
                 callback.PlayEventHandler += callback_PlayEventHandler;

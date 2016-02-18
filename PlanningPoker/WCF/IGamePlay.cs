@@ -7,6 +7,8 @@ using System.Text;
 
 namespace PlanningPoker.WCF
 {
+    //[ServiceContract(CallbackContract = typeof(ICallback))]
+    //[ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(ICallback))]
     [ServiceContract(CallbackContract = typeof(ICallback))]
     interface IGamePlay
     {

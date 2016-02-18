@@ -95,6 +95,7 @@
     <Compile Include="Entity\GameInfo.cs" />
     <Compile Include="Entity\Story.cs" />
     <Compile Include="Entity\Participant.cs" />
+    <Compile Include="WCF\GameServiceClient.cs" />
     <Compile Include="FormStates\GameStateBase.cs" />
     <Compile Include="FormStates\GameStateClient.cs" />
     <Compile Include="FormStates\GameStateServer.cs" />

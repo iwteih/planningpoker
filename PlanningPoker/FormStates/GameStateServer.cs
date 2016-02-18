@@ -35,18 +35,21 @@ namespace PlanningPoker.FormStates
         {
             try
             {
-                Uri baseAddress = new Uri(string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name));
-                NetTcpBinding netTcpBinding = new NetTcpBinding();
+                //Uri baseAddress = new Uri(string.Format("net.tcp://{0}/{1}", serverIP, typeof(GamePlay).Name));
+                //NetTcpBinding netTcpBinding = new NetTcpBinding();
+                Uri baseAddress = new Uri(string.Format("http://{0}/{1}", serverIP, typeof(GamePlay).Name));
+                WSDualHttpBinding netTcpBinding = new WSDualHttpBinding();
                 netTcpBinding.OpenTimeout = new TimeSpan(0, 5, 0);
                 netTcpBinding.SendTimeout = new TimeSpan(0, 5, 0);
                 netTcpBinding.ReceiveTimeout = new TimeSpan(0, 30, 0);
                 netTcpBinding.CloseTimeout = new TimeSpan(0, 0, 5);
-                netTcpBinding.MaxBufferSize = 2147483647;
+                //netTcpBinding.MaxBufferSize = 2147483647;
                 netTcpBinding.MaxReceivedMessageSize = 2147483647;
-                netTcpBinding.Security.Mode = SecurityMode.None;
+                //netTcpBinding.Security.Mode = SecurityMode.None;
                 host = new ServiceHost(typeof(GamePlay), baseAddress);
                 host.AddServiceEndpoint(typeof(IGamePlay), netTcpBinding, "");
                 ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
+                smb.HttpGetEnabled = true;
                 host.Description.Behaviors.Add(smb);
                 host.Open();
             }

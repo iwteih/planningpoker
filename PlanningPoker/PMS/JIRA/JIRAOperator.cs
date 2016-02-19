@@ -15,6 +15,11 @@ namespace PlanningPoker.PMS
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly string POST_URL = "{0}/rest/api/2/issue/{1}";
 
+        private string BuildCardUrl(string baseUrl, string key)
+        {
+            return string.Format("{0}/browse/{1}", baseUrl.Substring(0, baseUrl.IndexOf("/rest/api")), key);
+        }
+
         public List<Story> Query(string user, string password, string url)
         {
             var list = new List<Story>();
@@ -28,15 +33,32 @@ namespace PlanningPoker.PMS
                     story.ID = issue.Key;
                     story.Summary = issue.Fields.Summary;
                     story.Assignee = issue.Fields.Assignee.DisplayName;
-                    story.URL = string.Format("{0}/browse/{1}", issue.Self.Substring(0, issue.Self.IndexOf("/rest/api")), issue.Key);
+                    story.URL = BuildCardUrl(issue.Self, issue.Key);
                     story.IssueType = issue.Fields.IssueType.Name;
                     story.IssueTypeIcon = issue.Fields.IssueType.IconUrl;
                     story.Description = issue.Fields.Description;
                     story.Priority = issue.Fields.Priority.Name;
+                    
+                    if(issue.Fields.SubTasks != null)
+                    {
+                        story.SubTasks = new List<Entity.SubTask>();
+
+                        foreach (var s in issue.Fields.SubTasks)
+                        {
+                            Entity.SubTask subTask = new Entity.SubTask();
+                            subTask.ID = s.Id;
+                            subTask.Priority = s.Fields.Priority.Name;
+                            subTask.Summary = s.Fields.Summary;
+                            subTask.URL = BuildCardUrl(issue.Self, s.Key);
+
+                            story.SubTasks.Add(subTask);
+                        }
+                    }
 
                     list.Add(story);
                 }
             }
+
             return list;
         }
 

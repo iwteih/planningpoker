@@ -95,6 +95,7 @@
     <Compile Include="Entity\GameInfo.cs" />
     <Compile Include="Entity\Story.cs" />
     <Compile Include="Entity\Participant.cs" />
+    <Compile Include="Entity\SubTask.cs" />
     <Compile Include="FormStates\GameStateBase.cs" />
     <Compile Include="FormStates\GameStateClient.cs" />
     <Compile Include="FormStates\GameStateServer.cs" />
@@ -110,6 +111,8 @@
     <Compile Include="PMS\JIRA\Priority.cs" />
     <Compile Include="PMS\JIRA\SessionInfo.cs" />
     <Compile Include="PMS\JIRA\Status.cs" />
+    <Compile Include="PMS\JIRA\SubTask.cs" />
+    <Compile Include="PMS\JIRA\SubTaskFields.cs" />
     <Compile Include="Rules\NumericValidator.cs" />
     <Compile Include="Utility\ExtensionMethods.cs" />
     <Compile Include="Utility\IOUtil.cs" />

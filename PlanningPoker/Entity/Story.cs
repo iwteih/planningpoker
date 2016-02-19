@@ -78,6 +78,12 @@ namespace PlanningPoker.Entity
             set;
         }
 
+        [DataMember]
+        public List<SubTask> SubTasks
+        {
+            get;
+            set;
+        }
 
         private bool isSyncStory;
         [DataMember]

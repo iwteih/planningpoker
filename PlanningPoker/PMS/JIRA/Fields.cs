@@ -13,5 +13,6 @@ namespace PlanningPoker.PMS.JIRA
         public string Description { get; set; }
         public string Summary { get; set; }
         public Priority Priority { get; set; }
+        public List<SubTask> SubTasks { get; set; }
     }
 }

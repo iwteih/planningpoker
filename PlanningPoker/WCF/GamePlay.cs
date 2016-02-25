@@ -34,6 +34,9 @@ namespace PlanningPoker.WCF
             if (gameInfo.ShouldSyncStoryList)
             {
                 SyncStoryList(gameInfo.StoryList.ToList());
+
+                // server hangs if commemting this line out
+                //SyncStory(gameInfo.SyncStory);
             }
         }
 

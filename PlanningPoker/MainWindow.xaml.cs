@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Aga.Controls.Tree;
+using log4net;
 using PlanningPoker.Control;
 using PlanningPoker.Entity;
 using PlanningPoker.FormStates;
@@ -12,6 +13,8 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection.Emit;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Text;
@@ -38,6 +41,8 @@ namespace PlanningPoker
 
         GameInfo gameInfo = GameInfo.Instance;
         IGameState gameState = InitGameState.Instance;
+
+        Dictionary<string, Func<Story, string>> SortFuncDict = new Dictionary<string, Func<Story, string>>();
 
         public MainWindow()
         {
@@ -93,10 +98,10 @@ namespace PlanningPoker
                     catch (Exception exp)
                     {
                         this.Dispatcher.BeginInvoke(
-                            DispatcherPriority.Send, 
-                            new Action(() => 
+                            DispatcherPriority.Send,
+                            new Action(() =>
                             {
-                                processBar.Visibility = System.Windows.Visibility.Collapsed; 
+                                processBar.Visibility = System.Windows.Visibility.Collapsed;
                                 gameInfo.Message = exp.Message;
                             }));
                     }
@@ -121,18 +126,27 @@ namespace PlanningPoker
             {
                 gameInfo.StoryList.Add(story);
             }
+            BuildTreeModel(list);
             processBar.Visibility = System.Windows.Visibility.Hidden;
             expQuery.IsExpanded = false;
+        }
+
+
+        private void BuildTreeModel(ICollection<Story> list)
+        {
+            lbStoryList.Model = new StoryListModel(list);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadConfig();
+            lbStoryList.AddHandler(ListViewBehavior.ListViewHeaderSortEvent, new RoutedEventHandler(this.ListViewHeaderClickHandler));
         }
 
         private void LoadConfig()
         {
             LoadAppConfig();
+            ShowWindowTitle();
             gameInfo.LoadRoleList();
             gameInfo.LoadCardSequence();
         }
@@ -154,6 +168,13 @@ namespace PlanningPoker
                 this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action<ApplicationConfig>(UpdateUI), appconfig);
             };
             action.BeginInvoke(null, null);
+        }
+
+        private void ShowWindowTitle()
+        {
+            var versionInfo = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            string version = String.Format("{0}.{1}.{2}", versionInfo.Major, versionInfo.Minor, versionInfo.Build);
+            this.Title = string.Format(this.Title, version);
         }
 
         private void UpdateUI(ApplicationConfig appconfig)
@@ -196,7 +217,7 @@ namespace PlanningPoker
             if (!string.IsNullOrEmpty(gameInfo.Port))
             {
                 serverIP = string.Format("{0}:{1}", serverIP, gameInfo.Port);
-            }            
+            }
 
             if (gameInfo.CanStartService)
             {
@@ -218,6 +239,11 @@ namespace PlanningPoker
 
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
+            if(string.IsNullOrEmpty(gameInfo.ServerIP))
+            {
+                return;
+            }
+
             // if already connected
             if (gameInfo.CanConnectServer)
             {
@@ -237,6 +263,7 @@ namespace PlanningPoker
 
         void gameState_StoryListSyncComplete(object sender, EventArgs e)
         {
+            BuildTreeModel(gameInfo.StoryList);
             ScrollIntoView();
             expQuery.IsExpanded = false;
         }
@@ -252,7 +279,6 @@ namespace PlanningPoker
             if (story != null)
             {
                 lbStoryList.ScrollIntoView(story);
-                lbStoryList.SelectedItem = story;
             }
         }
 
@@ -294,7 +320,7 @@ namespace PlanningPoker
         void timer_Tick(object sender, EventArgs e)
         {
             GameStateServer state = gameState as GameStateServer;
-            if(state != null)
+            if (state != null)
             {
                 log.Warn("form closing due to time out");
                 state.IsModeratorExit = true;
@@ -347,8 +373,13 @@ namespace PlanningPoker
 
         private void ListViewItemDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Story story = lbStoryList.SelectedItem as Story;
+            TreeNode treeNode = lbStoryList.SelectedItem as TreeNode;
+            if (treeNode == null)
+            {
+                return;
+            }
 
+            Story story = treeNode.Tag as Story;
             if (story != null)
             {
                 gameState.SyncStory(story);
@@ -357,7 +388,14 @@ namespace PlanningPoker
 
         private void lbStoryList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Story story = ((sender as ListBox).SelectedItem as Story);
+            var treeNode = (sender as ListBox).SelectedItem as TreeNode; 
+            
+            if(treeNode == null)
+            {
+                return;
+            }
+
+            Story story = treeNode.Tag as Story;
             gameInfo.CurrentStory = story;
         }
 
@@ -399,6 +437,113 @@ namespace PlanningPoker
                     }
                 }
             }
+        }
+
+        #region four method to evaluate story property's value
+
+        // reflector
+        private Func<Story, string> BuildFunc(string header)
+        {
+            Func<Story, string> func = delegate(Story story)
+            {
+                Type type = typeof(Story);
+                var pi = type.GetProperty(header);
+                var v = pi.GetValue(story, null);
+                string value = v == null ? string.Empty : v.ToString();
+                return value;
+            };
+
+            return func;
+        }
+
+        // Expression Tree
+        private Func<Story, string> BuildExpressionFunc(string header)
+        {
+            var type = typeof(Story);
+            var param = System.Linq.Expressions.Expression.Parameter(type, type.Name);
+            var body = System.Linq.Expressions.Expression.Property(param, header);
+            var keySelector = System.Linq.Expressions.Expression.Lambda(body, param);
+            var f = (Func<Story, string>)keySelector.Compile();
+            return f;
+        }
+
+        // emmit
+        private Func<Story, string> BuildDynamicFunc(string header)
+        {
+            Type type = typeof(Story);
+            var pi = type.GetProperty(header);
+            var mi = pi.GetGetMethod();
+            DynamicMethod dm = new DynamicMethod("method", typeof(string), new Type[] { typeof(Story) });
+            ILGenerator il = dm.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Callvirt, mi);
+            il.Emit(OpCodes.Ret);
+
+            Func<Story, string> f = (Func<Story, string>)dm.CreateDelegate(typeof(Func<Story, string>));
+            return f;
+        }
+
+        // Delegate.CreateDelegate
+        private Func<Story, string> BuildDelegateFunc(string header)
+        {
+            Type type = typeof(Story);
+            var pi = type.GetProperty(header);
+            var mi = pi.GetGetMethod();
+            Func<Story, string> f = (Func<Story, string>)Delegate.CreateDelegate(typeof(Func<Story, string>), mi);
+            return f;
+        }
+        #endregion
+
+        private Func<Story, string> GetSortFunc(string header)
+        {
+            if(SortFuncDict.ContainsKey(header))
+            {
+                return SortFuncDict[header];
+            }
+
+            var func = BuildExpressionFunc(header);
+            SortFuncDict.Add(header, func);
+
+            return func;
+        }
+
+        private void ListViewHeaderClickHandler(object sender, RoutedEventArgs e)
+        {
+            object o = e.OriginalSource;
+            ListViewHeaderSortEventArgs args = e as ListViewHeaderSortEventArgs;
+
+            if (args == null)
+            {
+                return;
+            }
+
+            string header = args.Header;
+            ListSortDirection direction = args.Direction;
+
+            StoryListModel model = lbStoryList.Model as StoryListModel;
+
+            if (model == null)
+            {
+                return;
+            }
+
+            if (model.StoryList == null && model.StoryList.Count == 0)
+            {
+                return;
+            }
+
+            Func<Story, string> func = GetSortFunc(header);
+
+            List<Story> newList = null;
+            if (direction == ListSortDirection.Ascending)
+            {
+                newList = model.StoryList.OrderBy(func).ToList();
+            }
+            else
+            {
+                newList = model.StoryList.OrderByDescending(func).ToList();
+            }
+            lbStoryList.Model = new StoryListModel(newList);
         }
     }
 }

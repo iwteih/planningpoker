@@ -11,20 +11,22 @@ using PlanningPoker.Utility;
 namespace PlanningPoker.Control
 {
     // http://www.cnblogs.com/nankezhishi/archive/2009/12/04/SortListView.html
-    public class ListViewBehavior
+    public class ListViewBehavior 
     {
         /// <summary>
-        /// 
+        /// Set on listview
         /// </summary>
         public static readonly DependencyProperty HeaderSortProperty =
             DependencyProperty.RegisterAttached("HeaderSort", typeof(bool), typeof(ListViewBehavior), new UIPropertyMetadata(new PropertyChangedCallback(OnHeaderSortPropertyChanged)));
 
         /// <summary>
-        /// 
+        /// Set on header
         /// </summary>
         public static readonly DependencyProperty SortFieldProperty =
             DependencyProperty.RegisterAttached("SortField", typeof(string), typeof(ListViewBehavior));
 
+        public static readonly RoutedEvent ListViewHeaderSortEvent = EventManager.RegisterRoutedEvent
+            ("ListViewHeaderSortEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(UIElementAdorner));
 
         public static bool GetHeaderSort(DependencyObject obj)
         {
@@ -46,6 +48,13 @@ namespace PlanningPoker.Control
             obj.SetValue(SortFieldProperty, value);
         }
 
+        // Provide CLR accessors for the event
+        public event RoutedEventHandler ListViewHeaderClick
+        {
+            add { new UIElement().AddHandler(ListViewHeaderSortEvent, value); }
+            remove { new UIElement().RemoveHandler(ListViewHeaderSortEvent, value); }
+        }
+
         private static void OnHeaderSortPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             ListView listView = sender as ListView;
@@ -60,6 +69,7 @@ namespace PlanningPoker.Control
             {
                 listView.RemoveHandler(GridViewColumnHeader.ClickEvent, new RoutedEventHandler(OnListViewHeaderClick));
             }
+
         }
 
         public static void cleanLagecySortInfo(ListView listView)
@@ -145,14 +155,27 @@ namespace PlanningPoker.Control
 
             var adornerToAdd = new ListViewArrowAdorner();
             adornerToAdd.SortDirection = direction;
-            AdornerLayer.GetAdornerLayer(header).Add(new UIElementAdorner(header, adornerToAdd));
+            UIElementAdorner adorner = new UIElementAdorner(header, adornerToAdd);
+            AdornerLayer.GetAdornerLayer(header).Add(adorner);
 
-            SortDescription sortDescriptioin = new SortDescription()
-            {
-                Direction = direction,
-                PropertyName = header.Column.GetValue(SortFieldProperty) as string ?? header.Column.Header as string
-            };
-            listView.Items.SortDescriptions.Add(sortDescriptioin);
+            //
+            // To TreeList, SortDescription is not suitable, bc/ when expanding a ListViewItem,
+            // new child is added below the ListViewItem, the new added child will participate 
+            // sort action, that means in UI the child will be not inserted below its parent.
+            //
+
+            //SortDescription sortDescriptioin = new SortDescription()
+            //{
+            //    Direction = direction,
+            //    PropertyName = header.Column.GetValue(SortFieldProperty) as string ?? header.Column.Header as string
+            //};
+            //listView.Items.SortDescriptions.Add(sortDescriptioin);
+
+
+            // delegate the sort function to outter
+            string propertyName = header.Column.GetValue(SortFieldProperty) as string ?? header.Column.Header as string;
+            ListViewHeaderSortEventArgs eventArgs = new ListViewHeaderSortEventArgs(ListViewBehavior.ListViewHeaderSortEvent, propertyName, direction);
+            adorner.RaiseEvent(eventArgs);
         }
     }
 }

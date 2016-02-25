@@ -1,4 +1,5 @@
 ﻿using log4net;
+using Newtonsoft.Json;
 using PlanningPoker.Entity;
 using PlanningPoker.PMS.JIRA;
 using PlanningPoker.Utility;
@@ -23,13 +24,14 @@ namespace PlanningPoker.PMS
         public List<Story> Query(string user, string password, string url)
         {
             var list = new List<Story>();
-            var response= RestUtil.Get<IssueList>(user, password, url);
+            var response = RestUtil.Get<IssueList>(user, password, url);
 
             if (response.Data != null)
             {
                 foreach (Issue issue in response.Data.Issues)
                 {
                     Story story = new Story();
+                    story.UUID = Guid.NewGuid();
                     story.ID = issue.Key;
                     story.Summary = issue.Fields.Summary;
                     story.Assignee = issue.Fields.Assignee.DisplayName;
@@ -41,12 +43,11 @@ namespace PlanningPoker.PMS
                     
                     if(issue.Fields.SubTasks != null)
                     {
-                        story.SubTasks = new List<Entity.SubTask>();
-
                         foreach (var s in issue.Fields.SubTasks)
                         {
-                            Entity.SubTask subTask = new Entity.SubTask();
-                            subTask.ID = s.Id;
+                            Story subTask = new Story();
+                            subTask.UUID = Guid.NewGuid();
+                            subTask.ID = s.Key;
                             subTask.Priority = s.Fields.Priority.Name;
                             subTask.Summary = s.Fields.Summary;
                             subTask.URL = BuildCardUrl(issue.Self, s.Key);

@@ -7,7 +7,8 @@ using System.Text;
 
 namespace PlanningPoker.Entity
 {
-    [DataContract]
+    // Set IsReference = true to support Cyclic reference
+    [DataContract(IsReference = true)]
     public class Story : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -20,6 +21,13 @@ namespace PlanningPoker.Entity
             {
                 handler(this, new PropertyChangedEventArgs(name));
             }
+        }
+
+        [DataMember]
+        public Guid UUID
+        {
+            get;
+            set;
         }
 
         [DataMember]
@@ -79,10 +87,11 @@ namespace PlanningPoker.Entity
         }
 
         [DataMember]
-        public List<SubTask> SubTasks
+        private List<Story> subTasks = new List<Story>();
+        
+        public List<Story> SubTasks
         {
-            get;
-            set;
+            get { return subTasks; }
         }
 
         private bool isSyncStory;
@@ -104,5 +113,39 @@ namespace PlanningPoker.Entity
         }
 
         public string StoryPoint { get; set; }
+
+        public bool HasSubTasks
+        {
+            get
+            {
+                return subTasks.Count > 0;
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(obj == null)
+            {
+                return false;
+            }
+
+            Story story = obj as Story;
+            if(story == null)
+            {
+                return false;
+            }
+
+            if(this.UUID == story.UUID)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

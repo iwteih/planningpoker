@@ -58,6 +58,9 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.5\lib\net35-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net35\RestSharp.dll</HintPath>
     </Reference>
@@ -85,7 +88,15 @@
     </ApplicationDefinition>
     <Compile Include="Control\ListViewArrowAdorner.cs" />
     <Compile Include="Control\ListViewBehavior.cs" />
+    <Compile Include="Control\ListViewHeaderSortEventArgs.cs" />
     <Compile Include="Control\RichTextBoxBindable.cs" />
+    <Compile Include="Control\TreeListView\Collection.cs" />
+    <Compile Include="Control\TreeListView\Tree\Converters.cs" />
+    <Compile Include="Control\TreeListView\Tree\ITreeModel.cs" />
+    <Compile Include="Control\TreeListView\Tree\RowExpander.cs" />
+    <Compile Include="Control\TreeListView\Tree\TreeList.cs" />
+    <Compile Include="Control\TreeListView\Tree\TreeListItem.cs" />
+    <Compile Include="Control\TreeListView\Tree\TreeNode.cs" />
     <Compile Include="Control\UIElementAdorner.cs" />
     <Compile Include="Converter\Bool2Visible.cs" />
     <Compile Include="Converter\MessageLength2Visible.cs" />
@@ -95,6 +106,7 @@
     <Compile Include="Entity\GameInfo.cs" />
     <Compile Include="Entity\Story.cs" />
     <Compile Include="Entity\Participant.cs" />
+    <Compile Include="Entity\StoryListModel.cs" />
     <Compile Include="Entity\SubTask.cs" />
     <Compile Include="FormStates\GameStateBase.cs" />
     <Compile Include="FormStates\GameStateClient.cs" />
@@ -126,6 +138,10 @@
     <Compile Include="WCF\GamePlay.cs" />
     <Compile Include="WCF\ICallback.cs" />
     <Compile Include="WCF\IGamePlay.cs" />
+    <Page Include="Control\TreeListView\Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -183,6 +199,7 @@
   <ItemGroup>
     <Resource Include="Resources\save.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

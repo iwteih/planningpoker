@@ -4,7 +4,8 @@
         xmlns:ctrl="clr-namespace:PlanningPoker.Control"
         xmlns:entity="clr-namespace:PlanningPoker.Entity"
         xmlns:rule="clr-namespace:PlanningPoker.Rules"
-        Title="Planning Poker -- Powered By Yiming Bao" 
+        xmlns:tree="clr-namespace:Aga.Controls.Tree"
+        Title="Planning Poker {0} -- Powered By Yiming Bao" 
         WindowStartupLocation="CenterScreen"
         Height="700" Width="1100" 
         Icon="/Resources/planningpoker.ico"
@@ -34,7 +35,7 @@
                 <!--<Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value ="LimeGreen" />
                 </Trigger>-->
-                <DataTrigger Binding="{Binding Path=IsSyncStory}" Value="True">
+                <DataTrigger Binding="{Binding Path=Tag.IsSyncStory}" Value="True">
                     <Setter Property="Background" Value="Orange"/>
                 </DataTrigger>
                 <!--<MultiDataTrigger>
@@ -386,20 +387,28 @@
                         </Grid>
                     </Expander>
                     <ProgressBar Name="processBar" Grid.Row="1" Height="5" Visibility="Collapsed" IsIndeterminate="True" Margin="0, 3, 0, 3"/>
-                    <ListView Name="lbStoryList" Grid.Row="2" 
+                    <tree:TreeList x:Name="lbStoryList" Grid.Row="2" 
                               ctrl:ListViewBehavior.HeaderSort="True"
-                              ItemsSource="{Binding StoryList}" 
                               ItemContainerStyle="{StaticResource listBoxItemMouseOver}" 
                               SelectionChanged="lbStoryList_SelectionChanged">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="ID" DisplayMemberBinding="{Binding ID}" ctrl:ListViewBehavior.SortField="ID"/>
+                                <GridViewColumn Header="ID" ctrl:ListViewBehavior.SortField="ID">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <tree:RowExpander/>
+                                                <TextBlock Text="{Binding ID}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn Header="Assignee" DisplayMemberBinding="{Binding Assignee}"/>
                                 <GridViewColumn Header="Priority" DisplayMemberBinding="{Binding Priority}"/>
                                 <GridViewColumn Header="Summary" DisplayMemberBinding="{Binding Summary}"/>
                             </GridView>
                         </ListView.View>
-                    </ListView>
+                    </tree:TreeList>
                 </Grid>
             </GroupBox>
         </Grid>

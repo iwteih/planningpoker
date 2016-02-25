@@ -293,8 +293,6 @@ namespace PlanningPoker.Entity
         public string Moderator { get; set; }
         public string CardSequenceString { get; set; }
 
-        //public Story SyncStory { get; set; }
-
         public string PMS
         {
             get
@@ -340,7 +338,23 @@ namespace PlanningPoker.Entity
         {
             get
             {
-                return storyList.FirstOrDefault(f => f.IsSyncStory);
+                foreach (var story in storyList)
+                {
+                    if (story.IsSyncStory)
+                    {
+                        return story;
+                    }
+
+                    foreach (var storyChild in story.SubTasks)
+                    {
+                        if (storyChild.IsSyncStory)
+                        {
+                            return storyChild;
+                        }
+                    }
+                }
+
+                return null;
             }
             set
             {
@@ -349,9 +363,34 @@ namespace PlanningPoker.Entity
                     return;
                 }
 
-                storyList.ToList().ForEach((Story s) => s.IsSyncStory = false);
+                storyList.ToList().ForEach((Story s) => { s.IsSyncStory = false; foreach (var sub in s.SubTasks) { sub.IsSyncStory = false; } });
 
-                Story syncStory = storyList.FirstOrDefault(f => f.ID == value.ID);
+                Story syncStory = null;
+
+
+                bool found = false;
+                foreach(var story in storyList)
+                {
+                    if(story.UUID == value.UUID)
+                    {
+                        syncStory = story;
+                        found = true;
+                    }
+
+                    foreach(var storyChild in story.SubTasks)
+                    {
+                        if (storyChild.UUID == value.UUID)
+                        {
+                            syncStory = storyChild;
+                            found = true;
+                        }
+                    }
+
+                    if(found)
+                    {
+                        break;
+                    }
+                }
 
                 if (syncStory != null)
                 {

@@ -1,8 +1,9 @@
 ﻿<Application x:Class="PlanningPoker.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"             
              xmlns:convert="clr-namespace:PlanningPoker.Converter"
              xmlns:entity="clr-namespace:PlanningPoker.Entity"
+             	xmlns:tree="clr-namespace:Aga.Controls.Tree"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <convert:Bool2Visible x:Key="bool2v"/>
@@ -85,7 +86,37 @@
                 </Setter.Value>
             </Setter>
         </Style>
- 
+
+        <Style TargetType="{x:Type tree:TreeListItem}">
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+        </Style>
+
+        <Style TargetType="{x:Type tree:TreeListItem}" x:Key="TreeListItemNodeStyle">
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}" 
+										  ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" 
+										  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" 
+										  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" 
+										  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="UIElement.IsEnabled" Value="False">
+                                <Setter Property="TextElement.Foreground">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
         <!--http://www.cnblogs.com/akwwl/articles/3445097.html slidder checkbox-->
         <!--<Style x:Key="CheckRadioFocusVisual">
             <Setter Property="Control.Template">

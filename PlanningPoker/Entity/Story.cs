@@ -112,6 +112,7 @@ namespace PlanningPoker.Entity
             }
         }
 
+        [DataMember]
         public string StoryPoint { get; set; }
 
         public bool HasSubTasks

@@ -173,7 +173,16 @@ namespace PlanningPoker.Control
 
 
             // delegate the sort function to outter
-            string propertyName = header.Column.GetValue(SortFieldProperty) as string ?? header.Column.Header as string;
+            string propertyName = string.Empty; 
+            var binding = header.Column.DisplayMemberBinding as System.Windows.Data.Binding;
+            if (binding != null)
+            {
+                propertyName = binding.Path.Path;
+            }
+            else
+            {
+                propertyName = header.Column.GetValue(SortFieldProperty) as string ?? header.Column.Header as string;
+            }
             ListViewHeaderSortEventArgs eventArgs = new ListViewHeaderSortEventArgs(ListViewBehavior.ListViewHeaderSortEvent, propertyName, direction);
             adorner.RaiseEvent(eventArgs);
         }

@@ -403,6 +403,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+                                <GridViewColumn Header="SP" DisplayMemberBinding="{Binding StoryPoint}"/>
                                 <GridViewColumn Header="Assignee" DisplayMemberBinding="{Binding Assignee}"/>
                                 <GridViewColumn Header="Priority" DisplayMemberBinding="{Binding Priority}"/>
                                 <GridViewColumn Header="Summary" DisplayMemberBinding="{Binding Summary}"/>

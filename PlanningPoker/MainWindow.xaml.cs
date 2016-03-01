@@ -278,6 +278,11 @@ namespace PlanningPoker
             Story story = gameInfo.SyncStory;
             if (story != null)
             {
+                // The first time when calliing ScrollIntoView
+                // will not scroll the item to view, but it works
+                // in the next time, so call ScrollIntoView twice 
+                // to make sure the SelectedItem is in the view
+                lbStoryList.ScrollIntoView(story);
                 lbStoryList.ScrollIntoView(story);
             }
         }

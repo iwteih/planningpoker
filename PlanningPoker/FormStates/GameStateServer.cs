@@ -292,5 +292,15 @@ namespace PlanningPoker.FormStates
 
             return success;
         }
+         
+        public override void UpdateStory(PMS.IPMSOperator pmsOperator, Story story, string username, string password)
+        {
+            Story newStory = pmsOperator.QueryStory(story, username, password);
+
+            if(newStory != null)
+            {
+                story.StoryPoint = newStory.StoryPoint;
+            }
+        }
     }
 }

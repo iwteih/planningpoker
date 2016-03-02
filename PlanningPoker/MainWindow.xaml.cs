@@ -431,15 +431,26 @@ namespace PlanningPoker
                     return;
                 }
 
-                bool success = gameState.UpdateStoryPoint(pmsOperator, txtQueryUser.Text, txtQueryPwd.Password);
-
-                if (success)
+                try
                 {
-                    Storyboard storyboard = this.FindResource("storyboard_StoryPointSaved") as Storyboard;
-                    if (storyboard != null)
+                    bool success = gameState.UpdateStoryPoint(pmsOperator, txtQueryUser.Text, txtQueryPwd.Password);
+                    gameState.UpdateStory(pmsOperator, gameInfo.SyncStory, txtQueryUser.Text, txtQueryPwd.Password);
+
+                    if (success)
                     {
-                        storyboard.Begin();
+                        Storyboard storyboard = this.FindResource("storyboard_StoryPointSaved") as Storyboard;
+                        if (storyboard != null)
+                        {
+                            storyboard.Begin();
+                        }
+                        var l = gameInfo.StoryList;
+                        lbStoryList.UpdateLayout();
                     }
+                }
+                catch(Exception exp)
+                {
+                    log.Error(exp);
+                    gameInfo.Message = exp.Message;
                 }
             }
         }

@@ -69,7 +69,7 @@
                     </Viewbox>
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Face}" Value="Pending">
-                            <Setter TargetName="grayLayer" Property="Opacity" Value="0.3"/>
+                            <Setter TargetName="grayLayer" Property="Opacity" Value="0.4"/>
                         </DataTrigger>
                         <EventTrigger RoutedEvent="ToggleButton.Checked">
                             <BeginStoryboard>

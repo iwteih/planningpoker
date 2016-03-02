@@ -45,7 +45,13 @@ namespace PlanningPoker.Utility
             if(response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 log.Error("Unauthorized");
-                throw new UnauthorizedAccessException("Unauthorized");
+                throw new UnauthorizedAccessException("JIRA access unauthorized");
+            }
+
+            if(response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                log.Error("Forbidden");
+                throw new UnauthorizedAccessException("JIRA access forbidden");
             }
 
             if (response.ErrorException != null)

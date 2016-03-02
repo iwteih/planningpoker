@@ -113,7 +113,19 @@ namespace PlanningPoker.Entity
         }
 
         [DataMember]
-        public string StoryPoint { get; set; }
+        private string storyPoint;
+        public string StoryPoint 
+        {
+            get
+            {
+                return storyPoint;
+            }
+            set
+            {
+                storyPoint = value;
+                OnPropertyChanged("StoryPoint");
+            }
+        }
 
         public bool HasSubTasks
         {

@@ -23,5 +23,7 @@ namespace PlanningPoker.FormStates
 
         event EventHandler StorySyncComplete;
         event EventHandler StoryListSyncComplete;
+
+        void UpdateStory(IPMSOperator pmsOperator, Story story, string username, string password);
     }
 }

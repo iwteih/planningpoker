@@ -42,5 +42,8 @@ namespace PlanningPoker.WCF
 
         [OperationContract(IsOneWay = true)]
         void SyncStoryList(List<Story> storyList);
+
+        [OperationContract(IsOneWay = true)]
+        void SyncStoryPoint(Story story);
     }
 }

@@ -268,6 +268,8 @@ namespace PlanningPoker.FormStates
                 return false;
             }
 
+            string storyPointBackup = gameInfo.SyncStory.StoryPoint;
+
             gameInfo.SyncStory.StoryPoint = gameInfo.Score;
 
             if (gameInfo.Score.Contains("/"))
@@ -282,11 +284,13 @@ namespace PlanningPoker.FormStates
 
                 if (!success)
                 {
+                    gameInfo.SyncStory.StoryPoint = storyPointBackup;
                     gameInfo.Message = "Save story point failed!!";
                 }
             }
             catch (Exception exp)
             {
+                gameInfo.SyncStory.StoryPoint = storyPointBackup;
                 gameInfo.Message = exp.Message;
             }
 
@@ -301,6 +305,17 @@ namespace PlanningPoker.FormStates
             {
                 story.StoryPoint = newStory.StoryPoint;
             }
+        }
+
+        public override void SyncStoryPoint(Story story)
+        {
+            gamePlay.SyncStoryPoint(story);
+        }
+
+
+        public override void callback_StoryPointSyncEventHandler(object sender, StorySyncArgs e)
+        {
+            OnSyncStoryPoint(e.Story);
         }
     }
 }

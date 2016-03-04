@@ -212,5 +212,23 @@ namespace PlanningPoker.WCF
             }
         }
 
+        internal void BroadcastSyncStoryPoint(Story story)
+        {
+            if (callbackChannelList.Count > 0)
+            {
+                foreach (var callback in callbackChannelList.ToArray())
+                {
+                    try
+                    {
+                        callback.SyncStoryPoint(story);
+                    }
+                    catch (Exception exp)
+                    {
+                        logger.Error("error BroadcastSyncStoryPoint", exp);
+                        callbackChannelList.Remove(callback);
+                    }
+                }
+            }
+        }
     }
 }

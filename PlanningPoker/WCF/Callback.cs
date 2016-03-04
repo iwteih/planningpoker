@@ -37,6 +37,11 @@ namespace PlanningPoker.WCF
         /// </summary>
         public event EventHandler<StoryListSyncArgs> StoryListSyncEventHandler;
 
+        /// <summary>
+        /// Server wants to sync story point.
+        /// </summary>
+        public event EventHandler<StorySyncArgs> StoryPointSyncEventHandler;
+
         private GameInfo gameInfo = GameInfo.Instance;
 
         public void Join(string moderator, string user, string role, Story story, string cardSequence, Participant[] participants)
@@ -208,6 +213,14 @@ namespace PlanningPoker.WCF
             if (StoryListSyncEventHandler != null)
             {
                 StoryListSyncEventHandler(null, new StoryListSyncArgs() { StoryList = storyList });
+            }
+        }
+
+        public void SyncStoryPoint(Story story)
+        {
+            if (StoryPointSyncEventHandler != null)
+            {
+                StoryPointSyncEventHandler(null, new StorySyncArgs() { Story = story });
             }
         }
     }

@@ -147,6 +147,7 @@ namespace PlanningPoker.PMS
                 Story subStory = subTaskList.FirstOrDefault(f => f.ID.Equals(story.ID));
                 if (subStory != null)
                 {
+                    subStory.Assignee = story.Assignee;
                     subStory.StoryPoint = story.StoryPoint;
                 }
             });

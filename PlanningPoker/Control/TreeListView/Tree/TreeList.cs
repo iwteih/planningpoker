@@ -120,8 +120,8 @@ namespace Aga.Controls.Tree
 			if (ti != null && node != null)
 			{
 				ti.Node = item as TreeNode;
-                //base.PrepareContainerForItemOverride(element, node.Tag);
-                base.PrepareContainerForItemOverride(element, item);
+                // this method ensures we can directly bind original object in xaml
+                base.PrepareContainerForItemOverride(element, node.Tag);
 			}
 		}
 

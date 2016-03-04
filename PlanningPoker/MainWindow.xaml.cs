@@ -227,6 +227,7 @@ namespace PlanningPoker
             gameInfo.LocalIP = serverIP;
 
             gameState = GameStateServer.Instance;
+            gameState.StoryPointSyncComplete += gameState_StoryPointSyncComplete;
             GameStateServer.Instance.CloseFormHandler += Instance_CloseFormHandler;
             GameStateServer.Instance.StartServer(gameInfo.LocalIP);
             gameState.Join(serverIP);
@@ -239,7 +240,7 @@ namespace PlanningPoker
 
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
-            if(string.IsNullOrEmpty(gameInfo.ServerIP))
+            if (string.IsNullOrEmpty(gameInfo.ServerIP))
             {
                 return;
             }
@@ -252,6 +253,7 @@ namespace PlanningPoker
 
             gameState = GameStateClient.Instance;
             gameState.StorySyncComplete += gameState_StorySyncComplete;
+            gameState.StoryPointSyncComplete += gameState_StoryPointSyncComplete;
             gameState.StoryListSyncComplete += gameState_StoryListSyncComplete;
             gameState.Join(gameInfo.ServerIP);
         }
@@ -259,6 +261,99 @@ namespace PlanningPoker
         void gameState_StorySyncComplete(object sender, EventArgs e)
         {
             ScrollIntoView();
+        }
+
+        void gameState_StoryPointSyncComplete(object sender, StorySyncArgs e)
+        {
+            gameInfo.Score = e.Story.StoryPoint;
+
+            for (int i = 0; i < lbStoryList.Items.Count; i++)
+            {
+                ListViewItem listViewItem = lbStoryList.ItemContainerGenerator.ContainerFromIndex(i) as ListViewItem;
+                if (listViewItem == null)
+                {
+                    continue;
+                }
+
+                var item = listViewItem as TreeListItem;
+                if (item == null)
+                {
+                    continue;
+                }
+
+                var story = item.Node.Tag as Story;
+
+                if (story == null)
+                {
+                    continue;
+                }
+
+                if (e.Story.Equals(story))
+                {
+                    DoBackgroundAnimation(listViewItem);
+                    //DoHeightAnimation(listViewItem);
+                    break;
+                }
+            }
+        }
+
+        private void DoHeightAnimation(System.Windows.Controls.Control control)
+        {
+            Storyboard storyboard = new Storyboard();
+            storyboard.Duration = new Duration(TimeSpan.FromSeconds(2));
+            double originalHeight = control.ActualHeight;
+
+            DoubleAnimation animation1 = new DoubleAnimation();
+            animation1.BeginTime = TimeSpan.FromSeconds(0);
+            animation1.Duration = new Duration(TimeSpan.FromSeconds(1));
+            animation1.From = originalHeight;
+            animation1.To = originalHeight * 1.5; 
+
+            DoubleAnimation animation2 = new DoubleAnimation();
+            animation2.BeginTime = TimeSpan.FromSeconds(1);
+            animation2.Duration = new Duration(TimeSpan.FromSeconds(1));
+            animation2.From = originalHeight * 1.5;
+            animation2.To = originalHeight;
+
+            storyboard.Children.Add(animation1);
+            storyboard.Children.Add(animation2);
+
+            Storyboard.SetTarget(animation1, control);
+            Storyboard.SetTarget(animation2, control);
+            Storyboard.SetTargetProperty(animation1, new PropertyPath("Height"));
+            Storyboard.SetTargetProperty(animation2, new PropertyPath("Height"));
+
+            storyboard.Begin();
+        }
+
+        private void DoBackgroundAnimation(System.Windows.Controls.Control control)
+        {
+            Storyboard storyboard = new Storyboard();
+            storyboard.Duration = new Duration(TimeSpan.FromSeconds(2));
+            Color originColor = (Color)ColorConverter.ConvertFromString(control.Background.ToString());
+
+            SolidColorBrush brush = new SolidColorBrush();
+            ColorAnimation animation1 = new ColorAnimation();
+            animation1.BeginTime = TimeSpan.FromSeconds(0);
+            animation1.Duration = new Duration(TimeSpan.FromSeconds(1));
+            animation1.From = originColor;
+            animation1.To = Colors.Transparent;// (Color)ColorConverter.ConvertFromString("#DDEFBA");// Colors.Lavender;
+
+            ColorAnimation animation2 = new ColorAnimation();
+            animation2.BeginTime = TimeSpan.FromSeconds(1);
+            animation2.Duration = new Duration(TimeSpan.FromSeconds(1));
+            animation2.From = Colors.Transparent;// (Color)ColorConverter.ConvertFromString("#DDEFBA");// Colors.Lavender;
+            animation2.To = originColor;
+
+            storyboard.Children.Add(animation1);
+            storyboard.Children.Add(animation2);
+
+            Storyboard.SetTarget(animation1, control);
+            Storyboard.SetTarget(animation2, control);
+            Storyboard.SetTargetProperty(animation1, new PropertyPath("(Background).(SolidColorBrush.Color)"));
+            Storyboard.SetTargetProperty(animation2, new PropertyPath("(Background).(SolidColorBrush.Color)"));
+
+            storyboard.Begin();
         }
 
         void gameState_StoryListSyncComplete(object sender, EventArgs e)
@@ -393,9 +488,9 @@ namespace PlanningPoker
 
         private void lbStoryList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var treeNode = (sender as ListBox).SelectedItem as TreeNode; 
-            
-            if(treeNode == null)
+            var treeNode = (sender as ListBox).SelectedItem as TreeNode;
+
+            if (treeNode == null)
             {
                 return;
             }
@@ -443,11 +538,10 @@ namespace PlanningPoker
                         {
                             storyboard.Begin();
                         }
-                        var l = gameInfo.StoryList;
-                        lbStoryList.UpdateLayout();
+                        gameState.SyncStoryPoint(gameInfo.SyncStory);
                     }
                 }
-                catch(Exception exp)
+                catch (Exception exp)
                 {
                     log.Error(exp);
                     gameInfo.Message = exp.Message;
@@ -512,7 +606,7 @@ namespace PlanningPoker
 
         private Func<Story, string> GetSortFunc(string header)
         {
-            if(SortFuncDict.ContainsKey(header))
+            if (SortFuncDict.ContainsKey(header))
             {
                 return SortFuncDict[header];
             }

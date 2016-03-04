@@ -1,5 +1,6 @@
 ﻿using PlanningPoker.Entity;
 using PlanningPoker.PMS;
+using PlanningPoker.WCF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +23,11 @@ namespace PlanningPoker.FormStates
         bool UpdateStoryPoint(IPMSOperator pmsOperator, string username, string password);
 
         event EventHandler StorySyncComplete;
+        event EventHandler<StorySyncArgs> StoryPointSyncComplete;
         event EventHandler StoryListSyncComplete;
 
         void UpdateStory(IPMSOperator pmsOperator, Story story, string username, string password);
+
+        void SyncStoryPoint(Story story);
     }
 }

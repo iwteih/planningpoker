@@ -60,6 +60,39 @@ namespace PlanningPoker.FormStates
             }
 
             OnStoryListSyncComplete();
-        }        
+        }
+
+        public override void callback_StoryPointSyncEventHandler(object sender, WCF.StorySyncArgs e)
+        {
+            Story syncStory = e.Story;
+
+            foreach (var story in gameInfo.StoryList)
+            {
+                if (syncStory.Equals(story))
+                {
+                    story.StoryPoint = syncStory.StoryPoint;
+                    break;
+                }
+                else
+                {
+                    bool found = false;
+                    foreach (var subTask in story.SubTasks)
+                    {
+                        if (syncStory.Equals(subTask))
+                        {
+                            subTask.StoryPoint = syncStory.StoryPoint;
+                            found = true;
+                        }
+                    }
+
+                    if(found)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            OnSyncStoryPoint(syncStory);
+        }
     }
 }

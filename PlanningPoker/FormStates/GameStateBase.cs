@@ -23,10 +23,12 @@ namespace PlanningPoker.FormStates
         public virtual void Join(string serverIP) { }
         public virtual void SyncStory(Story story) { }
         public virtual void SyncStoryList(List<Story> storyList) { }
+        public virtual void SyncStoryPoint(Story story) { }
         public virtual bool UpdateStoryPoint(PMS.IPMSOperator pmsOperator, string username, string password) { return false; }
         public virtual void UpdateStory(PMS.IPMSOperator pmsOperator, Story story, string username, string password){ }
         public abstract void callback_ExitEventHandler(object sender, UserExitEventArgs e);
         public abstract void callback_StorySyncEventHandler(object sender, StorySyncArgs e);
+        public abstract void callback_StoryPointSyncEventHandler(object sender, StorySyncArgs e);
         public abstract void callback_StoryListSyncEventHandler(object sender, StoryListSyncArgs e);
 
         public bool JoinGame(String serverIP)
@@ -71,6 +73,7 @@ namespace PlanningPoker.FormStates
                 callback.ResetEventHandler += callback_ResetEventHandler;
                 callback.StorySyncEventHandler += callback_StorySyncEventHandler;
                 callback.StoryListSyncEventHandler += callback_StoryListSyncEventHandler;
+                callback.StoryPointSyncEventHandler += callback_StoryPointSyncEventHandler;
 
                 return gamePlay;
             }
@@ -180,5 +183,16 @@ namespace PlanningPoker.FormStates
                 StoryListSyncComplete(null, null);
             }
         }
+
+        public event EventHandler<StorySyncArgs> StoryPointSyncComplete;
+
+        protected void OnSyncStoryPoint(Story story)
+        {
+            if (StoryPointSyncComplete != null)
+            {
+                StoryPointSyncComplete(null, new StorySyncArgs() { Story = story });
+            }
+        }
+
     }
 }

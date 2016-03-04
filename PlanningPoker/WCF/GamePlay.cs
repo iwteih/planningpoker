@@ -79,5 +79,10 @@ namespace PlanningPoker.WCF
         {
             ChannelManager.Instance.BroadcastSyncStoryListEvent(storyList);
         }
+
+        public void SyncStoryPoint(Story story)
+        {
+            ChannelManager.Instance.BroadcastSyncStoryPoint(story);
+        }
     }
 }

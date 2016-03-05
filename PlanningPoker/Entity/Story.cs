@@ -23,6 +23,8 @@ namespace PlanningPoker.Entity
             }
         }
 
+        public static readonly string UnFlippedScore = "?";
+
         [DataMember]
         public Guid UUID
         {

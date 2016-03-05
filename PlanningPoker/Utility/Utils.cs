@@ -52,5 +52,6 @@ namespace PlanningPoker.Utility
 
             throw new FormatException("Not a valid fraction.");
         }
+        
     }
 }

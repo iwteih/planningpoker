@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PlanningPoker.Entity
 {
-    enum Role
+    public enum Role
     {
         Dev,
         QA,
@@ -96,7 +96,7 @@ namespace PlanningPoker.Entity
         public void Reset()
         {
             PlayingCard = CardStatus.Pending.ToString();
-            UnflipedPlayingCard = "-";
+            UnflipedPlayingCard = Story.UnFlippedScore;
         }
     }
 

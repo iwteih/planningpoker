@@ -519,6 +519,11 @@ namespace PlanningPoker
 
         private void btnUpateStoryPoint_Click(object sender, RoutedEventArgs e)
         {
+            if (gameInfo.SyncStory == null)
+            {
+                return;
+            }
+
             if (gameState is GameStateServer)
             {
                 if (Validation.GetHasError(txtStoryPoint))

@@ -1,5 +1,6 @@
 ﻿using log4net;
 using PlanningPoker.Entity;
+using PlanningPoker.StoryPointCalc;
 using PlanningPoker.Utility;
 using PlanningPoker.WCF;
 using System;
@@ -20,6 +21,7 @@ namespace PlanningPoker.FormStates
 
         private ServiceHost host = null;
         private bool isModeratorExit = false;
+        private IStoryPointCalc storyPointCalc;
 
         /// <summary>
         /// An callback to close window.
@@ -29,6 +31,7 @@ namespace PlanningPoker.FormStates
         private GameStateServer()
         {
             gameInfo.Moderator = gameInfo.UserName;
+            BuildStoryPointCalculator();
         }
 
         public void StartServer(string serverIP)
@@ -125,88 +128,22 @@ namespace PlanningPoker.FormStates
 
         private string CalcScore()
         {
-            double? total = null;
-            int count = 0;
-            foreach (Participant p in gameInfo.ParticipantsList)
-            {
-                if (!IsCalculatableRole(p.Role))
-                {
-                    continue;
-                }
-
-                double v;
-                bool canParse = false;
-
-                if (p.UnflipedPlayingCard.Contains("/"))
-                {
-                    v = Utils.FractionToFloat(p.UnflipedPlayingCard);
-                    canParse = true;
-                }
-                else
-                {
-                    canParse = double.TryParse(p.UnflipedPlayingCard, out v);
-                }
-                if (canParse)
-                {
-                    total = total == null ? v : total + v;
-                    count++;
-                }
-            }
-
-            if (gameInfo.CardSquence.Count == 0 || !total.HasValue)
-            {
-                return "-";
-            }
-
-            if (count > 0)
-            {
-                double average = total.Value * 1.0 / count;
-                String ret = "-";
-
-                foreach (string card in gameInfo.CardSquence)
-                {
-                    double c;
-                    bool canParse = false;
-
-                    if (card.Contains("/"))
-                    {
-                        c = Utils.FractionToFloat(card);
-                        canParse = true;
-                    }
-                    else
-                    {
-                        canParse = double.TryParse(card, out c);
-                    }
-
-                    if (canParse && c >= average)
-                    {
-                        ret = card;
-                        break;
-                    }
-                }
-
-                return ret;
-            }
-
-            return "-";
+            string point = storyPointCalc.Calc(gameInfo.ParticipantsList, gameInfo.CardSquence);
+            return point;
         }
 
-        private bool IsCalculatableRole(string role)
+        private void BuildStoryPointCalculator()
         {
-            bool flag = Enum.GetNames(typeof(Role)).Contains(role);
+            string storyPointAlgorithm = ConfigurationManager.AppSettings["StoryPointAlgorithm"];
 
-            if (!flag)
+            if ("RoleGroup" == storyPointAlgorithm)
             {
-                return false;
+                storyPointCalc = new RoleGroup();
             }
-
-            Role r = (Role)Enum.Parse(typeof(Role), role, true);
-            if (r == Role.Dev || r == Role.QA)
+            else
             {
-                return true;
+                storyPointCalc = new AllinOne();
             }
-
-            return false;
         }
 
         public override void Reset()
@@ -251,7 +188,7 @@ namespace PlanningPoker.FormStates
                 return false;
             }
 
-            if (string.IsNullOrEmpty(gameInfo.Score) || gameInfo.Score == "-")
+            if (string.IsNullOrEmpty(gameInfo.Score) || gameInfo.Score == Story.UnFlippedScore)
             {
                 return false;
             }
@@ -270,11 +207,18 @@ namespace PlanningPoker.FormStates
 
             string storyPointBackup = gameInfo.SyncStory.StoryPoint;
 
-            gameInfo.SyncStory.StoryPoint = gameInfo.Score;
+            string score = gameInfo.Score;
 
-            if (gameInfo.Score.Contains("/"))
+            if(gameInfo.Score.IndexOf('=') != -1)
             {
-                gameInfo.SyncStory.StoryPoint = Utils.FractionToFloat(gameInfo.Score).ToString();
+                score = gameInfo.Score.Substring(gameInfo.Score.LastIndexOf('=') + 1);
+            }
+
+            gameInfo.SyncStory.StoryPoint = score;
+
+            if (score.Contains("/"))
+            {
+                gameInfo.SyncStory.StoryPoint = Utils.FractionToFloat(score).ToString();
             }
 
             bool success = false;

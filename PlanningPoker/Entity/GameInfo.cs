@@ -41,7 +41,7 @@ namespace PlanningPoker.Entity
             ScoreProperty = DependencyProperty.Register("Score",
                typeof(string),
                typeof(GameInfo),
-               new PropertyMetadata("-"));
+               new PropertyMetadata(Story.UnFlippedScore));
 
             AutoFlipProperty = DependencyProperty.Register("AutoFlip",
                  typeof(bool),

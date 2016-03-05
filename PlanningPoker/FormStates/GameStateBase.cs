@@ -88,7 +88,7 @@ namespace PlanningPoker.FormStates
         public void callback_ResetEventHandler(object sender, EventArgs e)
         {
             WithdrawAllCards();
-            gameInfo.Score = "-";
+            gameInfo.Score = Story.UnFlippedScore;
         }
 
         public void callback_PlayEventHandler(object sender, EventArgs e)
@@ -115,7 +115,7 @@ namespace PlanningPoker.FormStates
             gamePlay = null;
             WithdrawAllCards();
             gameInfo.CanConnectServer = false;
-            gameInfo.Score = "-";
+            gameInfo.Score = Story.UnFlippedScore;
             gameInfo.ParticipantsList.Clear();
         }
 

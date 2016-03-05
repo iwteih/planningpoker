@@ -126,6 +126,10 @@
     <Compile Include="PMS\JIRA\SubTask.cs" />
     <Compile Include="PMS\JIRA\SubTaskFields.cs" />
     <Compile Include="Rules\NumericValidator.cs" />
+    <Compile Include="StoryPointCalc\AllinOne.cs" />
+    <Compile Include="StoryPointCalc\IStoryPointCalc.cs" />
+    <Compile Include="StoryPointCalc\RoleGroup.cs" />
+    <Compile Include="StoryPointCalc\StoryPointCalcBase.cs" />
     <Compile Include="Utility\ExtensionMethods.cs" />
     <Compile Include="Utility\IOUtil.cs" />
     <Compile Include="Utility\IPUtil.cs" />

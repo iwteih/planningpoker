@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlanningPoker.Utility;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -135,6 +136,44 @@ namespace PlanningPoker.Entity
             {
                 return subTasks.Count > 0;
             }
+        }
+
+        public Story Parent { get; set; }
+
+        public string CalcChildrenStoryPoints()
+        {
+            double? sum = null;
+
+            foreach (Story story in this.SubTasks)
+            {
+                if (string.IsNullOrEmpty(story.StoryPoint))
+                {
+                    continue;
+                }
+
+                if (story.StoryPoint.Contains("/"))
+                {
+                    double point = Utils.FractionToFloat(story.StoryPoint);
+                    sum = (sum == null ? point : point + sum);
+                }
+                else
+                {
+                    double point;
+                    bool canParse = double.TryParse(story.StoryPoint, out point);
+
+                    if (canParse)
+                    {
+                        sum = (sum == null ? point : point + sum);
+                    }
+                }
+            }
+
+            if(sum == null)
+            {
+                return UnFlippedScore;
+            }
+
+            return sum.ToString();
         }
 
         public override bool Equals(object obj)

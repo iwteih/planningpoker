@@ -75,6 +75,7 @@ namespace PlanningPoker.PMS
                             subTask.Priority = s.Fields.Priority.Name;
                             subTask.Summary = s.Fields.Summary;
                             subTask.URL = BuildCardUrl(issue.Self, s.Key);
+                            subTask.Parent = story;
 
                             story.SubTasks.Add(subTask);
                         }

@@ -77,5 +77,9 @@ namespace PlanningPoker.FormStates
         {
         }
 
+        public bool UpdateParentStoryPoint(PMS.IPMSOperator pmsOperator, Entity.Story story, string username, string password)
+        {
+            return false;
+        }
     }
 }

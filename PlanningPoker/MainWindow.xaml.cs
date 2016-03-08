@@ -286,7 +286,10 @@ namespace PlanningPoker
 
         void gameState_StoryPointSyncComplete(object sender, StorySyncArgs e)
         {
-            gameInfo.Score = e.Story.StoryPoint;
+            if (e.Story.Equals(gameInfo.SyncStory))
+            {
+                gameInfo.Score = e.Story.StoryPoint;
+            }
 
             for (int i = 0; i < lbStoryList.Items.Count; i++)
             {
@@ -358,12 +361,12 @@ namespace PlanningPoker
             animation1.BeginTime = TimeSpan.FromSeconds(0);
             animation1.Duration = new Duration(TimeSpan.FromSeconds(1));
             animation1.From = originColor;
-            animation1.To = Colors.Transparent;// (Color)ColorConverter.ConvertFromString("#DDEFBA");// Colors.Lavender;
+            animation1.To = Colors.Transparent;
 
             ColorAnimation animation2 = new ColorAnimation();
             animation2.BeginTime = TimeSpan.FromSeconds(1);
             animation2.Duration = new Duration(TimeSpan.FromSeconds(1));
-            animation2.From = Colors.Transparent;// (Color)ColorConverter.ConvertFromString("#DDEFBA");// Colors.Lavender;
+            animation2.From = Colors.Transparent;
             animation2.To = originColor;
 
             storyboard.Children.Add(animation1);
@@ -565,6 +568,18 @@ namespace PlanningPoker
                             storyboard.Begin();
                         }
                         gameState.SyncStoryPoint(gameInfo.SyncStory);
+                    }
+
+                    if(gameInfo.SyncStory.Parent == null)
+                    {
+                        return;
+                    }
+
+                    success = gameState.UpdateParentStoryPoint(pmsOperator, gameInfo.SyncStory, txtQueryUser.Text, txtQueryPwd.Password);
+
+                    if(success)
+                    {
+                        gameState.SyncStoryPoint(gameInfo.SyncStory.Parent);
                     }
                 }
                 catch (Exception exp)

@@ -25,6 +25,7 @@ namespace PlanningPoker.FormStates
         public virtual void SyncStoryList(List<Story> storyList) { }
         public virtual void SyncStoryPoint(Story story) { }
         public virtual bool UpdateStoryPoint(PMS.IPMSOperator pmsOperator, string username, string password) { return false; }
+        public virtual bool UpdateParentStoryPoint(PMS.IPMSOperator pmsOperator, Story story, string username, string password) { return false; }
         public virtual void UpdateStory(PMS.IPMSOperator pmsOperator, Story story, string username, string password){ }
         public abstract void callback_ExitEventHandler(object sender, UserExitEventArgs e);
         public abstract void callback_StorySyncEventHandler(object sender, StorySyncArgs e);

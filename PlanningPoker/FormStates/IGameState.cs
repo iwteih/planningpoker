@@ -29,5 +29,7 @@ namespace PlanningPoker.FormStates
         void UpdateStory(IPMSOperator pmsOperator, Story story, string username, string password);
 
         void SyncStoryPoint(Story story);
+
+        bool UpdateParentStoryPoint(IPMSOperator pmsOperator, Story story, string username, string password);
     }
 }

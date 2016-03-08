@@ -1,0 +1,20 @@
+﻿= Release 1.0.1 =
+Released: 2016-03-09
+
+== Features ==
+ * The story point of parent card will automatically saved when saving children story points.
+
+= Release 1.0.0 =
+Released: 2016-03-08
+
+== Features ==
+ * Show sub task under parent cards
+ * Show story point in story list
+ * Add one algorithm to calculate story point by role group.
+	Note only Dev and QA are valid in the algorithm. In the screenshot below, the left number (8) is Dev, the right number (8) is QA.
+	You should specify your role before joining the game.
+	To enable this feature, you need to uncomment out the following item in  PlanningPoker.exe.config
+	<add key="StoryPointAlgorithm" value="RoleGroup"/>
+ * Group by role
+	To enable this feature, you need add the following item in  PlanningPoker.exe.config
+	<add key="GroupByRole" value="true"/>

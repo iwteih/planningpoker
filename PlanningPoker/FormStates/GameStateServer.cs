@@ -198,10 +198,9 @@ namespace PlanningPoker.FormStates
                 return false;
             }
 
-            string storyPointField = ConfigurationManager.AppSettings["StoryPointField"];
+            string storyPointField = GetStoryPointField();
             if (string.IsNullOrEmpty(storyPointField))
             {
-                gameInfo.Message = "Please specify StoryPointField in config file";
                 return false;
             }
 
@@ -240,7 +239,44 @@ namespace PlanningPoker.FormStates
 
             return success;
         }
-         
+
+        public override bool UpdateParentStoryPoint(PMS.IPMSOperator pmsOperator, Story currentStory, string username, string password)
+        {
+            if (currentStory.Parent == null)
+            {
+                return true;
+            }
+
+            string storyPointField = GetStoryPointField();
+            if(string.IsNullOrEmpty(storyPointField))
+            {
+                return false;
+            }
+
+            string sum = currentStory.Parent.CalcChildrenStoryPoints();
+            string storyPointBackup = currentStory.Parent.StoryPoint;
+            currentStory.Parent.StoryPoint = sum;
+
+            bool success = false;
+            try
+            {
+                success = pmsOperator.UpdateStoryPoint(username, password, currentStory.Parent, storyPointField);
+
+                if (!success)
+                {
+                    currentStory.Parent.StoryPoint = storyPointBackup;
+                    gameInfo.Message = "Save story point to parent card failed!!";
+                }
+            }
+            catch (Exception exp)
+            {
+                currentStory.Parent.StoryPoint = storyPointBackup;
+                gameInfo.Message = exp.Message;
+            }
+
+            return true;
+        }
+
         public override void UpdateStory(PMS.IPMSOperator pmsOperator, Story story, string username, string password)
         {
             Story newStory = pmsOperator.QueryStory(story, username, password);
@@ -260,6 +296,17 @@ namespace PlanningPoker.FormStates
         public override void callback_StoryPointSyncEventHandler(object sender, StorySyncArgs e)
         {
             OnSyncStoryPoint(e.Story);
+        }
+
+        private string GetStoryPointField()
+        {
+            string storyPointField = ConfigurationManager.AppSettings["StoryPointField"];
+            if (string.IsNullOrEmpty(storyPointField))
+            {
+                gameInfo.Message = "Please specify StoryPointField in config file";
+            }
+
+            return storyPointField;
         }
     }
 }

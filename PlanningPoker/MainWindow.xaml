@@ -5,7 +5,7 @@
         xmlns:entity="clr-namespace:PlanningPoker.Entity"
         xmlns:rule="clr-namespace:PlanningPoker.Rules"
         xmlns:tree="clr-namespace:Aga.Controls.Tree"
-        Title="Planning Poker {0} -- Powered By Yiming Bao" 
+        Title="PlanningPoker.NET {0} -- Powered By Yiming Bao" 
         WindowStartupLocation="CenterScreen"
         Height="700" Width="1100" 
         Icon="/Resources/planningpoker.ico"
@@ -164,6 +164,15 @@
                                 <WrapPanel/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
+                        <ItemsControl.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontWeight="Bold" FontFamily="Segoe Print" FontSize="18" TextDecorations="Underline" Text="{Binding Name}" Margin="10, 0, 0, 0" Foreground="Gold"/>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ItemsControl.GroupStyle>
                     </ItemsControl>
                 </Grid>
                 <Grid Grid.Row="2">
@@ -315,8 +324,7 @@
                                    Margin="0, 0, -5, 0">
                                     <TextBlock.Background>
                                         <LinearGradientBrush StartPoint="1, 1" EndPoint="1, 0">
-                                            <GradientStop Offset="0" Color="PowderBlue"/>
-                                            <GradientStop Offset="0.5" Color="SkyBlue"/>
+                                            <GradientStop Offset="0" Color="SkyBlue"/>
                                             <GradientStop Offset="1" Color="PowderBlue"/>
                                         </LinearGradientBrush>
                                     </TextBlock.Background>

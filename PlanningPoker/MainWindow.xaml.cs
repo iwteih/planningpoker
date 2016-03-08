@@ -74,6 +74,26 @@ namespace PlanningPoker
             }
         }
 
+
+        private void AddGrouping()
+        {
+            string groupByRole = ConfigurationManager.AppSettings["GroupByRole"];
+
+            if (string.IsNullOrEmpty(groupByRole) || groupByRole.ToUpper() != "TRUE")
+            {
+                participants.GroupStyle.Clear();
+                return;
+            }
+
+            CollectionView collectionView = (CollectionView)CollectionViewSource.GetDefaultView(participants.ItemsSource);
+            if (collectionView.CanGroup == true)
+            {
+                PropertyGroupDescription groupDescription
+                    = new PropertyGroupDescription("Role");
+                collectionView.GroupDescriptions.Add(groupDescription);
+            }
+        }
+
         private void btnQuery_Click(object sender, RoutedEventArgs e)
         {
             string queryString = txtQuery.Text;
@@ -141,6 +161,7 @@ namespace PlanningPoker
         {
             LoadConfig();
             lbStoryList.AddHandler(ListViewBehavior.ListViewHeaderSortEvent, new RoutedEventHandler(this.ListViewHeaderClickHandler));
+            AddGrouping();
         }
 
         private void LoadConfig()

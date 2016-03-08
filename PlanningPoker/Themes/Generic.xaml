@@ -59,7 +59,7 @@
                                 <TextBlock Name="cardValue" Foreground="White" FontWeight="SemiBold" 
                                            FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{TemplateBinding Face, Converter={StaticResource faceVisibilityConverter}}" Text="{TemplateBinding Face}"/>
                                 <Viewbox Width="60" Height="92">
-                                    <Path Name="grayLayer" Fill="LightGray" Opacity="0" Data="M1467.5,1852.5c0,110-90,200-200,200h-1067c-110,0-200-90-200-200v-1652 c0-110,90-200,200-200h1067c110,0,200,90,200,200V1852.5z" />
+                                    <Path Name="grayLayer" Fill="Gray" Opacity="0" Data="M1467.5,1852.5c0,110-90,200-200,200h-1067c-110,0-200-90-200-200v-1652 c0-110,90-200,200-200h1067c110,0,200,90,200,200V1852.5z" />
                                 </Viewbox>
                                 <Grid.RenderTransform>
                                     <TranslateTransform X="0" Y="0"/>
@@ -69,7 +69,7 @@
                     </Viewbox>
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Face}" Value="Pending">
-                            <Setter TargetName="grayLayer" Property="Opacity" Value="0.4"/>
+                            <Setter TargetName="grayLayer" Property="Opacity" Value="0.3"/>
                         </DataTrigger>
                         <EventTrigger RoutedEvent="ToggleButton.Checked">
                             <BeginStoryboard>

@@ -42,6 +42,15 @@ You can adjust your role in the profile section.
    Then edit PlanningPoker.exe.config, change the value of StoryPointField to that in your environment.
 4. How to adjust the port?
    By default, the port used by PlanningPoker is 808, if the port is occupied, you can change it on your own: edit PlanningPoker.exe.config, change the value of Port to what you need.
+5. How to group participants by role?
+   To enable this feature, you need add the following item in PlanningPoker.exe.config
+   <add key="GroupByRole" value="true"/>
+6. How to show calculated story point by role group?
+   Note only Dev and QA are valid in the algorithm.
+   To enable this feature, you need to uncomment out the following item in  PlanningPoker.exe.config
+   <add key="StoryPointAlgorithm" value="RoleGroup"/>
+7. How to query story?
+   Take JIRA for example, refer to the link [JIRA REST API Example - Query issues](https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues)
 
 ### Known issue
 * If the GUI has been inactive for a time, the connection between server and client will be lost.

@@ -2,7 +2,7 @@
 Released: 2016-03-09
 
 == Features ==
- * The story point of parent card will automatically saved when saving children story points.
+ * The story point of parent card will automatically be saved when saving children story points.
 
 = Release 1.0.0 =
 Released: 2016-03-08

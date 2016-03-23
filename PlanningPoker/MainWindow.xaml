@@ -6,6 +6,7 @@
         xmlns:rule="clr-namespace:PlanningPoker.Rules"
         xmlns:tree="clr-namespace:Aga.Controls.Tree"
         Title="PlanningPoker.NET {0} -- Powered By Yiming Bao" 
+        WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Height="700" Width="1100" 
         Icon="/Resources/planningpoker.ico"
@@ -411,7 +412,30 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Point" DisplayMemberBinding="{Binding StoryPoint}"/>
+                                <!--<GridViewColumn Header="Point" DisplayMemberBinding="{Binding StoryPoint}"/>-->
+                                <GridViewColumn Header="Point">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource storypointText}">
+                                                        <!-- ConverterParameter does not support binding-->
+                                                        <!-- first binding makes StoryPoint change event will invoke storypointText converter -->
+                                                        <Binding Path="StoryPoint"/>
+                                                        <Binding />
+                                                    </MultiBinding> 
+                                                </TextBlock.Text>
+                                                <TextBlock.Foreground>
+                                                    <MultiBinding Converter="{StaticResource storypointColor}">
+                                                        <!-- first binding makes StoryPoint change event will invoke storypointColor converter -->
+                                                        <Binding Path="StoryPoint"/>
+                                                        <Binding />
+                                                    </MultiBinding> 
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn Header="Assignee" DisplayMemberBinding="{Binding Assignee}"/>
                                 <GridViewColumn Header="Priority" DisplayMemberBinding="{Binding Priority}"/>
                                 <GridViewColumn Header="Summary" DisplayMemberBinding="{Binding Summary}"/>

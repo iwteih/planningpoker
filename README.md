@@ -1,4 +1,4 @@
-# Planning Poker
+# Planning Poker.NET
 This is a Windows desktop software, which is helpful to calculate story point. Please refer to [wikepedia](https://en.wikipedia.org/wiki/Planning_poker) for more information about planning poker.
 
 ![screen-shot](README/screenshot1.png)
@@ -18,7 +18,7 @@ This is a Windows desktop software, which is helpful to calculate story point. P
   Story point is editable and can be save to JIRA card.
 
 ### Usage
-1. Double click PlanningPoker.exe to open the GUI. It takes a second to retrieve current user in the machine.
+1. Double click PlanningPoker.NET.exe to open the GUI. It takes a second to retrieve current user in the machine.
 You can adjust your role in the profile section.
 2. Join game 
    * If you are a moderator, click "Server" tab, then click "Start". If service can start successfully, a green round indicator will show in "Start" button, and the service IP will show up as well.
@@ -33,21 +33,21 @@ You can adjust your role in the profile section.
 
 ### Q&A
 1. How to edit the deck of cards?
-   Edit PlanningPoker.exe.config, change the value of DefaultSequence to "CustomizedSequence", then input the cards. Note that only numeric or fraction values are accepted in story point calculation.
+   Edit PlanningPoker.NET.exe.config, change the value of DefaultSequence to "CustomizedSequence", then input the cards. Note that only numeric or fraction values are accepted in story point calculation.
 2. How is the score calculated?
    Score is calculated by dividing the sum of points played by total number of players that played numbered cards. That average is then rounded up to the next number in the deck of cards.
    Note that only the scores of Dev and QA are considered valid.
 3. How to determine the "Story point" field in JIRA?
    "Story Point" should be a customized field. You can find it in the JIRA API like http://kelpie9:8081/rest/api/2/issue/XSS-13/editmeta.
-   Then edit PlanningPoker.exe.config, change the value of StoryPointField to that in your environment.
+   Then edit PlanningPoker.NET.exe.config, change the value of StoryPointField to that in your environment.
 4. How to adjust the port?
-   By default, the port used by PlanningPoker is 808, if the port is occupied, you can change it on your own: edit PlanningPoker.exe.config, change the value of Port to what you need.
+   By default, the port used by PlanningPoker.NET is 808, if the port is occupied, you can change it on your own: edit PlanningPoker.NET.exe.config, change the value of Port to what you need.
 5. How to group participants by role?
-   To enable this feature, you need add the following item in PlanningPoker.exe.config
+   To enable this feature, you need add the following item in PlanningPoker.NET.exe.config
    <add key="GroupByRole" value="true"/>
 6. How to show calculated story point by role group?
    Note only Dev and QA are valid in the algorithm.
-   To enable this feature, you need to uncomment out the following item in  PlanningPoker.exe.config
+   To enable this feature, you need to uncomment out the following item in  PlanningPoker.NET.exe.config
    <add key="StoryPointAlgorithm" value="RoleGroup"/>
 7. How to query story?
    Take JIRA for example, refer to the link [JIRA REST API Example - Query issues](https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues)

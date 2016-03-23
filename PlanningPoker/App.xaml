@@ -3,11 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"             
              xmlns:convert="clr-namespace:PlanningPoker.Converter"
              xmlns:entity="clr-namespace:PlanningPoker.Entity"
-             	xmlns:tree="clr-namespace:Aga.Controls.Tree"
+             xmlns:tree="clr-namespace:Aga.Controls.Tree"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <convert:Bool2Visible x:Key="bool2v"/>
         <convert:MessageLength2Visible x:Key="msglen2v"/>
+        <convert:StoryPointColorConverter x:Key="storypointColor"/>
+        <convert:StoryPointTextConverter x:Key="storypointText"/>
 
         <LinearGradientBrush x:Key="shinyBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Offset="0" Color="Snow"/>

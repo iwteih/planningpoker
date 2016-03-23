@@ -100,6 +100,8 @@
     <Compile Include="Control\UIElementAdorner.cs" />
     <Compile Include="Converter\Bool2Visible.cs" />
     <Compile Include="Converter\MessageLength2Visible.cs" />
+    <Compile Include="Converter\StoryPointForegroundConverter.cs" />
+    <Compile Include="Converter\StoryPointTextConverter.cs" />
     <Compile Include="Entity\ApplicationConfig.cs" />
     <Compile Include="Converter\FaceVisibilityConverter.cs" />
     <Compile Include="Entity\CardStatus.cs" />

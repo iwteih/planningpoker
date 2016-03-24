@@ -175,11 +175,13 @@ namespace PlanningPoker
         private void LoadAppConfig()
         {
             gameInfo.UserName = "Fething user name ...";
+            btnConnect.IsEnabled = false;
+            btnStart.IsEnabled = false;
+
             Action action = delegate()
             {
                 ApplicationConfig appconfig = IOUtil.LoadIsolatedData();
                 string userName = appconfig.UserName;
-
                 if (string.IsNullOrEmpty(userName))
                 {
                     appconfig.UserName = Utils.GetUserName();
@@ -208,12 +210,14 @@ namespace PlanningPoker
                 role = Role.Dev.ToString();
             }
             string queryString = appconfig.QueryString;
-
             gameInfo.UserName = userName;
             gameInfo.AutoFlip = autoFlip;
             gameInfo.Role = role;
             gameInfo.QueryString = queryString;
             tbctrlServerOrClient.SelectedIndex = appconfig.TabIndex_ServerOrClient;
+            txtQueryUser.Text = appconfig.QueryUser;
+            btnConnect.IsEnabled = true;
+            btnStart.IsEnabled = true;
         }
 
         private void LoadUserName()
@@ -464,6 +468,7 @@ namespace PlanningPoker
             }
             appconfig.UserName = txtUserName.Text.Trim();
             appconfig.TabIndex_ServerOrClient = tbctrlServerOrClient.SelectedIndex;
+            appconfig.QueryUser = txtQueryUser.Text;
             IOUtil.SaveIsolatedData(appconfig);
 
             GameStateServer state = gameState as GameStateServer;

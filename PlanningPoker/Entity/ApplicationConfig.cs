@@ -44,6 +44,12 @@ namespace PlanningPoker
             get;
             set;
         }
+
+        public string QueryUser
+        {
+            get;
+            set;
+        }
     }
 
 }

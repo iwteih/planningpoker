@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using log4net;
+using Newtonsoft.Json;
 
 namespace PlanningPoker.Utility
 {
@@ -18,48 +19,28 @@ namespace PlanningPoker.Utility
         #region IsolatedStorageFile
 
         private static ApplicationConfig appConfig;
+        private static readonly string CONFIG_FILE_NAME = "PlanningPoker.NET.settings" ;
 
         public static ApplicationConfig LoadIsolatedData()
         {
             if (appConfig == null)
             {
-                byte[] byteContent = null;
-
-                using (IsolatedStorageFile f = IsolatedStorageFile.GetUserStoreForAssembly())
+                if(File.Exists(CONFIG_FILE_NAME))
                 {
-                    using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream("PlanningPoker", FileMode.OpenOrCreate, f))
-                    {
-                        byteContent = new byte[stream.Length];
-
-                        stream.Read(byteContent, 0, byteContent.Length);
-                    }
-
-                    appConfig = DeserializeFromByteArray<ApplicationConfig>(byteContent);
+                    string content = File.ReadAllText(CONFIG_FILE_NAME, Encoding.UTF8);
+                    appConfig = JsonConvert.DeserializeObject<ApplicationConfig>(content);
                 }
 
-                return appConfig == null ? new ApplicationConfig() : appConfig;
+                appConfig = appConfig == null ? new ApplicationConfig() : appConfig;
             }
-
             return appConfig;
         }
 
         public static void SaveIsolatedData(ApplicationConfig config)
         {
-            byte[] byteContent = SerializeToByteArray<ApplicationConfig>(config);
+            string contect = JsonConvert.SerializeObject(appConfig, Formatting.Indented);
 
-            if (byteContent == null)
-            {
-                return;
-            }
-
-            using (IsolatedStorageFile f = IsolatedStorageFile.GetUserStoreForAssembly())
-            {
-                using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream("PlanningPoker", FileMode.Create, f))
-                {
-                    stream.Seek(0, SeekOrigin.Begin);
-                    stream.Write(byteContent, 0, byteContent.Length);
-                }
-            }
+            File.WriteAllText(CONFIG_FILE_NAME, contect);
         }
         #endregion
 

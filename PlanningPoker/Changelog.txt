@@ -7,7 +7,7 @@ Released: 2016-03-23
       1) If partial sub tasks has story points, then the font
          color should be DodgerBlue.
       2) If every sub task has specified story point, then the font
-         color should be DodgerBlue.
+         color should be default.
    2. If the parent card doesn't have story points:
       1) If partial sub tasks has story points, then display
          the aggregated story points from the sub tasks,

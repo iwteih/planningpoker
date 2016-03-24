@@ -51,6 +51,14 @@ You can adjust your role in the profile section.
    <add key="StoryPointAlgorithm" value="RoleGroup"/>
 7. How to query story?
    Take JIRA for example, refer to the link [JIRA REST API Example - Query issues](https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues)
+8. What is the meaning of point in story list?
+   When splitting a story to sub tasks, the story and each task can contain story point individually. If story points are specified in sub tasks, but not for parent story, PlanningPoker.NET will automatically show the aggregated points. Meanwhile story point will show as different colors in these case:
+   - If parent story has story point
+     - If every sub task has story point, show default color
+     - If partial sub tasks have story point, show blue
+   - If parent story does not have story point
+     - If every sub task has story point, show dark khaki
+     - If partial sub tasks have story point, show coral
 
 ### Known issue
 * If the GUI has been inactive for a time, the connection between server and client will be lost.

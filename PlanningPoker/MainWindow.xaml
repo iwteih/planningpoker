@@ -6,7 +6,6 @@
         xmlns:rule="clr-namespace:PlanningPoker.Rules"
         xmlns:tree="clr-namespace:Aga.Controls.Tree"
         Title="PlanningPoker.NET {0} -- Powered By Yiming Bao" 
-        WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Height="700" Width="1100" 
         Icon="/Resources/planningpoker.ico"

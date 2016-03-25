@@ -223,6 +223,13 @@ namespace PlanningPoker
             {
                 txtQueryUser.Text = appconfig.QueryUser;
             }
+
+            if (appconfig.SavePassword)
+            {
+                ckSavePassword.IsChecked = true;
+                txtQueryPwd.Password = StringCipher.Decrypt(appconfig.Password, Utils.getLoggonUser() + ManagementObjectUtil.GetBiosSerialNumber());
+            }
+
             btnConnect.IsEnabled = true;
             btnStart.IsEnabled = true;
         }
@@ -342,7 +349,7 @@ namespace PlanningPoker
             animation1.BeginTime = TimeSpan.FromSeconds(0);
             animation1.Duration = new Duration(TimeSpan.FromSeconds(1));
             animation1.From = originalHeight;
-            animation1.To = originalHeight * 1.5; 
+            animation1.To = originalHeight * 1.5;
 
             DoubleAnimation animation2 = new DoubleAnimation();
             animation2.BeginTime = TimeSpan.FromSeconds(1);
@@ -476,6 +483,19 @@ namespace PlanningPoker
             appconfig.UserName = txtUserName.Text.Trim();
             appconfig.TabIndex_ServerOrClient = tbctrlServerOrClient.SelectedIndex;
             appconfig.QueryUser = txtQueryUser.Text;
+
+            if (ckSavePassword.IsChecked.HasValue && ckSavePassword.IsChecked.Value)
+            {
+                appconfig.SavePassword = true;
+                string password = StringCipher.Encrypt(txtQueryPwd.Password, Utils.getLoggonUser() + ManagementObjectUtil.GetBiosSerialNumber());
+                appconfig.Password = password;
+            }
+            else
+            {
+                appconfig.SavePassword = false;
+                appconfig.Password = string.Empty;
+            }
+
             IOUtil.SaveIsolatedData(appconfig);
 
             GameStateServer state = gameState as GameStateServer;
@@ -582,14 +602,14 @@ namespace PlanningPoker
                         gameState.SyncStoryPoint(gameInfo.SyncStory);
                     }
 
-                    if(gameInfo.SyncStory.Parent == null)
+                    if (gameInfo.SyncStory.Parent == null)
                     {
                         return;
                     }
 
                     success = gameState.UpdateParentStoryPoint(pmsOperator, gameInfo.SyncStory, txtQueryUser.Text, txtQueryPwd.Password);
 
-                    if(success)
+                    if (success)
                     {
                         gameState.SyncStoryPoint(gameInfo.SyncStory.Parent);
                     }

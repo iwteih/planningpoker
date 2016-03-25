@@ -16,6 +16,7 @@ Released: 2016-03-23
       2) If every sub task has specified story points, then display
          the aggregated value, the font color should be DarkKhaki.
       3) If none of the sub tasks has specified story points, then skip.
+ * Enable to save encrypted password
 
 = Release 1.0.1 =
 Released: 2016-03-09

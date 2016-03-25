@@ -69,6 +69,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -135,7 +136,9 @@
     <Compile Include="Utility\ExtensionMethods.cs" />
     <Compile Include="Utility\IOUtil.cs" />
     <Compile Include="Utility\IPUtil.cs" />
+    <Compile Include="Utility\ManagementObjectUtil.cs" />
     <Compile Include="Utility\RestUtil.cs" />
+    <Compile Include="Utility\StringCipher.cs" />
     <Compile Include="Utility\Utils.cs" />
     <Compile Include="Utility\WebUtil.cs" />
     <Compile Include="WCF\AppEventArgs.cs" />

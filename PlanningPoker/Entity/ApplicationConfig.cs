@@ -50,6 +50,18 @@ namespace PlanningPoker
             get;
             set;
         }
+
+        public bool SavePassword
+        {
+            get; 
+            set; 
+        }
+
+        public string Password
+        {
+            get;
+            set;
+        }
     }
 
 }

@@ -19,6 +19,11 @@ namespace PlanningPoker.Utility
             return name;
         }
 
+        public static string getLoggonUser()
+        {
+            return Environment.UserName;
+        }
+
         public static double FractionToFloat(string fraction)
         {
             float result;

@@ -58,7 +58,7 @@ namespace PlanningPoker.PMS
                     story.UUID = Guid.NewGuid();
                     story.ID = issue.Key;
                     story.Summary = issue.Fields.Summary;
-                    story.Assignee = issue.Fields.Assignee.DisplayName;
+                    story.Assignee = issue.Fields.Assignee == null ? string.Empty : issue.Fields.Assignee.DisplayName;
                     story.URL = BuildCardUrl(issue.Self, issue.Key);
                     story.IssueType = issue.Fields.IssueType.Name;
                     story.IssueTypeIcon = issue.Fields.IssueType.IconUrl;
@@ -132,6 +132,12 @@ namespace PlanningPoker.PMS
                     subTaskList.AddRange(l.SubTasks);
                 }
             });
+
+            // do not query subtasks if there are no sub tasks
+            if(subTaskList.Count == 0)
+            {
+                return;
+            }
 
             Uri uri = new Uri(url);
             url = uri.AbsoluteUri.Replace(uri.Query, string.Empty);

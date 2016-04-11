@@ -17,6 +17,7 @@ Released: 2016-03-23
          the aggregated value, the font color should be DarkKhaki.
       3) If none of the sub tasks has specified story points, then skip.
  * Enable to save encrypted password
+ * Show detail error message if http response code is not OK
 
 == Bug Fixes ==
  * Fixed issue PP-16: When assignee is empty or there is no sub task, an NullReferenceException will be thrown
@@ -34,7 +35,7 @@ Released: 2016-03-08
  * Show sub task under parent cards
  * Show story point in story list
  * Add one algorithm to calculate story point by role group.
-	Note only Dev and QA are valid in the algorithm. In the screenshot below, the left number (8) is Dev, the right number (8) is QA.
+	Note only Dev and QA are eligible in the algorithm. In the screenshot below, the left number (8) is Dev, the right number (8) is QA.
 	You should specify your role before joining the game.
 	To enable this feature, you need to uncomment out the following item in  PlanningPoker.exe.config
 	<add key="StoryPointAlgorithm" value="RoleGroup"/>

@@ -54,9 +54,16 @@ namespace PlanningPoker.Utility
                 throw new UnauthorizedAccessException("JIRA access forbidden");
             }
 
+            if (response.StatusCode >= HttpStatusCode.BadRequest)
+            {
+                log.Error(response.StatusCode);
+                throw new WebException(response.Content);
+            }
+
             if (response.ErrorException != null)
             {
-                log.Error(string.Format("error get,url={0},status={1},exception={2}", url, response.StatusCode, response.ErrorException));
+                log.Error(string.Format("error get,url={0},status={1},exception={2}", 
+                    url, response.StatusCode, response.ErrorException));
                 throw response.ErrorException;
             }
 

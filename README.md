@@ -38,7 +38,8 @@ You can adjust your role in the profile section.
    Score is calculated by dividing the sum of points played by total number of players that played numbered cards. That average is then rounded up to the next number in the deck of cards.
    Note that only the scores of Dev and QA are considered valid.
 3. How to determine the "Story point" field in JIRA?
-   "Story Point" should be a customized field. You can find it in the JIRA API like http://kelpie9:8081/rest/api/2/issue/XSS-13/editmeta.
+   "Story Point" should be a customized field. It can be configured by JIRA admin.
+   Login JIRA and you can find it in the JIRA API like http://your_JIRA_server/rest/api/2/issue/card_number/editmeta.
    Then edit PlanningPoker.NET.exe.config, change the value of StoryPointField to that in your environment.
 4. How to adjust the port?
    By default, the port used by PlanningPoker.NET is 808, if the port is occupied, you can change it on your own: edit PlanningPoker.NET.exe.config, change the value of Port to what you need.

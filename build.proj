@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://bitbucket.org/christianspecht/missilesharp/src/b08d64e6aa00cd7f412c365f9dcc4b1f7ce44886/build.proj?at=default&fileviewer=file-view-default -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Start">
+
+	
+	<!-- Variables -->
+	<PropertyGroup>
+
+		<!-- Release Folder -->
+		<!-- To change the output folder, use the following parameter: /p:BuildDir=C:\BuildTest-->
+		<ReleaseDir>release</ReleaseDir>
+
+		<!-- Build Folder -->
+		<OutDir>PlanningPoker\bin\Release</OutDir>
+
+		<!-- create zip file? -->
+		<CreateZip>0</CreateZip>
+
+		<!-- specify path for MSBuild Community Tasks (MSBuild.Community.Tasks.Targets needs this path) -->
+        <MSBuildCommunityTasksPath>.build</MSBuildCommunityTasksPath>
+
+		<!-- create NuGet package? -->
+		<CreatePackage>0</CreatePackage>
+
+		<!-- temporary NuGet working folder -->
+		<NuGetDir>nuget-tmp</NuGetDir>
+
+		<!-- run unit tests? -->
+		<RunTests>0</RunTests>
+
+		<!-- Build Folder for test assembly -->
+		<TestOutDir>PlanningPoker\bin\Release</TestOutDir>
+		
+		<!-- path to NUnit runner -->
+		<TestNUnitDir>src\packages\NUnit.Runners.2.6.0.12051\tools</TestNUnitDir>
+		
+		<!-- build ClickOnce setup for launcher? -->
+		<CreateClickOnce>0</CreateClickOnce>
+
+	</PropertyGroup>
+
+    <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
+
+	<!-- "Autostart" -->
+	<Target Name="Start">
+		<CallTarget Targets="DeleteFolders"/>
+		<CallTarget Targets="Build"/>
+		<CallTarget Condition="$(RunTests) == '1'" Targets="Test"/>
+		<CallTarget Targets="CopyRelease"/>
+		<CallTarget Targets="CopyReleaseLauncher"/>
+		<CallTarget Condition="$(CreateZip) == '1'" Targets="Zip"/>
+		<CallTarget Condition="$(CreateZip) == '1'" Targets="ZipLauncher"/>
+		<CallTarget Condition="$(CreatePackage) == '1'" Targets="NuGet"/>
+		<CallTarget Condition="$(CreateClickOnce) == '1'" Targets="ClickOnce"/>
+	</Target>
+
+
+	<!-- delete release folder -->
+	<Target Name="DeleteFolders">
+		<RemoveDir Directories="$(ReleaseDir)"/>
+		<RemoveDir Directories="$(NuGetDir)"/>
+	</Target>
+
+
+	<!-- compile solution as release -->
+	<Target Name="Build">
+		<MSBuild Projects="PlanningPoker.sln" Properties="Configuration=Release"/>
+	</Target>
+
+
+	<!-- run unit tests -->
+	<Target Name="Test">
+		<CreateItem Include="$(TestOutDir)\*.Tests.dll">
+			<Output TaskParameter="Include" ItemName="TestAssembly" />
+		</CreateItem>
+		<NUnit ToolPath="$(TestNUnitDir)" DisableShadowCopy="true" Assemblies="@(TestAssembly)" Force32Bit="True" />
+	</Target>
+
+
+	<!-- copy files to release folder -->
+	<Target Name="CopyRelease">
+		<MakeDir Directories="$(ReleaseDir)\lib-bin"/>
+		<ItemGroup>
+			<ReleaseFiles
+				Include="$(OutDir)\*.*;
+						readme.md;
+						license.txt"
+				Exclude="$(OutDir)\*.pdb">
+			</ReleaseFiles>
+		</ItemGroup>
+		<Copy SourceFiles="@(ReleaseFiles)" DestinationFolder="$(ReleaseDir)\lib-bin"/>
+	</Target>
+
+
+	<!-- copy files to launcher release folder -->
+	<Target Name="CopyReleaseLauncher">
+		<MakeDir Directories="$(ReleaseDir)\launcher-bin"/>
+		<ItemGroup>
+			<LauncherReleaseFiles
+				Include="$(LauncherOutDir)\*.*;
+						readme.md;
+						license.txt"
+				Exclude="$(LauncherOutDir)\*.pdb;
+						$(LauncherOutDir)\*.xml">
+			</LauncherReleaseFiles>
+		</ItemGroup>
+		<Copy SourceFiles="@(LauncherReleaseFiles)" DestinationFolder="$(ReleaseDir)\launcher-bin"/>
+	</Target>
+
+
+	<!-- create zip file with content of release\bin folder -->
+	<Target Name="Zip">
+		<CreateItem Include="$(ReleaseDir)\lib-bin\*.*" >
+			<Output ItemName="ZipFiles" TaskParameter="Include"/>
+		</CreateItem>
+		<Zip ZipFileName="$(ReleaseDir)\lib-zip\PlanningPoker.NET-$(VersionNumber).zip" WorkingDirectory="$(ReleaseDir)\lib-bin" Files="@(ZipFiles)" />
+	</Target>
+
+
+	<!-- create zip file with content of release\launcher-bin folder -->
+	<Target Name="ZipLauncher">
+		<CreateItem Include="$(ReleaseDir)\launcher-bin\*.*" >
+			<Output ItemName="LauncherZipFiles" TaskParameter="Include"/>
+		</CreateItem>
+		<Zip ZipFileName="$(ReleaseDir)\launcher-zip\PlanningPoker.NET-$(VersionNumber).zip" WorkingDirectory="$(ReleaseDir)\launcher-bin" Files="@(LauncherZipFiles)" />
+	</Target>
+
+
+	<!-- create NuGet package-->
+	<Target Name="NuGet">
+		<MakeDir Directories="$(NuGetDir)\lib\net40"/>
+		<MakeDir Directories="$(ReleaseDir)\lib-nuget"/>
+		
+		<!-- 1. copy the whole release folder (except the assemblies) and the nuspec file into the temp. NuGet folder -->
+		<ItemGroup>
+			<PackageFiles1
+				Include="$(ReleaseDir)\lib-bin\*.*;
+						nuget\*.nuspec"
+				Exclude="$(ReleaseDir)\lib-bin\*.dll;
+						$(ReleaseDir)\lib-bin\*.xml">
+			</PackageFiles1>
+		</ItemGroup>
+		<Copy SourceFiles="@(PackageFiles1)" DestinationFolder="$(NuGetDir)"/>
+		
+		<!-- 2. copy the assemblies into the net40 subfolder -->
+		<ItemGroup>
+			<PackageFiles2
+				Include="$(ReleaseDir)\lib-bin\m*.dll;
+						$(ReleaseDir)\lib-bin\*.xml">
+			</PackageFiles2>
+		</ItemGroup>
+		<Copy SourceFiles="@(PackageFiles2)" DestinationFolder="$(NuGetDir)\lib\net40"/>
+		
+		<!-- 3. create package -->
+		<Exec Command="src\packages\NuGet.CommandLine.1.8.40002\tools\nuget.exe pack $(NuGetDir)\planningpoker.net.nuspec -OutputDirectory $(ReleaseDir)\lib-nuget -Version $(VersionNumber)"></Exec>
+	</Target>
+
+
+	<!-- build ClickOnce setup -->
+	<Target Name="ClickOnce">
+	
+		<PropertyGroup>
+			<PubDir>$(MSBuildProjectDirectory)\$(ReleaseDir)\launcher-clickonce\</PubDir>
+			<CodeplexPubDir>$(MSBuildProjectDirectory)\$(ReleaseDir)\launcher-clickonce-codeplex\</CodeplexPubDir>
+		</PropertyGroup>
+	
+		<!-- 1. publish directly into the release folder -->
+		<MSBuild
+			Projects="src\MissileSharp.Launcher\MissileSharp.Launcher.csproj"
+			Targets="Publish"
+			Properties="Configuration=Release;
+						PublishDir=$(PubDir);
+						ApplicationVersion=$(ClickOnceVersionNumber)" />
+
+		<!-- 2. zip the published folder for uploading to CodePlex -->
+		<ItemGroup>
+			<ClickOnceFiles Include="$(PubDir)\**\*.*" />
+		</ItemGroup>
+		<Zip ZipFileName="$(CodeplexPubDir)\PlanningPoker.NET-launcher-$(VersionNumber).zip" WorkingDirectory="$(PubDir)" Files="@(ClickOnceFiles)" />
+		
+	</Target>
+	
+</Project>
